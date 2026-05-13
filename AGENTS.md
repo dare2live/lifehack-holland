@@ -23,6 +23,7 @@
   - transform level
   - dimensions and weights
   - review status and reviewer notes when applicable
+- Preserve lineage for every consistency rule. The rule layer is part of the model, so triggered penalties must explain source version, review status, trigger/verify fields, and penalty parameters.
 - The final question bank should be small and reviewed. The thousands of O*NET/IPIP records are source material, not all user-facing questions.
 
 ## Data Rules
@@ -46,4 +47,3 @@ python3 -m unittest discover -s tests -v
 node --check frontend/js/chart.js
 node --check frontend/js/survey_config.js
 ```
-

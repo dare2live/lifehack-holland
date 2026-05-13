@@ -70,6 +70,19 @@ class HollandPlanSmokeTests(unittest.TestCase):
                 "SELECT lineage_json FROM sjt_item_bank WHERE sjt_q_id = 'H_Gala'"
             ).fetchone()[0]
             self.assertIn("option_weights", json.loads(lineage))
+            rule_columns = {
+                row[1]
+                for row in con.execute("PRAGMA table_info('sjt_consistency_rules')").fetchall()
+            }
+            self.assertIn("source_version", rule_columns)
+            self.assertIn("review_status", rule_columns)
+            self.assertIn("lineage_json", rule_columns)
+            rule_lineage = con.execute(
+                "SELECT lineage_json FROM sjt_consistency_rules WHERE rule_id = 'RULE_M_Exam_JP1'"
+            ).fetchone()[0]
+            parsed_rule_lineage = json.loads(rule_lineage)
+            self.assertEqual(parsed_rule_lineage["rule_type"], "consistency_penalty")
+            self.assertEqual(parsed_rule_lineage["source_version"], "2026-05-13")
         finally:
             con.close()
 
@@ -114,6 +127,9 @@ class HollandPlanSmokeTests(unittest.TestCase):
         self.assertTrue(payload["source_lineage"]["answered_items"])
         self.assertEqual(payload["source_lineage"]["service"], "lifehack-holland")
         self.assertTrue(payload["consistency_issues"])
+        issue = payload["consistency_issues"][0]
+        self.assertEqual(issue["review_status"], "approved_seed")
+        self.assertEqual(issue["lineage"]["rule_type"], "consistency_penalty")
 
     def test_candidate_pool_preserves_lineage_and_review_gate(self):
         pool = build_candidate_pool()
@@ -135,6 +151,9 @@ class HollandPlanSmokeTests(unittest.TestCase):
             with open(batch_path, "r", encoding="utf-8", newline="") as f:
                 rows = list(csv.DictReader(f))
             self.assertEqual(len(rows), 2)
+            self.assertEqual(rows[0]["source_version"], "O*NET Database 30.2 text files")
+            self.assertEqual(rows[0]["transform_level"], "L1_candidate_seed")
+            self.assertIn("source_row", json.loads(rows[0]["candidate_lineage_json"]))
             approved = rows[0]
             approved["review_status"] = "approved"
             approved["approved_q_id"] = "Q_REVIEW_SMOKE"

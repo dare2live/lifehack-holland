@@ -1,18 +1,36 @@
 [
   {
+    "rule_id": "RULE_M_Exam_JP1",
     "trigger_q_id": "M_Exam_JP1",
     "trigger_option": "A",
     "verify_q_id": "TRAP_J1",
     "expected_option": "Y",
     "penalty_dimension": "MBTI_J",
-    "penalty_weight": -2.0
+    "penalty_weight": -2.0,
+    "source_version": "2026-05-13",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "rule_type": "consistency_penalty",
+      "source_version": "2026-05-13",
+      "review_status": "approved_seed"
+    }
   },
   {
+    "rule_id": "RULE_M_Soc_EI1",
     "trigger_q_id": "M_Soc_EI1",
     "trigger_option": "A",
     "verify_q_id": "TRAP_E1",
     "expected_option": "X",
     "penalty_dimension": "MBTI_E",
-    "penalty_weight": -2.0
+    "penalty_weight": -2.0,
+    "source_version": "2026-05-13",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "rule_type": "consistency_penalty",
+      "source_version": "2026-05-13",
+      "review_status": "approved_seed"
+    }
   }
 ]

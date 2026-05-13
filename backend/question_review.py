@@ -44,11 +44,18 @@ def write_review_batch(
                 "source": candidate["source"],
                 "mother_source": candidate["mother_source"],
                 "mother_id": candidate["mother_id"],
+                "source_version": candidate.get("source_version", ""),
+                "transform_level": candidate.get("transform_level", ""),
                 "dimension_code": candidate.get("dimension_code", ""),
                 "inherited_weight": candidate.get("inherited_weight", ""),
                 "raw_text": _candidate_raw_text(candidate),
                 "scenario_shell": candidate.get("scenario_shell", ""),
                 "draft_prompt": candidate.get("draft_prompt", ""),
+                "candidate_lineage_json": json.dumps(
+                    candidate.get("lineage", {}),
+                    ensure_ascii=False,
+                    sort_keys=True,
+                ),
                 "review_status": candidate.get("review_status", config["output"]["candidate_status"]),
                 "approved_q_id": "",
                 "scenario_text": "",
@@ -175,4 +182,3 @@ def promote_review_batch(
         "approved_items": len(approved_items),
         "status_counts": dict(sorted(status_counts.items())),
     }
-

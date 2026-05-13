@@ -79,6 +79,36 @@ def _item_lineage(item: dict, generation_config: dict) -> dict:
     }
 
 
+def _rule_id(rule: dict) -> str:
+    if rule.get("rule_id"):
+        return str(rule["rule_id"])
+    return "RULE_{trigger}_{trigger_option}_{verify}_{expected}".format(
+        trigger=rule["trigger_q_id"],
+        trigger_option=rule["trigger_option"],
+        verify=rule["verify_q_id"],
+        expected=rule["expected_option"],
+    )
+
+
+def _rule_lineage(rule: dict, generation_config: dict) -> dict:
+    lineage = rule.get("lineage") if isinstance(rule.get("lineage"), dict) else {}
+    source_version = rule.get("source_version") or lineage.get("source_version") or generation_config.get("version", "unknown")
+    review_status = rule.get("review_status") or lineage.get("review_status") or "approved_seed"
+    return {
+        "lineage_quality": lineage.get("lineage_quality", "curated_seed_limited"),
+        "source_seed_file": rule.get("_seed_file"),
+        "source_version": source_version,
+        "review_status": review_status,
+        "trigger_q_id": rule.get("trigger_q_id"),
+        "trigger_option": rule.get("trigger_option"),
+        "verify_q_id": rule.get("verify_q_id"),
+        "expected_option": rule.get("expected_option"),
+        "penalty_dimension": rule.get("penalty_dimension"),
+        "penalty_weight": rule.get("penalty_weight"),
+        **lineage,
+    }
+
+
 def populate():
     print("Populating generated question bank (decoupled Dual-Track mode) into DuckDB...")
     con = duckdb.connect(DB_PATH)
@@ -131,14 +161,18 @@ def populate():
         questions_for_frontend[item["q_id"]] = opt_dict
 
     for rule in rules_data:
-        rule_id = f"RULE_{rule['trigger_q_id']}"
+        rule_id = _rule_id(rule)
+        lineage = _rule_lineage(rule, generation_config)
         con.execute("""
             INSERT INTO sjt_consistency_rules
-            (rule_id, trigger_q_id, trigger_option, verify_q_id, expected_option, penalty_dimension, penalty_weight)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (rule_id, trigger_q_id, trigger_option, verify_q_id, expected_option,
+             penalty_dimension, penalty_weight, source_version, review_status, lineage_json)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             rule_id, rule["trigger_q_id"], rule["trigger_option"], rule["verify_q_id"],
-            rule["expected_option"], rule["penalty_dimension"], rule["penalty_weight"]
+            rule["expected_option"], rule["penalty_dimension"], rule["penalty_weight"],
+            lineage["source_version"], lineage["review_status"],
+            json.dumps(lineage, ensure_ascii=False, sort_keys=True),
         ))
 
     con.close()

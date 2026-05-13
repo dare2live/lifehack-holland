@@ -335,14 +335,25 @@ def _load_consistency_issues(con: duckdb.DuckDBPyConnection, submission_id: str)
     rows = con.execute(
         """
         SELECT rule_id, trigger_q_id, trigger_option, verify_q_id, expected_option,
-               penalty_dimension, penalty_weight
+               penalty_dimension, penalty_weight, source_version, review_status, lineage_json
         FROM sjt_consistency_rules
         ORDER BY rule_id
         """
     ).fetchall()
     issues = []
     for row in rows:
-        rule_id, trigger_q, trigger_option, verify_q, expected_option, penalty_dimension, penalty_weight = row
+        (
+            rule_id,
+            trigger_q,
+            trigger_option,
+            verify_q,
+            expected_option,
+            penalty_dimension,
+            penalty_weight,
+            source_version,
+            review_status,
+            lineage_json,
+        ) = row
         if answers.get(trigger_q) == trigger_option and answers.get(verify_q) == expected_option:
             issues.append({
                 "rule_id": rule_id,
@@ -350,6 +361,9 @@ def _load_consistency_issues(con: duckdb.DuckDBPyConnection, submission_id: str)
                 "verify_q_id": verify_q,
                 "penalty_dimension": penalty_dimension,
                 "penalty_weight": float(penalty_weight),
+                "source_version": source_version or "",
+                "review_status": review_status or "",
+                "lineage": _json_loads(lineage_json, {}),
             })
     return issues
 
