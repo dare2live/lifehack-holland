@@ -184,37 +184,18 @@ async def get_questions():
         con.close()
 
 
-# ── Option text lookup (seed data descriptions) ───────────────────
-# In production these would live in the DB; for now, hardcoded for seed data.
-
-_OPTION_TEXTS = {
-    "Q_Gala": {
-        "A": "马上安抚前排焦躁的观众，让主持人临场互动拖延时间",
-        "B": "立刻冲到总电闸处排查物理线路和保险丝",
-        "C": "打电话叫有经验的学长来帮忙处理",
-    },
-    "Q_Gala_verify": {
-        "X": "算了不求他了，自己直接冲上台暖场",
-        "Y": "那就让灯光师放点背景音乐，大家安静等着吧",
-        "Z": "转身去找音控组的同学一起排查问题",
-    },
-    "Q_Poster": {
-        "A": "各做各的方案，明天让全班投票决定",
-        "B": "主动约TA去奶茶店聊聊，找个折中方案",
-        "C": "上网搜历年获奖海报的数据和风格来说服TA",
-        "D": "算了，让TA做吧，我去忙别的事情",
-    },
-    "Q_Poster_verify": {
-        "X": "尊重大家意见，就用TA的方案吧",
-        "Y": "有点不服气，觉得他们不懂审美，但嘴上不说",
-        "Z": "坚持提出修改意见，用对比图展示两种方案的优劣",
-    },
-}
-
+import os
 
 def _get_option_text(q_id: str, opt_val: str) -> str:
-    """Get human-readable option text for seed data."""
-    return _OPTION_TEXTS.get(q_id, {}).get(opt_val, f"Option {opt_val}")
+    """Get human-readable option text for seed data from questions.json."""
+    json_path = os.path.join(os.path.dirname(__file__), "data", "questions.json")
+    try:
+        with open(json_path, "r", encoding="utf-8") as f:
+            option_texts = json.load(f)
+    except Exception:
+        option_texts = {}
+        
+    return option_texts.get(q_id, {}).get(opt_val, f"Option {opt_val}")
 
 # ── Static files — serve frontend ──────────────────────────────────
 from pathlib import Path
