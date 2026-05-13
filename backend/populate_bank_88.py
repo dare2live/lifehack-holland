@@ -1,19 +1,21 @@
 """
 Script to populate DuckDB with a comprehensive set of SJT questions.
-Includes the original O*NET based questions + newly translated IPIP Jungian questions.
+Implements the 'Dual-Track' independent testing strategy:
+- Module 1: O*NET tasks mapped strictly to Holland RIASEC.
+- Module 2: IPIP Jungian translated scenarios mapped strictly to MBTI.
 """
 import json
 import duckdb
 from backend.config import DB_PATH, PROJECT_ROOT
 
 # ═══════════════════════════════════════════════════════════════════
-# GENERATED QUESTION BANK (Translated from Master Sources)
+# GENERATED QUESTION BANK (Dual-Track Decoupled)
 # ═══════════════════════════════════════════════════════════════════
 
 BANK = [
     # ── Module 1: Pure Holland Scenarios (O*NET based) ──
     {
-        "q_id": "Q_Holland_Gala",
+        "q_id": "Q_Gala",
         "mother_source": "ONET_IP",
         "mother_id": "ONET_1.A.1",
         "mechanism": "L2_influence_vs_hands_on",
@@ -25,7 +27,7 @@ BANK = [
         ]
     },
     {
-        "q_id": "Q_Holland_Gala_verify",
+        "q_id": "Q_Gala_verify",
         "mother_source": "SYSTEM_RULE",
         "mother_id": "VERIFY_01",
         "mechanism": "L3_verify_E",
@@ -37,7 +39,7 @@ BANK = [
         ]
     },
     {
-        "q_id": "Q_Holland_Poster",
+        "q_id": "Q_Poster",
         "mother_source": "ONET_IP",
         "mother_id": "ONET_2.B.3",
         "mechanism": "L2_artistic_vs_conventional",
@@ -45,12 +47,12 @@ BANK = [
         "options": [
             {"val": "A", "text": "各做各的方案，明天让全班投票决定，用数据说话", "weights": [("Holland_I", 1.0)]},
             {"val": "B", "text": "主动约TA去奶茶店聊聊，倾听TA的想法，找个能兼顾双方审美的折中方案", "weights": [("Holland_S", 1.5)]},
-            {"val": "C", "text": "上网搜历年获奖海报的点击率和风格分布，用事实去说服TA", "weights": [("Holland_C", 1.5), ("Holland_E", 1.0)]},
-            {"val": "D", "text": "自己另外起草一份天马行空的草图，自己完成自己的设计", "weights": [("Holland_A", 1.5)]}
+            {"val": "C", "text": "上网搜历年获奖海报的点击率和风格分布，用逻辑和事实去说服TA", "weights": [("Holland_C", 1.5), ("Holland_E", 1.0)]},
+            {"val": "D", "text": "算了，懒得争，自己回去画一份极具创造力的概念草图发给他看", "weights": [("Holland_A", 1.5)]}
         ]
     },
     {
-        "q_id": "Q_Holland_Poster_verify",
+        "q_id": "Q_Poster_verify",
         "mother_source": "SYSTEM_RULE",
         "mother_id": "VERIFY_02",
         "mechanism": "L3_verify_S",
@@ -62,19 +64,31 @@ BANK = [
         ]
     },
     {
-        "q_id": "Q_Holland_TechClub",
+        "q_id": "Q_TechClub",
         "mother_source": "ONET_IP",
         "mother_id": "ONET_4.A.2",
         "mechanism": "L2_research_vs_enterprise",
         "text": "你是科技社团的骨干。这学期社团得到了一笔5000元的赞助费，你最希望用这笔钱来：",
         "options": [
-            {"val": "A", "text": "全部用来购买最顶级的实验传感器和服务器算力，搞一个硬核技术项目", "weights": [("Holland_R", 1.0), ("Holland_I", 1.5)]},
-            {"val": "B", "text": "拿出一大半钱办一场全校规模的“科技创新大赛”，拉拢更多赞助并扩大影响力", "weights": [("Holland_E", 1.5)]},
+            {"val": "A", "text": "全部用来购买最顶级的实验传感器和服务器算力，闷头搞一个硬核技术项目", "weights": [("Holland_R", 1.0), ("Holland_I", 1.5)]},
+            {"val": "B", "text": "拿出一大半钱办一场全校规模的“科技创新大赛”，拉拢更多赞助并扩大社团影响力", "weights": [("Holland_E", 1.5)]},
             {"val": "C", "text": "请校外的专业导师来给全社团开几场系统的技术培训讲座，提升大家的平均水平", "weights": [("Holland_S", 1.0), ("Holland_C", 1.0)]}
         ]
     },
     {
-        "q_id": "Q_Holland_Lab",
+        "q_id": "Q_ExamPrep",
+        "mother_source": "ONET_IP",
+        "mother_id": "ONET_3.C.1",
+        "mechanism": "L2_planning_vs_improvising",
+        "text": "离期末考试还有两周，你目前的复习状态最接近以下哪种？",
+        "options": [
+            {"val": "A", "text": "我已经把每一科的复习进度精确分配到了每天的上下午，并严格打卡执行", "weights": [("Holland_C", 1.5)]},
+            {"val": "B", "text": "我脑子里有个大概的框架，但每天具体复习哪一科完全看当时的心情和状态", "weights": [("Holland_A", 1.0)]},
+            {"val": "C", "text": "我更喜欢拉着几个同学互相提问，在给别人讲解题目的过程中加深记忆", "weights": [("Holland_S", 1.5), ("Holland_E", 1.0)]}
+        ]
+    },
+    {
+        "q_id": "Q_Lab",
         "mother_source": "ONET_IP",
         "mother_id": "ONET_2.A.1",
         "mechanism": "L2_logic_vs_feeling",
@@ -150,19 +164,19 @@ BANK = [
         "text": "周末有一整天的自由时间，没有任何硬性作业。早上醒来时，你通常会：",
         "options": [
             {"val": "A", "text": "立刻在脑海中或纸上列出今天上午、下午和晚上的具体计划，并按部就班执行。", "weights": [("MBTI_J", 1.5)]},
-            {"val": "B", "text": "看心情决定，也许先玩会儿手机，顺其自然地度过这一天，看会发生什么。", "weights": [("MBTI_P", 1.5)]}
+            {"val": "B", "text": "看心情决定，也许先玩会儿手机，顺顺其自然地度过这一天，看会发生什么。", "weights": [("MBTI_P", 1.5)]}
         ]
     },
     {
         "q_id": "Q_MBTI_12_verify",
         "mother_source": "SYSTEM_RULE",
-        "mother_id": "VERIFY_MBTI_J",
+        "mother_id": "VERIFY_MBTI_12",
         "mechanism": "L3_verify_J",
-        "text": "【追问】如果今天上午你计划好要去图书馆，但突然下起了倾盆大雨，你的感受是：",
+        "text": "【追问】如果你选了“列出具体计划并执行”，但今天突然下暴雨导致你原定出门的计划全泡汤了，你的感受是：",
         "options": [
-            {"val": "X", "text": "觉得非常烦躁，计划被打乱的感觉让我很不舒服。", "weights": []},
-            {"val": "Y", "text": "无所谓，那就在家看看剧，随便做点什么也行。", "weights": []},
-            {"val": "Z", "text": "迅速调整计划，把下午在室内要做的作业挪到上午来做。", "weights": []}
+            {"val": "X", "text": "非常烦躁，计划被打乱让我很不舒服，甚至不想干别的事了。", "weights": []},
+            {"val": "Y", "text": "无所谓，那就躺在床上看一整天剧吧，随便了。", "weights": []},
+            {"val": "Z", "text": "立刻调整计划，把原本安排在室外的活动换成室内的看书或整理房间。", "weights": []}
         ]
     },
     {
@@ -213,20 +227,20 @@ BANK = [
 
 RULES = [
     {
-        "trigger_q_id": "Q_Holland_Gala",
+        "trigger_q_id": "Q_Gala",
         "trigger_option": "A",
-        "verify_q_id": "Q_Holland_Gala_verify",
+        "verify_q_id": "Q_Gala_verify",
         "expected_option": "Y",
         "penalty_dimension": "Holland_E",
-        "penalty_weight": -2.0
+        "penalty_weight": -1.5
     },
     {
-        "trigger_q_id": "Q_Holland_Poster",
+        "trigger_q_id": "Q_Poster",
         "trigger_option": "B",
-        "verify_q_id": "Q_Holland_Poster_verify",
+        "verify_q_id": "Q_Poster_verify",
         "expected_option": "Y",
         "penalty_dimension": "Holland_S",
-        "penalty_weight": -2.0
+        "penalty_weight": -1.5
     },
     {
         "trigger_q_id": "Q_MBTI_12",
@@ -238,8 +252,9 @@ RULES = [
     }
 ]
 
+
 def populate():
-    print("Populating independent dual-track (MBTI & Holland) question bank into DuckDB...")
+    print("Populating generated question bank (decoupled Dual-Track mode) into DuckDB...")
     con = duckdb.connect(DB_PATH)
     
     con.execute("DELETE FROM sjt_responses")
@@ -286,7 +301,7 @@ def populate():
     with open(PROJECT_ROOT / "backend" / "data" / "questions.json", "w", encoding="utf-8") as f:
         json.dump(questions_for_frontend, f, ensure_ascii=False, indent=2)
 
-    print(f"✅ Successfully inserted {len(BANK)} independent questions, mapped weights, and {len(RULES)} rules.")
+    print(f"✅ Successfully inserted {len(BANK)} questions (decoupled), mapping weights, and {len(RULES)} rules.")
 
 if __name__ == "__main__":
     populate()
