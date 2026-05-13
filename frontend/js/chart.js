@@ -4,40 +4,19 @@
  * Uses Chart.js (loaded via CDN).
  */
 
-// ── Holland dimension metadata ──
-const HOLLAND_META = {
-    'Holland_R': { name: '现实型 R', full: 'Realistic', icon: '🔧', color: '#ef4444',
-        desc: '喜欢使用工具、机械，擅长动手实操。适合工程、技术、手工艺相关领域。' },
-    'Holland_I': { name: '研究型 I', full: 'Investigative', icon: '🔬', color: '#6366f1',
-        desc: '喜欢思考、分析和探索，追求知识和真理。适合科研、医学、数据分析等领域。' },
-    'Holland_A': { name: '艺术型 A', full: 'Artistic', icon: '🎨', color: '#a855f7',
-        desc: '喜欢创造和自我表达，追求独特和美感。适合设计、写作、音乐、影视等领域。' },
-    'Holland_S': { name: '社会型 S', full: 'Social', icon: '🤝', color: '#10b981',
-        desc: '喜欢与人交往、帮助他人，具有同理心。适合教育、咨询、社会工作等领域。' },
-    'Holland_E': { name: '企业型 E', full: 'Enterprising', icon: '📊', color: '#f59e0b',
-        desc: '喜欢领导、说服和管理，追求影响力和成就。适合管理、营销、创业等领域。' },
-    'Holland_C': { name: '常规型 C', full: 'Conventional', icon: '📋', color: '#06b6d4',
-        desc: '喜欢有条理地处理数据和细节，做事规范有序。适合财务、行政、数据管理等领域。' },
-};
-
-// ── MBTI dimension metadata ──
-const MBTI_META = {
-    'MBTI_E': { name: '外向 E', pair: 'E/I', color: '#f59e0b' },
-    'MBTI_I': { name: '内向 I', pair: 'E/I', color: '#6366f1' },
-    'MBTI_S': { name: '实感 S', pair: 'S/N', color: '#10b981' },
-    'MBTI_N': { name: '直觉 N', pair: 'S/N', color: '#a855f7' },
-    'MBTI_T': { name: '思考 T', pair: 'T/F', color: '#ef4444' },
-    'MBTI_F': { name: '情感 F', pair: 'T/F', color: '#ec4899' },
-    'MBTI_J': { name: '判断 J', pair: 'J/P', color: '#06b6d4' },
-    'MBTI_P': { name: '感知 P', pair: 'J/P', color: '#84cc16' },
-};
-
 /**
  * Render the full result page.
  * @param {Object} report - The ReportResponse from the backend
+ * @param {Object} config - The dimension config from the backend
  * @param {HTMLElement} container - DOM element to render into
  */
-function renderReport(report, container) {
+function renderReport(report, config, container) {
+    // ── Build metadata maps from config ──
+    const HOLLAND_META = {};
+    config.holland.dimensions.forEach(d => { HOLLAND_META[d.code] = d; });
+    const MBTI_META = config.mbti.dimensions;
+    const mbtiPairs = config.mbti.pairs.map(p => p.codes);
+
     const dimMap = {};
     for (const d of report.dimensions) {
         dimMap[d.dimension_code] = d;
@@ -170,10 +149,10 @@ function renderReport(report, container) {
     });
 
     // ── Render radar chart ──
-    _renderRadarChart(dimMap);
+    _renderRadarChart(dimMap, HOLLAND_META);
 }
 
-function _renderRadarChart(dimMap) {
+function _renderRadarChart(dimMap, HOLLAND_META) {
     const canvas = document.getElementById('radar-chart');
     if (!canvas || typeof Chart === 'undefined') return;
 
@@ -243,3 +222,4 @@ function _renderRadarChart(dimMap) {
         },
     });
 }
+

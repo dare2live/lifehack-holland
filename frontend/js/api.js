@@ -44,6 +44,16 @@ const SjtApi = {
     },
 
     /**
+     * Get UI configuration (dimensions, metadata).
+     * @returns {Promise<Object>}
+     */
+    async getConfig() {
+        const res = await fetch(`${API_BASE}/config`);
+        if (!res.ok) throw new Error(`Config failed: ${res.status}`);
+        return res.json();
+    },
+
+    /**
      * Health check.
      * @returns {Promise<{status: string}>}
      */

@@ -39,9 +39,13 @@
             }
 
             try {
-                const report = await SjtApi.getReport(submissionId);
+                // Fetch report and config in parallel
+                const [report, config] = await Promise.all([
+                    SjtApi.getReport(submissionId),
+                    SjtApi.getConfig()
+                ]);
                 const container = document.getElementById('result-container');
-                renderReport(report, container);
+                renderReport(report, config, container);
             } catch (err) {
                 document.getElementById('result-container').innerHTML = `
                     <div class="result-header">

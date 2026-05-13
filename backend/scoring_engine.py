@@ -126,14 +126,18 @@ ORDER BY final_total_score DESC;
 # Python interface
 # ═══════════════════════════════════════════════════════════════════
 
-# Holland dimension codes for identification
-HOLLAND_CODES = {"Holland_R", "Holland_I", "Holland_A", "Holland_S", "Holland_E", "Holland_C"}
-MBTI_PAIRS = {
-    "E_I": ("MBTI_E", "MBTI_I"),
-    "S_N": ("MBTI_S", "MBTI_N"),
-    "T_F": ("MBTI_T", "MBTI_F"),
-    "J_P": ("MBTI_J", "MBTI_P"),
-}
+import os
+import json
+
+def _load_dimensions_config():
+    config_path = os.path.join(os.path.dirname(__file__), "dimensions_config.json")
+    with open(config_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+DIMENSIONS_CONFIG = _load_dimensions_config()
+HOLLAND_CODES = set(d["code"] for d in DIMENSIONS_CONFIG["holland"]["dimensions"])
+MBTI_PAIRS = {p["name"]: tuple(p["codes"]) for p in DIMENSIONS_CONFIG["mbti"]["pairs"]}
+
 
 
 def compute_report(submission_id: str, db_path: str = DB_PATH) -> ReportResponse:

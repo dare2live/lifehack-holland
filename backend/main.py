@@ -61,6 +61,17 @@ async def health():
     return {"status": "ok", "db_path": DB_PATH}
 
 
+@app.get("/api/config")
+async def get_config():
+    """Return the dimensions configuration (metadata, colors, text)."""
+    import os
+    import json
+    config_path = os.path.join(os.path.dirname(__file__), "dimensions_config.json")
+    with open(config_path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+
 @app.post("/api/submit", response_model=SubmitResponse)
 async def submit_answers(req: SubmitRequest):
     """
