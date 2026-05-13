@@ -7,12 +7,34 @@ Implements the 'Dual-Track' independent testing strategy:
 import json
 import duckdb
 from pathlib import Path
-from backend.config import DB_PATH, PROJECT_ROOT
+from backend.config import DB_PATH, PROJECT_ROOT, QUESTION_GENERATION_CONFIG_PATH
 
-# ═══════════════════════════════════════════════════════════════════
-# GENERATED QUESTION BANK (Dual-Track Decoupled)
-# Data is loaded dynamically from configuration files.
-# ═══════════════════════════════════════════════════════════════════
+
+def _project_path(path: str) -> Path:
+    candidate = Path(path)
+    return candidate if candidate.is_absolute() else PROJECT_ROOT / candidate
+
+
+def _load_seed_file_list(key: str, fallback: list[str]) -> list[str]:
+    try:
+        with open(QUESTION_GENERATION_CONFIG_PATH, "r", encoding="utf-8") as f:
+            config = json.load(f)
+    except FileNotFoundError:
+        return fallback
+
+    paths = config.get("production_seed", {}).get(key, fallback)
+    if not isinstance(paths, list) or not all(isinstance(path, str) for path in paths):
+        raise ValueError(f"production_seed.{key} must be a list of file paths")
+    return paths
+
+
+def _load_seed_records(paths: list[str]) -> list[dict]:
+    records = []
+    for path in paths:
+        with open(_project_path(path), "r", encoding="utf-8") as f:
+            records.extend(json.load(f))
+    return records
+
 
 def populate():
     print("Populating generated question bank (decoupled Dual-Track mode) into DuckDB...")
@@ -23,14 +45,10 @@ def populate():
     con.execute("DELETE FROM sjt_consistency_rules")
     con.execute("DELETE FROM sjt_item_bank")
 
-    # Load parameters from configuration files
-    seed_dir = PROJECT_ROOT / "backend" / "data" / "seed"
-
-    with open(seed_dir / "golden_items.json", "r", encoding="utf-8") as f:
-        bank_data = json.load(f)
-
-    with open(seed_dir / "golden_rules.json", "r", encoding="utf-8") as f:
-        rules_data = json.load(f)
+    item_files = _load_seed_file_list("item_files", ["backend/data/seed/golden_items.json"])
+    rule_files = _load_seed_file_list("rule_files", ["backend/data/seed/golden_rules.json"])
+    bank_data = _load_seed_records(item_files)
+    rules_data = _load_seed_records(rule_files)
 
     questions_for_frontend = {}
 

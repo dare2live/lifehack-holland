@@ -4,6 +4,7 @@ import re
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import duckdb
 from fastapi.testclient import TestClient
@@ -11,7 +12,7 @@ from fastapi.testclient import TestClient
 from backend.config import DB_PATH
 from backend.init_db import init_database
 from backend.main import app
-from backend.populate_golden_bank import populate
+from backend.populate_golden_bank import _load_seed_file_list, populate
 from backend.question_candidates import build_candidate_pool
 from backend.question_review import promote_review_batch, write_review_batch
 from backend.scripts.generate_cn_occupation_mapping import _load_rules, tag_occupation
@@ -175,6 +176,38 @@ class HollandPlanSmokeTests(unittest.TestCase):
         )
         self.assertEqual(tagged["primary_riasec"], "I")
         self.assertEqual(tagged["matched_rule_id"], "investigative_data_science")
+
+    def test_production_seed_files_are_config_driven(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            config_path = Path(tmp) / "question_generation.json"
+            config_path.write_text(
+                json.dumps(
+                    {
+                        "production_seed": {
+                            "item_files": ["backend/data/seed/custom_items.json"],
+                            "rule_files": ["backend/data/seed/custom_rules.json"],
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+            with patch("backend.populate_golden_bank.QUESTION_GENERATION_CONFIG_PATH", config_path):
+                self.assertEqual(
+                    _load_seed_file_list("item_files", ["fallback.json"]),
+                    ["backend/data/seed/custom_items.json"],
+                )
+                self.assertEqual(
+                    _load_seed_file_list("rule_files", ["fallback_rules.json"]),
+                    ["backend/data/seed/custom_rules.json"],
+                )
+
+            config_path.write_text(
+                json.dumps({"production_seed": {"item_files": "backend/data/seed/custom_items.json"}}),
+                encoding="utf-8",
+            )
+            with patch("backend.populate_golden_bank.QUESTION_GENERATION_CONFIG_PATH", config_path):
+                with self.assertRaises(ValueError):
+                    _load_seed_file_list("item_files", ["fallback.json"])
 
 
 if __name__ == "__main__":
