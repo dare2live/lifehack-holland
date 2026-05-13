@@ -51,12 +51,16 @@ def tag_occupation(row: dict[str, Any], rules_config: dict[str, Any]) -> dict[st
                     "primary_riasec": rule["riasec"],
                     "matched_rule_id": rule["rule_id"],
                     "matched_keyword": keyword,
+                    "confidence": float(rule.get("confidence", rules_config.get("matched_confidence", 0.72))),
+                    "review_status": rule.get("review_status", rules_config.get("matched_review_status", "needs_review")),
                     "source_text": source_text,
                 }
     return {
         "primary_riasec": rules_config.get("default_riasec", "R"),
         "matched_rule_id": "default",
         "matched_keyword": "",
+        "confidence": float(rules_config.get("default_confidence", 0.3)),
+        "review_status": rules_config.get("default_review_status", "needs_review"),
         "source_text": source_text,
     }
 
@@ -102,8 +106,11 @@ def build_mapping(
                 primary_riasec VARCHAR,
                 matched_rule_id VARCHAR,
                 matched_keyword VARCHAR,
+                confidence DOUBLE,
+                review_status VARCHAR,
                 source_version VARCHAR,
                 source_text VARCHAR,
+                lineage_json VARCHAR,
                 mapped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
             """
@@ -113,13 +120,24 @@ def build_mapping(
         for row in occupations:
             tag = tag_occupation(row, rules_config)
             counts[tag["primary_riasec"]] = counts.get(tag["primary_riasec"], 0) + 1
+            lineage = {
+                "source_project": "lifehack",
+                "source_table": "fa_dim_career_occupation",
+                "source_pk": row["occupation_code"],
+                "read_mode": "duckdb_read_only",
+                "rules_file": str(rules_path),
+                "rules_version": rules_config.get("version", "unknown"),
+                "matched_rule_id": tag["matched_rule_id"],
+                "matched_keyword": tag["matched_keyword"],
+            }
             local_con.execute(
                 """
                 INSERT INTO cn_occupation_riasec_map (
                     occupation_code, occupation_name, primary_riasec, matched_rule_id,
-                    matched_keyword, source_version, source_text
+                    matched_keyword, confidence, review_status, source_version, source_text,
+                    lineage_json
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 [
                     row["occupation_code"],
@@ -127,8 +145,11 @@ def build_mapping(
                     tag["primary_riasec"],
                     tag["matched_rule_id"],
                     tag["matched_keyword"],
+                    tag["confidence"],
+                    tag["review_status"],
                     rules_config.get("version", "unknown"),
                     tag["source_text"],
+                    json.dumps(lineage, ensure_ascii=False, sort_keys=True),
                 ],
             )
     finally:

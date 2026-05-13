@@ -60,6 +60,16 @@ class HollandPlanSmokeTests(unittest.TestCase):
             self.assertEqual(con.execute("SELECT COUNT(*) FROM sjt_item_bank").fetchone()[0], 18)
             self.assertEqual(con.execute("SELECT COUNT(*) FROM sjt_consistency_rules").fetchone()[0], 2)
             self.assertGreater(con.execute("SELECT COUNT(*) FROM sjt_weights").fetchone()[0], 0)
+            columns = {
+                row[1]
+                for row in con.execute("PRAGMA table_info('sjt_item_bank')").fetchall()
+            }
+            self.assertIn("lineage_json", columns)
+            self.assertIn("review_status", columns)
+            lineage = con.execute(
+                "SELECT lineage_json FROM sjt_item_bank WHERE sjt_q_id = 'H_Gala'"
+            ).fetchone()[0]
+            self.assertIn("option_weights", json.loads(lineage))
         finally:
             con.close()
 
@@ -101,6 +111,9 @@ class HollandPlanSmokeTests(unittest.TestCase):
         self.assertTrue(payload["mbti_type"])
         self.assertTrue(payload["cross_insight"])
         self.assertTrue(payload["recommended_cn_occupations"])
+        self.assertTrue(payload["source_lineage"]["answered_items"])
+        self.assertEqual(payload["source_lineage"]["service"], "lifehack-holland")
+        self.assertTrue(payload["consistency_issues"])
 
     def test_candidate_pool_preserves_lineage_and_review_gate(self):
         pool = build_candidate_pool()

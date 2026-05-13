@@ -25,7 +25,11 @@ DDL_STATEMENTS = [
         mother_source  VARCHAR,               -- L0来源 (如 ONET_IP, IPIP_Jung)
         mother_id      VARCHAR,               -- L0原始题号
         core_mechanism VARCHAR,               -- L1/L2 核心机制
-        scenario_text  VARCHAR                -- 情境描述 (隐藏意图)
+        scenario_text  VARCHAR,               -- 情境描述 (隐藏意图)
+        source_version VARCHAR,               -- 母版/题库版本
+        transform_level VARCHAR,              -- L0/L1/L2/L3/L4 转化层级
+        review_status  VARCHAR,               -- 审核状态
+        lineage_json   VARCHAR                -- 完整血缘 JSON
     );
     """,
 
@@ -71,12 +75,32 @@ DDL_STATEMENTS = [
 ]
 
 
+def _ensure_columns(con: duckdb.DuckDBPyConnection, table_name: str, columns: dict[str, str]) -> None:
+    existing = {
+        row[1]
+        for row in con.execute(f"PRAGMA table_info('{table_name}')").fetchall()
+    }
+    for column_name, column_type in columns.items():
+        if column_name not in existing:
+            con.execute(f"ALTER TABLE {table_name} ADD COLUMN {column_name} {column_type}")
+
+
 def init_database(db_path: str = DB_PATH) -> None:
     """Create all tables (idempotent — safe to re-run)."""
     con = duckdb.connect(db_path)
     try:
         for ddl in DDL_STATEMENTS:
             con.execute(ddl)
+        _ensure_columns(
+            con,
+            "sjt_item_bank",
+            {
+                "source_version": "VARCHAR",
+                "transform_level": "VARCHAR",
+                "review_status": "VARCHAR",
+                "lineage_json": "VARCHAR",
+            },
+        )
         print(f"[init_db] ✅ All 4 tables created/verified in: {db_path}")
 
         # Quick sanity check

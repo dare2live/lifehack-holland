@@ -10,6 +10,7 @@ Implements the blueprint's core SQL pipeline:
 All scoring is pure SQL executed inside DuckDB — zero application-layer loops.
 """
 import duckdb
+from typing import Any
 from backend.config import DB_PATH
 from backend.models import DimensionScore, ReportResponse
 
@@ -182,6 +183,9 @@ def compute_report(submission_id: str, db_path: str = DB_PATH) -> ReportResponse
 
         # Generate Cross Insight (Strategy Layer Fusion)
         cross_insight = _generate_cross_insight(mbti_type, holland_top3)
+        source_lineage = _load_source_lineage(con, submission_id)
+        consistency_issues = _load_consistency_issues(con, submission_id)
+        source_version = source_lineage.get("question_bank", {}).get("source_version", "")
 
         # Fetch recommended Chinese occupations from the local bridge. Try the
         # full Holland top-3 so a sparse bridge still returns useful matches.
@@ -211,14 +215,143 @@ def compute_report(submission_id: str, db_path: str = DB_PATH) -> ReportResponse
 
         return ReportResponse(
             submission_id=submission_id,
+            source_version=source_version,
             dimensions=dimensions,
             holland_top3=holland_top3,
             mbti_type=mbti_type,
             cross_insight=cross_insight,
-            recommended_cn_occupations=recommended_cn_occupations
+            recommended_cn_occupations=recommended_cn_occupations,
+            consistency_issues=consistency_issues,
+            source_lineage=source_lineage,
         )
     finally:
         con.close()
+
+
+def _load_answers(con: duckdb.DuckDBPyConnection, submission_id: str) -> dict[str, str]:
+    row = con.execute(
+        "SELECT raw_answers FROM sjt_responses WHERE submission_id = ?",
+        [submission_id],
+    ).fetchone()
+    if not row:
+        return {}
+    raw_answers = row[0]
+    if isinstance(raw_answers, str):
+        try:
+            value = json.loads(raw_answers)
+        except json.JSONDecodeError:
+            return {}
+    else:
+        value = raw_answers
+    if not isinstance(value, dict):
+        return {}
+    return {str(key): str(option) for key, option in value.items()}
+
+
+def _json_loads(value: Any, fallback: Any) -> Any:
+    if not value:
+        return fallback
+    if isinstance(value, (dict, list)):
+        return value
+    try:
+        return json.loads(str(value))
+    except json.JSONDecodeError:
+        return fallback
+
+
+def _load_source_lineage(con: duckdb.DuckDBPyConnection, submission_id: str) -> dict[str, Any]:
+    answers = _load_answers(con, submission_id)
+    if not answers:
+        return {
+            "service": "lifehack-holland",
+            "scoring_engine": "rule_model_strategy_sql",
+            "question_bank": {"answered_count": 0, "source_version": ""},
+            "answered_items": [],
+        }
+
+    answered_items = []
+    source_versions: set[str] = set()
+    lineage_quality: set[str] = set()
+    for q_id, option_val in answers.items():
+        row = con.execute(
+            """
+            SELECT sjt_q_id, mother_source, mother_id, core_mechanism, scenario_text,
+                   source_version, transform_level, review_status, lineage_json
+            FROM sjt_item_bank
+            WHERE sjt_q_id = ?
+            """,
+            [q_id],
+        ).fetchone()
+        if not row:
+            continue
+        weights = con.execute(
+            """
+            SELECT dimension_code, inherited_weight
+            FROM sjt_weights
+            WHERE sjt_q_id = ? AND option_val = ?
+            ORDER BY dimension_code
+            """,
+            [q_id, option_val],
+        ).fetchall()
+        item_lineage = _json_loads(row[8], {})
+        source_version = str(row[5] or item_lineage.get("source_version") or "")
+        if source_version:
+            source_versions.add(source_version)
+        if item_lineage.get("lineage_quality"):
+            lineage_quality.add(str(item_lineage["lineage_quality"]))
+        answered_items.append({
+            "question_id": row[0],
+            "selected_option": option_val,
+            "mother_source": row[1],
+            "mother_id": row[2],
+            "core_mechanism": row[3],
+            "source_version": source_version,
+            "transform_level": row[6] or item_lineage.get("transform_level"),
+            "review_status": row[7] or item_lineage.get("review_status"),
+            "weights": [
+                {"dimension_code": weight_row[0], "inherited_weight": float(weight_row[1])}
+                for weight_row in weights
+            ],
+            "lineage": item_lineage,
+        })
+
+    version = ",".join(sorted(source_versions))
+    return {
+        "service": "lifehack-holland",
+        "scoring_engine": "rule_model_strategy_sql",
+        "question_bank": {
+            "source_version": version,
+            "answered_count": len(answered_items),
+            "lineage_quality": sorted(lineage_quality),
+        },
+        "answered_items": answered_items,
+    }
+
+
+def _load_consistency_issues(con: duckdb.DuckDBPyConnection, submission_id: str) -> list[dict[str, Any]]:
+    answers = _load_answers(con, submission_id)
+    if not answers:
+        return []
+    rows = con.execute(
+        """
+        SELECT rule_id, trigger_q_id, trigger_option, verify_q_id, expected_option,
+               penalty_dimension, penalty_weight
+        FROM sjt_consistency_rules
+        ORDER BY rule_id
+        """
+    ).fetchall()
+    issues = []
+    for row in rows:
+        rule_id, trigger_q, trigger_option, verify_q, expected_option, penalty_dimension, penalty_weight = row
+        if answers.get(trigger_q) == trigger_option and answers.get(verify_q) == expected_option:
+            issues.append({
+                "rule_id": rule_id,
+                "trigger_q_id": trigger_q,
+                "verify_q_id": verify_q,
+                "penalty_dimension": penalty_dimension,
+                "penalty_weight": float(penalty_weight),
+            })
+    return issues
 
 
 def _derive_mbti_type(dimensions: list[DimensionScore]) -> str:

@@ -2,6 +2,10 @@
   "version": "2026-05-13",
   "notes": "Rules for preparing a local Chinese occupation -> Holland RIASEC bridge. The bridge reads lifehack university.db in read-only mode and writes only to local holland.duckdb.",
   "default_riasec": "R",
+  "matched_confidence": 0.72,
+  "matched_review_status": "needs_review",
+  "default_confidence": 0.3,
+  "default_review_status": "needs_review",
   "source_fields": ["occupation_name", "skill_keywords_json", "major_keywords_json"],
   "rules": [
     {
@@ -48,4 +52,3 @@
     }
   ]
 }
-

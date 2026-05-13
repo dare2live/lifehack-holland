@@ -36,8 +36,11 @@ class DimensionScore(BaseModel):
 class ReportResponse(BaseModel):
     """Full assessment report returned to the frontend."""
     submission_id: str
+    source_version: str = Field(default="", description="Question bank / scoring source version")
     dimensions: list[DimensionScore] = Field(default_factory=list)
     holland_top3: list[str] = Field(default_factory=list, description="Top 3 Holland codes")
     mbti_type: str = Field(default="", description="Derived MBTI 4-letter type")
     cross_insight: str = Field(default="", description="Cross interpretation of MBTI and Holland")
     recommended_cn_occupations: list[dict] = Field(default_factory=list, description="Recommended occupations mapped from the main project")
+    consistency_issues: list[dict] = Field(default_factory=list, description="Triggered consistency rules")
+    source_lineage: dict = Field(default_factory=dict, description="Lineage for answered questions and scoring inputs")
