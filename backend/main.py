@@ -163,10 +163,12 @@ async def get_questions():
             visible_map[verify_q] = f"{{{trigger_q}}} = '{trigger_opt}'"
 
         # Assemble SurveyJS-compatible questions
+        option_texts = _load_option_texts()
         questions = []
         for item in items:
             q_id, scenario, mechanism = item
             opts = option_map.get(q_id, {})
+            option_values = sorted(set(opts.keys()) | set(option_texts.get(q_id, {}).keys()))
 
             q = {
                 "name": q_id,
@@ -181,10 +183,10 @@ async def get_questions():
                 q["visibleIf"] = visible_map[q_id]
 
             # Build choice list (hide dimension info from frontend)
-            for opt_val in sorted(opts.keys()):
+            for opt_val in option_values:
                 q["choices"].append({
                     "value": opt_val,
-                    "text": _get_option_text(q_id, opt_val),
+                    "text": option_texts.get(q_id, {}).get(opt_val, f"Option {opt_val}"),
                 })
 
             questions.append(q)
@@ -197,15 +199,18 @@ async def get_questions():
 
 import os
 
-def _get_option_text(q_id: str, opt_val: str) -> str:
-    """Get human-readable option text for seed data from questions.json."""
+def _load_option_texts() -> dict:
     json_path = os.path.join(os.path.dirname(__file__), "data", "questions.json")
     try:
         with open(json_path, "r", encoding="utf-8") as f:
-            option_texts = json.load(f)
+            return json.load(f)
     except Exception:
-        option_texts = {}
-        
+        return {}
+
+
+def _get_option_text(q_id: str, opt_val: str) -> str:
+    """Get human-readable option text for seed data from questions.json."""
+    option_texts = _load_option_texts()
     return option_texts.get(q_id, {}).get(opt_val, f"Option {opt_val}")
 
 # ── Static files — serve frontend ──────────────────────────────────

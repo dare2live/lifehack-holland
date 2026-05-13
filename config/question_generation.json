@@ -1,0 +1,42 @@
+{
+  "version": "2026-05-13",
+  "notes": "Configuration for building lineage-preserving question candidates from O*NET and IPIP source material. Candidates are not production questions until reviewed and promoted to backend/data/seed/golden_items.json.",
+  "source_versions": {
+    "onet": "O*NET Database 30.2 text files",
+    "ipip": "IPIP 88 Jungian-style item seed"
+  },
+  "output": {
+    "candidate_status": "needs_review",
+    "transform_level": "L1_candidate_seed"
+  },
+  "onet": {
+    "interests_file": "backend/data/onet/Interests.txt",
+    "tasks_file": "backend/data/onet/Task_Statements.txt",
+    "scale_id": "OI",
+    "min_top_interest_score": 3.0,
+    "task_types": ["Core"],
+    "max_tasks_per_dimension": 40,
+    "dimension_codes": {
+      "Realistic": "Holland_R",
+      "Investigative": "Holland_I",
+      "Artistic": "Holland_A",
+      "Social": "Holland_S",
+      "Enterprising": "Holland_E",
+      "Conventional": "Holland_C"
+    }
+  },
+  "ipip": {
+    "items_file": "backend/data/ipip/mbti_88_items.json",
+    "max_items": 88,
+    "dimension_status": "needs_manual_dimension_mapping"
+  },
+  "scenario_shells": [
+    "学业任务",
+    "社团协作",
+    "家庭沟通",
+    "城市与专业选择",
+    "项目冲突",
+    "信息检索"
+  ]
+}
+

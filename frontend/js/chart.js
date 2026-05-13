@@ -58,6 +58,15 @@ function renderReport(report, config, container) {
         <canvas id="radar-chart"></canvas>
     </div>`;
 
+    // ── Cross Insight ──
+    if (report.cross_insight) {
+        html += `
+        <div class="score-section">
+            <div class="score-section__title">综合倾向</div>
+            <p class="insight-text">${_escapeHtml(report.cross_insight)}</p>
+        </div>`;
+    }
+
     // ── Holland Scores ──
     html += '<div class="score-section"><div class="score-section__title">霍兰德六型得分</div>';
     const hollandCodes = ['Holland_R', 'Holland_I', 'Holland_A', 'Holland_S', 'Holland_E', 'Holland_C'];
@@ -84,7 +93,6 @@ function renderReport(report, config, container) {
     html += '</div>';
 
     // ── MBTI Scores ──
-    const mbtiPairs = [['MBTI_E', 'MBTI_I'], ['MBTI_S', 'MBTI_N'], ['MBTI_T', 'MBTI_F'], ['MBTI_J', 'MBTI_P']];
     html += '<div class="score-section"><div class="score-section__title">MBTI 维度倾向</div>';
 
     mbtiPairs.forEach(([a, b], i) => {
@@ -107,6 +115,20 @@ function renderReport(report, config, container) {
         </div>`;
     });
     html += '</div>';
+
+    // ── Local Chinese Occupation Bridge ──
+    if (report.recommended_cn_occupations && report.recommended_cn_occupations.length > 0) {
+        html += '<div class="score-section"><div class="score-section__title">职业方向候选</div>';
+        html += '<div class="occupation-list">';
+        report.recommended_cn_occupations.forEach(occupation => {
+            html += `
+            <div class="occupation-item">
+                <span class="occupation-item__code">${_escapeHtml(occupation.occupation_code || '')}</span>
+                <span class="occupation-item__name">${_escapeHtml(occupation.occupation_name || '')}</span>
+            </div>`;
+        });
+        html += '</div></div>';
+    }
 
     // ── Holland Dimension Descriptions (Top 3) ──
     html += '<div class="score-section"><div class="score-section__title">你的核心特质解读</div>';
@@ -150,6 +172,15 @@ function renderReport(report, config, container) {
 
     // ── Render radar chart ──
     _renderRadarChart(dimMap, HOLLAND_META);
+}
+
+function _escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
 }
 
 function _renderRadarChart(dimMap, HOLLAND_META) {
@@ -222,4 +253,3 @@ function _renderRadarChart(dimMap, HOLLAND_META) {
         },
     });
 }
-

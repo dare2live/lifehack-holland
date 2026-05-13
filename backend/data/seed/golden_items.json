@@ -1,0 +1,554 @@
+[
+  {
+    "q_id": "H_Gala",
+    "mother_source": "ONET_IP",
+    "mother_id": "ONET_1.A.1",
+    "mechanism": "L2_influence_vs_hands_on",
+    "text": "【校园任务】学校要举办一场盛大的科技节，你们小组负责筹办。在分配任务时，你最希望抢下哪一项？",
+    "options": [
+      {
+        "val": "A",
+        "text": "拿着工具箱，负责把往年报废的机器人马达全部拆开修理并重新组装",
+        "weights": [
+          [
+            "Holland_R",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "查阅过去三年各校科技节的资金流水和人流量数据，写一份预算分配报告",
+        "weights": [
+          [
+            "Holland_I",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "C",
+        "text": "拿着大喇叭向路过的同学推销你们组研发的科技周边产品",
+        "weights": [
+          [
+            "Holland_E",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "H_Poster",
+    "mother_source": "ONET_IP",
+    "mother_id": "ONET_2.B.3",
+    "mechanism": "L2_artistic_vs_conventional",
+    "text": "【校园任务】为了给环保社团招新，你需要承担一项具体的工作，你更倾向于：",
+    "options": [
+      {
+        "val": "A",
+        "text": "起草一份极具创造力和视觉冲击力的手绘招新海报",
+        "weights": [
+          [
+            "Holland_A",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "将几十名报名者的信息精准无误地录入 Excel 表格，并分类建档",
+        "weights": [
+          [
+            "Holland_C",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "C",
+        "text": "主动去各个班级进行路演宣讲，动员大家加入环保行动",
+        "weights": [
+          [
+            "Holland_E",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "H_Tutor",
+    "mother_source": "ONET_IP",
+    "mother_id": "ONET_3.A.4",
+    "mechanism": "L2_social_vs_research",
+    "text": "【校园任务】周末有一个去社区做志愿者的机会，你更愿意报名哪个岗位？",
+    "options": [
+      {
+        "val": "A",
+        "text": "给低年级的小朋友做一对一的课业辅导和心理疏导",
+        "weights": [
+          [
+            "Holland_S",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "在社区档案室，帮忙整理和考证该社区的历史变迁资料",
+        "weights": [
+          [
+            "Holland_I",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "C",
+        "text": "给社区的花园搭建一套简单的自动浇水物理装置",
+        "weights": [
+          [
+            "Holland_R",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "H_Event",
+    "mother_source": "ONET_IP",
+    "mother_id": "ONET_4.C.2",
+    "mechanism": "L2_enterprising_vs_conventional",
+    "text": "【校园任务】班级要组织一次三天两夜的毕业旅行，你想负责什么？",
+    "options": [
+      {
+        "val": "A",
+        "text": "作为总指挥，负责砍价、包车、协调所有人的行程和突发事件",
+        "weights": [
+          [
+            "Holland_E",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "作为财务，负责精准计算每个人该交多少钱，记录每一笔开销账目",
+        "weights": [
+          [
+            "Holland_C",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "C",
+        "text": "作为氛围组，负责给大家拍照、拍 Vlog，最后剪辑成精美的微电影",
+        "weights": [
+          [
+            "Holland_A",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "M_Exam_JP1",
+    "mother_source": "IPIP",
+    "mother_id": "M_12",
+    "mechanism": "J_vs_P",
+    "text": "【学业与考试】离期末考试还有两周，你目前的复习状态最接近以下哪种？",
+    "options": [
+      {
+        "val": "A",
+        "text": "我已经把每一科的复习进度精确分配到了每天的上下午，并严格打卡执行",
+        "weights": [
+          [
+            "MBTI_J",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "我脑子里有个大概的框架，但每天具体复习哪一科完全看当时的心情和状态",
+        "weights": [
+          [
+            "MBTI_P",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "M_Exam_SN1",
+    "mother_source": "IPIP",
+    "mother_id": "M_22",
+    "mechanism": "S_vs_N",
+    "text": "【学业与考试】老师让你写一篇关于“气候变化”的读书报告。在动笔前，你脑海中最先浮现的是：",
+    "options": [
+      {
+        "val": "A",
+        "text": "具体的图表、温度数据、受灾地区的真实案例和引用的文献出处",
+        "weights": [
+          [
+            "MBTI_S",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "气候变化对人类文明生存的影响、环保理念的变迁等宏大的整体概念",
+        "weights": [
+          [
+            "MBTI_N",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "M_Exam_EI1",
+    "mother_source": "IPIP",
+    "mother_id": "M_1",
+    "mechanism": "E_vs_I",
+    "text": "【学业与考试】面对一道极难的物理压轴题，你通常会怎么突破？",
+    "options": [
+      {
+        "val": "A",
+        "text": "立刻拉上几个同学激烈讨论，在不同思想的碰撞和争辩中寻找解题灵感",
+        "weights": [
+          [
+            "MBTI_E",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "自己一个人安静地在草稿纸上反复推演，深思熟虑直到彻底想通",
+        "weights": [
+          [
+            "MBTI_I",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "M_Exam_TF1",
+    "mother_source": "IPIP",
+    "mother_id": "M_43",
+    "mechanism": "T_vs_F",
+    "text": "【学业与考试】你的同桌期中考试考砸了，趴在桌上哭。你安慰他的第一反应是：",
+    "options": [
+      {
+        "val": "A",
+        "text": "帮他客观分析试卷上的错题，找出哪些知识点没掌握好，制定提升计划",
+        "weights": [
+          [
+            "MBTI_T",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "先什么都不说，默默给他递纸巾，陪着他，感受并安抚他的难过情绪",
+        "weights": [
+          [
+            "MBTI_F",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "M_Soc_EI1",
+    "mother_source": "IPIP",
+    "mother_id": "M_37",
+    "mechanism": "E_vs_I",
+    "text": "【社交与社团】参加全校范围的跨年游园会时，你通常的做法是：",
+    "options": [
+      {
+        "val": "A",
+        "text": "到处走动，主动去认识那些平时不怎么熟悉的同学，享受热闹的氛围",
+        "weights": [
+          [
+            "MBTI_E",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "只和几个自己最熟悉的死党待在一起，找个相对人少的地方玩小游戏",
+        "weights": [
+          [
+            "MBTI_I",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "M_Soc_JP1",
+    "mother_source": "IPIP",
+    "mother_id": "M_2",
+    "mechanism": "J_vs_P",
+    "text": "【社交与社团】你作为社长负责主持新学期的第一次全员大会。在会议进行时，你会：",
+    "options": [
+      {
+        "val": "A",
+        "text": "严格按照提前写好的议程表推进，控制每个人的发言时间，确保按时结束",
+        "weights": [
+          [
+            "MBTI_J",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "保持灵活，如果大家对某个话题很感兴趣，就顺着聊下去，哪怕偏离了原定计划",
+        "weights": [
+          [
+            "MBTI_P",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "M_Soc_SN1",
+    "mother_source": "IPIP",
+    "mother_id": "M_46",
+    "mechanism": "S_vs_N",
+    "text": "【社交与社团】在社团招新策划会上，大家纷纷提出各种脑洞大开的点子。你更感兴趣的是：",
+    "options": [
+      {
+        "val": "A",
+        "text": "这个点子具体怎么落地？预算够不够？场地能不能批下来？",
+        "weights": [
+          [
+            "MBTI_S",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "这个点子够不够新颖？能不能彻底颠覆传统，带来革命性的效果？",
+        "weights": [
+          [
+            "MBTI_N",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "M_Conf_TF1",
+    "mother_source": "IPIP",
+    "mother_id": "M_3",
+    "mechanism": "T_vs_F",
+    "text": "【冲突与合作】你和一个同学组队做项目，但他最近经常迟到且任务敷衍。这时候你会：",
+    "options": [
+      {
+        "val": "A",
+        "text": "直接找他严肃谈话，指出他的行为拖慢了进度，要求他立刻改正",
+        "weights": [
+          [
+            "MBTI_T",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "觉得当面指出太伤和气，试着委婉地问他是不是压力大，或者干脆自己多做一点",
+        "weights": [
+          [
+            "MBTI_F",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "M_Conf_TF2",
+    "mother_source": "IPIP",
+    "mother_id": "M_35",
+    "mechanism": "T_vs_F",
+    "text": "【冲突与合作】如果在班会上，有人当众强烈反对你提出来的班级管理意见，你通常会：",
+    "options": [
+      {
+        "val": "A",
+        "text": "保持强硬，用事实和逻辑一条条反驳对方，捍卫自己意见的正确性",
+        "weights": [
+          [
+            "MBTI_T",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "为了避免让场面变得难看和伤和气，倾向于做出妥协或暂缓讨论",
+        "weights": [
+          [
+            "MBTI_F",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "M_Conf_JP1",
+    "mother_source": "IPIP",
+    "mother_id": "M_68",
+    "mechanism": "J_vs_P",
+    "text": "【冲突与合作】学校突然宣布了一项打破常规的临时新规（比如突然改了作息时间），你的第一反应是：",
+    "options": [
+      {
+        "val": "A",
+        "text": "感到十分烦躁或沮丧，因为这意味着我要重新调整我已经习惯的所有安排",
+        "weights": [
+          [
+            "MBTI_J",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "觉得挺有趣的，饶有兴致地看看这种新变化会带来什么不一样的体验",
+        "weights": [
+          [
+            "MBTI_P",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "M_Plan_SN1",
+    "mother_source": "IPIP",
+    "mother_id": "M_38",
+    "mechanism": "S_vs_N",
+    "text": "【升学与规划】在畅想自己十年后的未来时，你的画面通常是：",
+    "options": [
+      {
+        "val": "A",
+        "text": "具体的、脚踏实地的：比如住在什么样的小区，开什么车，每天几点上班",
+        "weights": [
+          [
+            "MBTI_S",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "抽象的、充满无限可能的：比如我是否改变了某个行业，是否实现了人生终极理想",
+        "weights": [
+          [
+            "MBTI_N",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "M_Plan_TF1",
+    "mother_source": "IPIP",
+    "mother_id": "M_23",
+    "mechanism": "T_vs_F",
+    "text": "【升学与规划】面临文理分科或大学选专业的重大抉择时，你通常会怎么做决定？",
+    "options": [
+      {
+        "val": "A",
+        "text": "查阅各专业的就业率、薪资前景和自己的学科分数，理性客观地推导出最优解",
+        "weights": [
+          [
+            "MBTI_T",
+            1.5
+          ]
+        ]
+      },
+      {
+        "val": "B",
+        "text": "抛开冷冰冰的数据，闭上眼睛问自己内心真正热爱什么，感受哪条路会让自己更快乐",
+        "weights": [
+          [
+            "MBTI_F",
+            1.5
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "q_id": "TRAP_J1",
+    "mother_source": "SYSTEM_RULE",
+    "mother_id": "V_J1",
+    "mechanism": "L3_verify",
+    "text": "【追问】刚才你提到你“喜欢将复习进度精确分配并严格执行”，但如果今天你突然发高烧导致计划彻底泡汤，你的真实感受是：",
+    "options": [
+      {
+        "val": "X",
+        "text": "非常焦虑和烦躁，感觉整个计划都被毁了，试图熬夜补回来",
+        "weights": []
+      },
+      {
+        "val": "Y",
+        "text": "觉得无所谓，反正计划也是随便写写的，正好理直气壮地休息一天",
+        "weights": []
+      },
+      {
+        "val": "Z",
+        "text": "立刻在病床上重新调整后续的排期表，把今天的任务平摊到后面几天",
+        "weights": []
+      }
+    ]
+  },
+  {
+    "q_id": "TRAP_E1",
+    "mother_source": "SYSTEM_RULE",
+    "mother_id": "V_E1",
+    "mechanism": "L3_verify",
+    "text": "【追问】刚才你提到“喜欢主动结交新朋友”，但如果把你一个人丢到一个全是陌生外国人的派对上，没人跟你搭话，你会：",
+    "options": [
+      {
+        "val": "X",
+        "text": "觉得简直是灾难，赶紧躲在角落里玩手机，假装很忙",
+        "weights": []
+      },
+      {
+        "val": "Y",
+        "text": "有点尴尬，但还是会默默吃东西观察大家，等别人先开口",
+        "weights": []
+      },
+      {
+        "val": "Z",
+        "text": "毫不畏惧，端着饮料随便走向一个人大方地用蹩脚英语开始聊天",
+        "weights": []
+      }
+    ]
+  }
+]

@@ -1,0 +1,51 @@
+{
+  "version": "2026-05-13",
+  "notes": "Rules for preparing a local Chinese occupation -> Holland RIASEC bridge. The bridge reads lifehack university.db in read-only mode and writes only to local holland.duckdb.",
+  "default_riasec": "R",
+  "source_fields": ["occupation_name", "skill_keywords_json", "major_keywords_json"],
+  "rules": [
+    {
+      "rule_id": "investigative_data_science",
+      "riasec": "I",
+      "priority": 100,
+      "keywords": ["数据", "算法", "分析", "研究", "科学", "遥感", "地球物理", "勘查", "实验", "检验", "医学影像"],
+      "notes": "Research, analysis, laboratory, and data-heavy roles."
+    },
+    {
+      "rule_id": "realistic_engineering_operation",
+      "riasec": "R",
+      "priority": 90,
+      "keywords": ["工程", "技术", "设备", "操作", "维护", "测量", "制造", "施工", "机械", "电气", "自动化", "农业", "维修"],
+      "notes": "Hands-on engineering, equipment, physical systems, and field operation roles."
+    },
+    {
+      "rule_id": "artistic_media_design",
+      "riasec": "A",
+      "priority": 80,
+      "keywords": ["艺术", "设计", "摄影", "文学", "媒体", "影视", "动画", "创意", "编导", "音乐"],
+      "notes": "Creative, design, media, and expressive work."
+    },
+    {
+      "rule_id": "social_health_education_service",
+      "riasec": "S",
+      "priority": 70,
+      "keywords": ["教育", "教师", "医疗", "护理", "康复", "咨询", "社会", "心理", "服务", "公共卫生"],
+      "notes": "Teaching, helping, health, counseling, and direct service roles."
+    },
+    {
+      "rule_id": "enterprising_management_market",
+      "riasec": "E",
+      "priority": 60,
+      "keywords": ["管理", "经理", "销售", "市场", "商务", "经营", "创业", "策划", "运营", "人力资源"],
+      "notes": "Persuasion, management, business development, and organizational influence roles."
+    },
+    {
+      "rule_id": "conventional_finance_admin",
+      "riasec": "C",
+      "priority": 50,
+      "keywords": ["财务", "会计", "审计", "统计", "档案", "行政", "文员", "合规", "税务", "出纳"],
+      "notes": "Structured data, finance, administration, compliance, and records work."
+    }
+  ]
+}
+

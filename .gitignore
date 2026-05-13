@@ -6,10 +6,12 @@ __pycache__/
 dist/
 build/
 .eggs/
+output/
 
 # DuckDB database files
 backend/data/*.duckdb
 backend/data/*.duckdb.wal
+backend/data/generated/
 
 # OS
 .DS_Store

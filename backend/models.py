@@ -40,3 +40,4 @@ class ReportResponse(BaseModel):
     holland_top3: list[str] = Field(default_factory=list, description="Top 3 Holland codes")
     mbti_type: str = Field(default="", description="Derived MBTI 4-letter type")
     cross_insight: str = Field(default="", description="Cross interpretation of MBTI and Holland")
+    recommended_cn_occupations: list[dict] = Field(default_factory=list, description="Recommended occupations mapped from the main project")

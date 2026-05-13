@@ -183,12 +183,39 @@ def compute_report(submission_id: str, db_path: str = DB_PATH) -> ReportResponse
         # Generate Cross Insight (Strategy Layer Fusion)
         cross_insight = _generate_cross_insight(mbti_type, holland_top3)
 
+        # Fetch recommended Chinese occupations from the local bridge. Try the
+        # full Holland top-3 so a sparse bridge still returns useful matches.
+        recommended_cn_occupations = []
+        if holland_top3:
+            try:
+                placeholders = ", ".join(["?"] * len(holland_top3))
+                occ_rows = con.execute(
+                    f"""
+                    SELECT occupation_code, occupation_name, primary_riasec
+                    FROM cn_occupation_riasec_map
+                    WHERE primary_riasec IN ({placeholders})
+                    """,
+                    holland_top3,
+                ).fetchall()
+                rank_order = {code: idx for idx, code in enumerate(holland_top3)}
+                occ_rows = sorted(occ_rows, key=lambda row: (rank_order.get(row[2], 99), row[0]))[:5]
+                for row in occ_rows:
+                    recommended_cn_occupations.append({
+                        "occupation_code": row[0],
+                        "occupation_name": row[1],
+                        "matched_riasec": row[2],
+                    })
+            except Exception:
+                # Table might not exist yet if mapping script hasn't run
+                pass
+
         return ReportResponse(
             submission_id=submission_id,
             dimensions=dimensions,
             holland_top3=holland_top3,
             mbti_type=mbti_type,
-            cross_insight=cross_insight
+            cross_insight=cross_insight,
+            recommended_cn_occupations=recommended_cn_occupations
         )
     finally:
         con.close()
