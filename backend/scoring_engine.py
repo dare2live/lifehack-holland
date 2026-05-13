@@ -180,11 +180,15 @@ def compute_report(submission_id: str, db_path: str = DB_PATH) -> ReportResponse
         # Derive MBTI 4-letter type
         mbti_type = _derive_mbti_type(dimensions)
 
+        # Generate Cross Insight (Strategy Layer Fusion)
+        cross_insight = _generate_cross_insight(mbti_type, holland_top3)
+
         return ReportResponse(
             submission_id=submission_id,
             dimensions=dimensions,
             holland_top3=holland_top3,
             mbti_type=mbti_type,
+            cross_insight=cross_insight
         )
     finally:
         con.close()
@@ -206,3 +210,29 @@ def _derive_mbti_type(dimensions: list[DimensionScore]) -> str:
         letter_b = code_b.replace("MBTI_", "")
         result.append(letter_a if score_a >= score_b else letter_b)
     return "".join(result)
+
+
+def _generate_cross_insight(mbti_type: str, holland_top3: list[str]) -> str:
+    """
+    Generate a dynamic insight message combining MBTI (Core Personality)
+    and Holland (Vocational Task Interest).
+    """
+    if not mbti_type or not holland_top3:
+        return "数据不足，无法生成交叉解读。"
+        
+    top_holland = holland_top3[0] if len(holland_top3) > 0 else "未知"
+    
+    insight = f"你是典型的 {mbti_type} 型人格。从认知内核来看，你拥有独特的思维偏好。"
+    
+    if "E" in mbti_type and top_holland in ["I", "R"]:
+        insight += f" 有趣的是，虽然你性格外向喜欢互动，但在实际任务中你最偏好【{top_holland}型】（偏向独立研究或实操）。你可能适合‘技术布道者’或‘研发团队的外部连接者’。"
+    elif "I" in mbti_type and top_holland in ["E", "S"]:
+        insight += f" 值得注意的是，虽然你偏好内向和独立思考，但你的任务兴趣却集中在【{top_holland}型】（偏向人际互动）。你或许是一个极其敏锐的‘幕后军师’或‘一对一深度辅导者’。"
+    elif "F" in mbti_type and top_holland in ["I", "C", "R"]:
+        insight += f" 你的内核非常在乎他人的感受（F），但任务兴趣却落在高度理性的【{top_holland}型】。这种反差让你在冷冰冰的数据/系统领域里，拥有一种罕见的人文关怀能力。"
+    elif "T" in mbti_type and top_holland in ["S", "A"]:
+        insight += f" 你极其讲究逻辑和效率（T），但外在兴趣却指向了充满感性的【{top_holland}型】。你或许擅长用极度理性的手段，去解决复杂的社会关系或艺术设计问题。"
+    else:
+        insight += f" 你的内核特质与你在【{top_holland}型】任务上的浓厚兴趣达成了高度的自洽与统一。在这一领域，你能够非常自然地释放你的天赋潜力。"
+        
+    return insight
