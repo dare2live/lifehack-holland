@@ -42,6 +42,9 @@ DDL_STATEMENTS = [
         option_val       VARCHAR,              -- 选项值, e.g. 'A', 'B', 'C'
         dimension_code   VARCHAR,              -- 维度代码, e.g. 'Holland_I', 'MBTI_J'
         inherited_weight FLOAT,                -- 继承自母版的因子载荷基础分
+        source_version   VARCHAR,              -- 该权重的来源版本
+        review_status    VARCHAR,              -- 该权重的审核状态
+        lineage_json     VARCHAR,              -- 选项/权重级血缘 JSON
         FOREIGN KEY (sjt_q_id) REFERENCES sjt_item_bank(sjt_q_id)
     );
     """,
@@ -100,6 +103,15 @@ def init_database(db_path: str = DB_PATH) -> None:
             {
                 "source_version": "VARCHAR",
                 "transform_level": "VARCHAR",
+                "review_status": "VARCHAR",
+                "lineage_json": "VARCHAR",
+            },
+        )
+        _ensure_columns(
+            con,
+            "sjt_weights",
+            {
+                "source_version": "VARCHAR",
                 "review_status": "VARCHAR",
                 "lineage_json": "VARCHAR",
             },

@@ -286,7 +286,7 @@ def _load_source_lineage(con: duckdb.DuckDBPyConnection, submission_id: str) -> 
             continue
         weights = con.execute(
             """
-            SELECT dimension_code, inherited_weight
+            SELECT dimension_code, inherited_weight, source_version, review_status, lineage_json
             FROM sjt_weights
             WHERE sjt_q_id = ? AND option_val = ?
             ORDER BY dimension_code
@@ -309,7 +309,13 @@ def _load_source_lineage(con: duckdb.DuckDBPyConnection, submission_id: str) -> 
             "transform_level": row[6] or item_lineage.get("transform_level"),
             "review_status": row[7] or item_lineage.get("review_status"),
             "weights": [
-                {"dimension_code": weight_row[0], "inherited_weight": float(weight_row[1])}
+                {
+                    "dimension_code": weight_row[0],
+                    "inherited_weight": float(weight_row[1]),
+                    "source_version": weight_row[2] or "",
+                    "review_status": weight_row[3] or "",
+                    "lineage": _json_loads(weight_row[4], {}),
+                }
                 for weight_row in weights
             ],
             "lineage": item_lineage,

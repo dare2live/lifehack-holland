@@ -79,6 +79,25 @@ def _item_lineage(item: dict, generation_config: dict) -> dict:
     }
 
 
+def _option_lineage(item: dict, option: dict, item_lineage: dict) -> dict:
+    lineage = option.get("lineage") if isinstance(option.get("lineage"), dict) else {}
+    option_val = option.get("val")
+    return {
+        "lineage_quality": lineage.get("lineage_quality", item_lineage.get("lineage_quality", "curated_seed_limited")),
+        "source_seed_file": item.get("_seed_file"),
+        "source_version": lineage.get("source_version", item_lineage.get("source_version", "unknown")),
+        "review_status": lineage.get("review_status", item_lineage.get("review_status", "approved_seed")),
+        "question_id": item.get("q_id"),
+        "option_val": option_val,
+        "mother_source": lineage.get("mother_source", item.get("mother_source")),
+        "mother_id": lineage.get("mother_id", item.get("mother_id")),
+        "candidate_id": lineage.get("candidate_id"),
+        "raw_text": lineage.get("raw_text"),
+        "weights": option.get("weights", []),
+        **lineage,
+    }
+
+
 def _rule_id(rule: dict) -> str:
     if rule.get("rule_id"):
         return str(rule["rule_id"])
@@ -151,12 +170,24 @@ def populate():
             opt_val = opt["val"]
             opt_text = opt["text"]
             opt_dict[opt_val] = opt_text
+            option_lineage = _option_lineage(item, opt, lineage)
 
             for dim_code, weight in opt["weights"]:
                 con.execute("""
-                    INSERT INTO sjt_weights (sjt_q_id, option_val, dimension_code, inherited_weight)
-                    VALUES (?, ?, ?, ?)
-                """, (item["q_id"], opt_val, dim_code, weight))
+                    INSERT INTO sjt_weights (
+                        sjt_q_id, option_val, dimension_code, inherited_weight,
+                        source_version, review_status, lineage_json
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    item["q_id"],
+                    opt_val,
+                    dim_code,
+                    weight,
+                    option_lineage["source_version"],
+                    option_lineage["review_status"],
+                    json.dumps(option_lineage, ensure_ascii=False, sort_keys=True),
+                ))
 
         questions_for_frontend[item["q_id"]] = opt_dict
 

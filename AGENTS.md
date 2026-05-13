@@ -23,8 +23,16 @@
   - transform level
   - dimensions and weights
   - review status and reviewer notes when applicable
+- Preserve lineage for every option weight. One SJT item can compare multiple
+  mother-template mechanisms, so item-level `mother_id` is not enough; each
+  row in `sjt_weights` must carry source version, review status, and
+  lineage JSON.
 - Preserve lineage for every consistency rule. The rule layer is part of the model, so triggered penalties must explain source version, review status, trigger/verify fields, and penalty parameters.
 - The final question bank should be small and reviewed. The thousands of O*NET/IPIP records are source material, not all user-facing questions.
+- Keep the main `lifehack` contract stable: `/api/report/{submission_id}` must
+  keep returning `submission_id`, `source_version`, `dimensions`,
+  `holland_top3`, `mbti_type`, `cross_insight`,
+  `recommended_cn_occupations`, `consistency_issues`, and `source_lineage`.
 
 ## Data Rules
 

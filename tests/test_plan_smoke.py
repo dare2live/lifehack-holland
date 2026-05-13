@@ -60,6 +60,17 @@ class HollandPlanSmokeTests(unittest.TestCase):
             self.assertEqual(con.execute("SELECT COUNT(*) FROM sjt_item_bank").fetchone()[0], 18)
             self.assertEqual(con.execute("SELECT COUNT(*) FROM sjt_consistency_rules").fetchone()[0], 2)
             self.assertGreater(con.execute("SELECT COUNT(*) FROM sjt_weights").fetchone()[0], 0)
+            weight_columns = {
+                row[1]
+                for row in con.execute("PRAGMA table_info('sjt_weights')").fetchall()
+            }
+            self.assertIn("source_version", weight_columns)
+            self.assertIn("review_status", weight_columns)
+            self.assertIn("lineage_json", weight_columns)
+            weight_lineage = con.execute(
+                "SELECT lineage_json FROM sjt_weights WHERE sjt_q_id = 'H_Gala' LIMIT 1"
+            ).fetchone()[0]
+            self.assertIn("option_val", json.loads(weight_lineage))
             columns = {
                 row[1]
                 for row in con.execute("PRAGMA table_info('sjt_item_bank')").fetchall()
@@ -125,6 +136,9 @@ class HollandPlanSmokeTests(unittest.TestCase):
         self.assertTrue(payload["cross_insight"])
         self.assertTrue(payload["recommended_cn_occupations"])
         self.assertTrue(payload["source_lineage"]["answered_items"])
+        first_weight = payload["source_lineage"]["answered_items"][0]["weights"][0]
+        self.assertIn("lineage", first_weight)
+        self.assertIn("review_status", first_weight)
         self.assertEqual(payload["source_lineage"]["service"], "lifehack-holland")
         self.assertTrue(payload["consistency_issues"])
         issue = payload["consistency_issues"][0]
@@ -160,8 +174,10 @@ class HollandPlanSmokeTests(unittest.TestCase):
             approved["scenario_text"] = "社团需要完成一次复杂任务，你更想承担哪一部分？"
             approved["option_a_text"] = "先拆解任务流程，自己动手解决最关键的技术环节。"
             approved["option_a_weights_json"] = '[["Holland_R", 1.5]]'
+            approved["option_a_lineage_json"] = '{"mother_id":"11-1011.00:8823"}'
             approved["option_b_text"] = "先查资料和案例，判断哪种方案成功概率更高。"
             approved["option_b_weights_json"] = '[["Holland_I", 1.5]]'
+            approved["option_b_lineage_json"] = '{"mother_id":"11-1011.00:8824"}'
             rows[1]["review_status"] = "needs_rewrite"
 
             with open(batch_path, "w", encoding="utf-8", newline="") as f:
@@ -176,6 +192,7 @@ class HollandPlanSmokeTests(unittest.TestCase):
             self.assertEqual(items[0]["q_id"], "Q_REVIEW_SMOKE")
             self.assertEqual(items[0]["lineage"]["candidate_id"], approved["candidate_id"])
             self.assertIn("candidate_lineage", items[0]["lineage"])
+            self.assertEqual(items[0]["options"][0]["lineage"]["mother_id"], "11-1011.00:8823")
 
     def test_approved_promotion_rejects_missing_weights(self):
         with tempfile.TemporaryDirectory() as tmp:

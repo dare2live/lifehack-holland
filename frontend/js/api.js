@@ -3,7 +3,7 @@
  * Handles communication with the FastAPI backend.
  */
 
-const API_BASE = 'http://localhost:8600/api';
+const API_BASE = window.SJT_API_BASE || `${window.location.origin}/api`;
 
 const SjtApi = {
     /**

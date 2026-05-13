@@ -61,10 +61,13 @@ def write_review_batch(
                 "scenario_text": "",
                 "option_a_text": "",
                 "option_a_weights_json": "",
+                "option_a_lineage_json": "",
                 "option_b_text": "",
                 "option_b_weights_json": "",
+                "option_b_lineage_json": "",
                 "option_c_text": "",
                 "option_c_weights_json": "",
+                "option_c_lineage_json": "",
                 "review_notes": "",
             }
         )
@@ -99,6 +102,18 @@ def _parse_weights(raw: str, *, field: str, candidate_id: str) -> list[list[Any]
     return parsed
 
 
+def _parse_option_lineage(raw: str, *, field: str, candidate_id: str) -> dict[str, Any]:
+    if not raw.strip():
+        return {}
+    try:
+        value = json.loads(raw)
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"{candidate_id}: {field} must be valid JSON") from exc
+    if not isinstance(value, dict):
+        raise ValueError(f"{candidate_id}: {field} must be a JSON object")
+    return value
+
+
 def _promote_row(row: dict[str, str], candidate: dict[str, Any]) -> dict[str, Any]:
     candidate_id = row["candidate_id"]
     q_id = row.get("approved_q_id", "").strip()
@@ -109,10 +124,10 @@ def _promote_row(row: dict[str, str], candidate: dict[str, Any]) -> dict[str, An
         raise ValueError(f"{candidate_id}: scenario_text is required")
 
     options = []
-    for option_val, text_field, weight_field in [
-        ("A", "option_a_text", "option_a_weights_json"),
-        ("B", "option_b_text", "option_b_weights_json"),
-        ("C", "option_c_text", "option_c_weights_json"),
+    for option_val, text_field, weight_field, lineage_field in [
+        ("A", "option_a_text", "option_a_weights_json", "option_a_lineage_json"),
+        ("B", "option_b_text", "option_b_weights_json", "option_b_lineage_json"),
+        ("C", "option_c_text", "option_c_weights_json", "option_c_lineage_json"),
     ]:
         option_text = row.get(text_field, "").strip()
         if not option_text:
@@ -122,6 +137,7 @@ def _promote_row(row: dict[str, str], candidate: dict[str, Any]) -> dict[str, An
                 "val": option_val,
                 "text": option_text,
                 "weights": _parse_weights(row.get(weight_field, ""), field=weight_field, candidate_id=candidate_id),
+                "lineage": _parse_option_lineage(row.get(lineage_field, ""), field=lineage_field, candidate_id=candidate_id),
             }
         )
     if len(options) < 2:

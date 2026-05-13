@@ -34,10 +34,13 @@
       "scenario_text",
       "option_a_text",
       "option_a_weights_json",
+      "option_a_lineage_json",
       "option_b_text",
       "option_b_weights_json",
+      "option_b_lineage_json",
       "option_c_text",
       "option_c_weights_json",
+      "option_c_lineage_json",
       "review_notes"
     ]
   },
