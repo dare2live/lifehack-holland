@@ -216,6 +216,19 @@ def _get_option_text(q_id: str, opt_val: str) -> str:
     """Get human-readable option text for seed data."""
     return _OPTION_TEXTS.get(q_id, {}).get(opt_val, f"Option {opt_val}")
 
+# ── Static files — serve frontend ──────────────────────────────────
+from pathlib import Path
+from fastapi.responses import RedirectResponse
+
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
+
+@app.get("/")
+async def root():
+    """Redirect root to the survey page."""
+    return RedirectResponse(url="/app/index.html")
+
+app.mount("/app", StaticFiles(directory=str(FRONTEND_DIR), html=True), name="frontend")
+
 
 # ── Run with uvicorn ───────────────────────────────────────────────
 
