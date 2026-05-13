@@ -9,6 +9,31 @@
     "candidate_status": "needs_review",
     "transform_level": "L1_candidate_seed"
   },
+  "review": {
+    "allowed_statuses": ["needs_review", "needs_rewrite", "approved", "rejected"],
+    "approved_status": "approved",
+    "batch_fields": [
+      "candidate_id",
+      "source",
+      "mother_source",
+      "mother_id",
+      "dimension_code",
+      "inherited_weight",
+      "raw_text",
+      "scenario_shell",
+      "draft_prompt",
+      "review_status",
+      "approved_q_id",
+      "scenario_text",
+      "option_a_text",
+      "option_a_weights_json",
+      "option_b_text",
+      "option_b_weights_json",
+      "option_c_text",
+      "option_c_weights_json",
+      "review_notes"
+    ]
+  },
   "onet": {
     "interests_file": "backend/data/onet/Interests.txt",
     "tasks_file": "backend/data/onet/Task_Statements.txt",
@@ -39,4 +64,3 @@
     "信息检索"
   ]
 }
-

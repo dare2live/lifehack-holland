@@ -1,5 +1,9 @@
+import csv
+import json
 import re
+import tempfile
 import unittest
+from pathlib import Path
 
 import duckdb
 from fastapi.testclient import TestClient
@@ -9,6 +13,7 @@ from backend.init_db import init_database
 from backend.main import app
 from backend.populate_golden_bank import populate
 from backend.question_candidates import build_candidate_pool
+from backend.question_review import promote_review_batch, write_review_batch
 from backend.scripts.generate_cn_occupation_mapping import _load_rules, tag_occupation
 
 
@@ -105,6 +110,58 @@ class HollandPlanSmokeTests(unittest.TestCase):
         self.assertIn("lineage", sample)
         self.assertEqual(sample["review_status"], "needs_review")
         self.assertEqual(sample["transform_level"], "L1_candidate_seed")
+
+    def test_review_batch_and_approved_promotion_preserve_lineage(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            batch_path = tmp_path / "review.csv"
+            summary = write_review_batch(batch_path, limit=2, source="onet")
+            self.assertEqual(summary["rows"], 2)
+
+            with open(batch_path, "r", encoding="utf-8", newline="") as f:
+                rows = list(csv.DictReader(f))
+            self.assertEqual(len(rows), 2)
+            approved = rows[0]
+            approved["review_status"] = "approved"
+            approved["approved_q_id"] = "Q_REVIEW_SMOKE"
+            approved["scenario_text"] = "社团需要完成一次复杂任务，你更想承担哪一部分？"
+            approved["option_a_text"] = "先拆解任务流程，自己动手解决最关键的技术环节。"
+            approved["option_a_weights_json"] = '[["Holland_R", 1.5]]'
+            approved["option_b_text"] = "先查资料和案例，判断哪种方案成功概率更高。"
+            approved["option_b_weights_json"] = '[["Holland_I", 1.5]]'
+            rows[1]["review_status"] = "needs_rewrite"
+
+            with open(batch_path, "w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=rows[0].keys())
+                writer.writeheader()
+                writer.writerows(rows)
+
+            output_path = tmp_path / "items.json"
+            promoted = promote_review_batch(batch_path, output_path)
+            self.assertEqual(promoted["approved_items"], 1)
+            items = json.loads(output_path.read_text(encoding="utf-8"))
+            self.assertEqual(items[0]["q_id"], "Q_REVIEW_SMOKE")
+            self.assertEqual(items[0]["lineage"]["candidate_id"], approved["candidate_id"])
+            self.assertIn("candidate_lineage", items[0]["lineage"])
+
+    def test_approved_promotion_rejects_missing_weights(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            batch_path = tmp_path / "bad_review.csv"
+            write_review_batch(batch_path, limit=1, source="onet")
+            with open(batch_path, "r", encoding="utf-8", newline="") as f:
+                rows = list(csv.DictReader(f))
+            rows[0]["review_status"] = "approved"
+            rows[0]["approved_q_id"] = "Q_BAD_REVIEW"
+            rows[0]["scenario_text"] = "一个没有权重的坏题目。"
+            rows[0]["option_a_text"] = "选项 A"
+            rows[0]["option_b_text"] = "选项 B"
+            with open(batch_path, "w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=rows[0].keys())
+                writer.writeheader()
+                writer.writerows(rows)
+            with self.assertRaises(ValueError):
+                promote_review_batch(batch_path, tmp_path / "items.json")
 
     def test_career_riasec_rules_are_config_driven(self):
         rules = _load_rules()
