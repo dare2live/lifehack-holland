@@ -17,6 +17,7 @@ from backend.config import DB_PATH
 from backend.init_db import init_database
 from backend.main import app
 from backend.populate_golden_bank import _load_seed_file_list, populate
+from backend.question_audit import audit_all
 from backend.question_candidates import build_candidate_pool
 from backend.question_review import promote_review_batch, write_review_batch
 from backend.scoring_engine import _generate_cross_insight
@@ -155,6 +156,8 @@ class HollandPlanSmokeTests(unittest.TestCase):
         self.assertTrue(payload["holland_top3"])
         self.assertTrue(payload["mbti_type"])
         self.assertTrue(payload["cross_insight"])
+        self.assertEqual(payload["decision_inputs"]["service"], "lifehack-holland")
+        self.assertEqual(payload["decision_inputs"]["holland_top3"], payload["holland_top3"])
         self.assertTrue(payload["recommended_cn_occupations"])
         self.assertTrue(payload["source_lineage"]["answered_items"])
         first_weight = payload["source_lineage"]["answered_items"][0]["weights"][0]
@@ -176,10 +179,14 @@ class HollandPlanSmokeTests(unittest.TestCase):
         self.assertEqual(pool["status"], "needs_review")
         self.assertGreaterEqual(pool["counts"]["onet"], 6)
         self.assertEqual(pool["counts"]["ipip"], 88)
+        self.assertGreater(pool["source_counts"]["onet"]["task_rows_scanned"], pool["counts"]["onet"])
+        self.assertIn("selection_policy", pool["source_counts"]["onet"])
         sample = pool["candidates"][0]
         self.assertIn("lineage", sample)
         self.assertEqual(sample["review_status"], "needs_review")
         self.assertEqual(sample["transform_level"], "L1_candidate_seed")
+        self.assertIn("review_priority", sample)
+        self.assertIn("lineage_ready", sample["quality_flags"])
 
     def test_review_batch_and_approved_promotion_preserve_lineage(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -193,6 +200,8 @@ class HollandPlanSmokeTests(unittest.TestCase):
             self.assertEqual(len(rows), 2)
             self.assertEqual(rows[0]["source_version"], "O*NET Database 30.2 text files")
             self.assertEqual(rows[0]["transform_level"], "L1_candidate_seed")
+            self.assertTrue(rows[0]["review_priority"])
+            self.assertIn("lineage_ready", json.loads(rows[0]["quality_flags_json"]))
             self.assertIn("source_row", json.loads(rows[0]["candidate_lineage_json"]))
             approved = rows[0]
             approved["review_status"] = "approved"
@@ -238,6 +247,12 @@ class HollandPlanSmokeTests(unittest.TestCase):
                 writer.writerows(rows)
             with self.assertRaises(ValueError):
                 promote_review_batch(batch_path, tmp_path / "items.json")
+
+    def test_question_lineage_audit_passes_with_warnings(self):
+        report = audit_all()
+        self.assertEqual(report["status"], "pass")
+        self.assertEqual(report["candidate_pool"]["counts"]["total"], 328)
+        self.assertEqual(report["production_seed"]["counts"]["items"], 18)
 
     def test_career_riasec_rules_are_config_driven(self):
         rules = _load_rules()

@@ -1,0 +1,35 @@
+{
+  "version": "2026-05-14",
+  "notes": "Source acquisition registry for offline Holland/IPIP master materials. Online scoring must not fetch external sources.",
+  "sources": {
+    "onet_database_text": {
+      "source_name": "O*NET Database text files",
+      "source_version": "30.2",
+      "homepage": "https://www.onetcenter.org/database.html",
+      "files": [
+        {
+          "role": "interests",
+          "url": "https://www.onetcenter.org/dl_files/database/db_30_2_text/Interests.txt",
+          "output_path": "backend/data/onet/Interests.txt"
+        },
+        {
+          "role": "task_statements",
+          "url": "https://www.onetcenter.org/dl_files/database/db_30_2_text/Task%20Statements.txt",
+          "output_path": "backend/data/onet/Task_Statements.txt"
+        }
+      ]
+    },
+    "ipip_jungian_seed": {
+      "source_name": "IPIP Jungian-style public-domain item source",
+      "source_version": "manual-seed-88",
+      "homepage": "https://ipip.ori.org",
+      "files": [
+        {
+          "role": "jungian_keys_html",
+          "url": "https://ipip.ori.org/newJungKeys.htm",
+          "output_path": "backend/data/ipip/IPIP_Jungian_Scale.html"
+        }
+      ]
+    }
+  }
+}

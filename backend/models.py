@@ -44,3 +44,4 @@ class ReportResponse(BaseModel):
     recommended_cn_occupations: list[dict] = Field(default_factory=list, description="Recommended occupations mapped from the main project")
     consistency_issues: list[dict] = Field(default_factory=list, description="Triggered consistency rules")
     source_lineage: dict = Field(default_factory=dict, description="Lineage for answered questions and scoring inputs")
+    decision_inputs: dict = Field(default_factory=dict, description="Stable summary payload for the main lifehack project")

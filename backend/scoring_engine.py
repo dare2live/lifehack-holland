@@ -221,6 +221,17 @@ def compute_report(submission_id: str, db_path: str = DB_PATH) -> ReportResponse
                 # Table might not exist yet if mapping script hasn't run
                 pass
 
+        decision_inputs = _build_decision_inputs(
+            submission_id=submission_id,
+            source_version=source_version,
+            dimensions=dimensions,
+            holland_top3=holland_top3,
+            mbti_type=mbti_type,
+            recommended_cn_occupations=recommended_cn_occupations,
+            consistency_issues=consistency_issues,
+            source_lineage=source_lineage,
+        )
+
         return ReportResponse(
             submission_id=submission_id,
             source_version=source_version,
@@ -231,6 +242,7 @@ def compute_report(submission_id: str, db_path: str = DB_PATH) -> ReportResponse
             recommended_cn_occupations=recommended_cn_occupations,
             consistency_issues=consistency_issues,
             source_lineage=source_lineage,
+            decision_inputs=decision_inputs,
         )
     finally:
         con.close()
@@ -380,6 +392,47 @@ def _load_consistency_issues(con: duckdb.DuckDBPyConnection, submission_id: str)
                 "lineage": _json_loads(lineage_json, {}),
             })
     return issues
+
+
+def _build_decision_inputs(
+    *,
+    submission_id: str,
+    source_version: str,
+    dimensions: list[DimensionScore],
+    holland_top3: list[str],
+    mbti_type: str,
+    recommended_cn_occupations: list[dict[str, Any]],
+    consistency_issues: list[dict[str, Any]],
+    source_lineage: dict[str, Any],
+) -> dict[str, Any]:
+    top_dimensions = sorted(dimensions, key=lambda item: item.final_score, reverse=True)[:5]
+    return {
+        "service": "lifehack-holland",
+        "submission_id": submission_id,
+        "source_version": source_version,
+        "holland_code": "".join(holland_top3),
+        "holland_top3": holland_top3,
+        "mbti_type": mbti_type,
+        "top_dimensions": [
+            {
+                "dimension_code": item.dimension_code,
+                "final_score": item.final_score,
+                "base_score": item.base_score,
+                "penalty_score": item.penalty_score,
+            }
+            for item in top_dimensions
+        ],
+        "recommended_occupation_codes": [
+            str(item.get("occupation_code"))
+            for item in recommended_cn_occupations
+            if item.get("occupation_code")
+        ],
+        "consistency_issue_count": len(consistency_issues),
+        "lineage_ref": {
+            "question_bank_source_version": source_lineage.get("question_bank", {}).get("source_version", ""),
+            "answered_count": source_lineage.get("question_bank", {}).get("answered_count", 0),
+        },
+    }
 
 
 def _derive_mbti_type(dimensions: list[DimensionScore]) -> str:

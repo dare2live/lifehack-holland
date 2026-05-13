@@ -14,6 +14,11 @@
 
 ## Architecture Rules
 
+- Rule 1 — Think Before Coding. State assumptions and tradeoffs before changing code when the risk is not obvious from local context.
+- Rule 2 — Simplicity First. Keep the smallest working module boundary; do not add speculative services or abstractions.
+- Rule 3 — Surgical Changes. Touch only files needed for the current objective and match existing style.
+- Rule 4 — Goal-Driven Execution. Define what has to pass, implement, then verify.
+- Rule 5 — Minimal Modular System. Facts, mappings, source metadata, scoring inputs, thresholds, text, URLs, and review policies belong in tables or config files. Code should load, validate, orchestrate, and compute repeatable results.
 - Keep online scoring deterministic. No online LLM API in `/api/submit`, `/api/report`, or the scoring engine.
 - Treat LLMs only as offline draft-generation helpers. Drafts must keep lineage and require review before release.
 - Do not hardcode questionnaire text, scoring thresholds, source URLs, RIASEC mapping rules, or generation policy in service code when a config file can own them.

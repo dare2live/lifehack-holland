@@ -48,6 +48,12 @@ def write_review_batch(
                 "transform_level": candidate.get("transform_level", ""),
                 "dimension_code": candidate.get("dimension_code", ""),
                 "inherited_weight": candidate.get("inherited_weight", ""),
+                "review_priority": candidate.get("review_priority", ""),
+                "quality_flags_json": json.dumps(
+                    candidate.get("quality_flags", []),
+                    ensure_ascii=False,
+                    sort_keys=True,
+                ),
                 "raw_text": _candidate_raw_text(candidate),
                 "scenario_shell": candidate.get("scenario_shell", ""),
                 "draft_prompt": candidate.get("draft_prompt", ""),
