@@ -33,6 +33,10 @@
   mother-template mechanisms, so item-level `mother_id` is not enough; each
   row in `sjt_weights` must carry source version, review status, and
   lineage JSON.
+- Reviewed seed options must carry explicit option-level lineage before they
+  become production questions. For verification-only options, set
+  `scoring_role=consistency_check_only` so audits can distinguish intentional
+  non-scoring choices from missing weights.
 - Preserve lineage for every consistency rule. The rule layer is part of the model, so triggered penalties must explain source version, review status, trigger/verify fields, and penalty parameters.
 - The final question bank should be small and reviewed. The thousands of O*NET/IPIP records are source material, not all user-facing questions.
 - Keep the main `lifehack` contract stable: `/api/report/{submission_id}` must

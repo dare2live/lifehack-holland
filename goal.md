@@ -21,6 +21,7 @@
 - 已落地候选池：从 O*NET/IPIP 生成 328 条 `needs_review` 候选，其中 O*NET 240 条、IPIP 88 条。
 - 已落地审核晋级：`question_review` 只允许显式 `approved` 的复核行晋级为生产 seed。
 - 已落地主项目职业桥：只读 `lifehack` 的职业目录，写入本项目本地 `cn_occupation_riasec_map`。
+- 复核后补充核验：现有测试全 PASS，`audit_question_lineage.py` 全 PASS；生产题库 18 题、42 个选项均已补显式选项级血缘，验证题选项以 `scoring_role=consistency_check_only` 说明其只参与一致性规则、不直接计分。
 
 ## 已补的接手修正
 
@@ -29,6 +30,7 @@
 - 新增 `question_audit` 和 `audit_question_lineage.py`，用于在候选池和生产 seed 晋级前做血缘门禁。
 - 外部来源 URL 迁入 `config/source_registry.json`，抓取脚本只读取配置，不在脚本里维护来源地址。
 - `/api/report/{submission_id}` 增加 `decision_inputs`，供主项目保存稳定摘要，同时保留完整 `source_lineage`。
+- 生产题库种子从题目级血缘回退升级为选项级血缘；复核晋级流程会为每个 approved option 自动补齐候选来源、母版 ID、原始文本、权重和复核备注，避免从 O*NET/IPIP 候选转正式题时断链。
 
 ## 下一步顺序
 

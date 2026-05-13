@@ -14,7 +14,22 @@
             "Holland_R",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "H_Gala",
+          "option_val": "A",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_1.A.1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_influence_vs_hands_on",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_R"
+          ]
+        }
       },
       {
         "val": "B",
@@ -24,7 +39,22 @@
             "Holland_I",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "H_Gala",
+          "option_val": "B",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_1.A.1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_influence_vs_hands_on",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_I"
+          ]
+        }
       },
       {
         "val": "C",
@@ -34,7 +64,22 @@
             "Holland_E",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "H_Gala",
+          "option_val": "C",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_1.A.1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_influence_vs_hands_on",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_E"
+          ]
+        }
       }
     ]
   },
@@ -53,7 +98,22 @@
             "Holland_A",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "H_Poster",
+          "option_val": "A",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_2.B.3",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_artistic_vs_conventional",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_A"
+          ]
+        }
       },
       {
         "val": "B",
@@ -63,7 +123,22 @@
             "Holland_C",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "H_Poster",
+          "option_val": "B",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_2.B.3",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_artistic_vs_conventional",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_C"
+          ]
+        }
       },
       {
         "val": "C",
@@ -73,7 +148,22 @@
             "Holland_E",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "H_Poster",
+          "option_val": "C",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_2.B.3",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_artistic_vs_conventional",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_E"
+          ]
+        }
       }
     ]
   },
@@ -92,7 +182,22 @@
             "Holland_S",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "H_Tutor",
+          "option_val": "A",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_3.A.4",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_social_vs_research",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_S"
+          ]
+        }
       },
       {
         "val": "B",
@@ -102,7 +207,22 @@
             "Holland_I",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "H_Tutor",
+          "option_val": "B",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_3.A.4",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_social_vs_research",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_I"
+          ]
+        }
       },
       {
         "val": "C",
@@ -112,7 +232,22 @@
             "Holland_R",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "H_Tutor",
+          "option_val": "C",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_3.A.4",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_social_vs_research",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_R"
+          ]
+        }
       }
     ]
   },
@@ -131,7 +266,22 @@
             "Holland_E",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "H_Event",
+          "option_val": "A",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_4.C.2",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_enterprising_vs_conventional",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_E"
+          ]
+        }
       },
       {
         "val": "B",
@@ -141,7 +291,22 @@
             "Holland_C",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "H_Event",
+          "option_val": "B",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_4.C.2",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_enterprising_vs_conventional",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_C"
+          ]
+        }
       },
       {
         "val": "C",
@@ -151,7 +316,22 @@
             "Holland_A",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "H_Event",
+          "option_val": "C",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_4.C.2",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_enterprising_vs_conventional",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_A"
+          ]
+        }
       }
     ]
   },
@@ -170,7 +350,22 @@
             "MBTI_J",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Exam_JP1",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_12",
+          "transform_level": "L4_curated_item",
+          "mechanism": "J_vs_P",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_J"
+          ]
+        }
       },
       {
         "val": "B",
@@ -180,7 +375,22 @@
             "MBTI_P",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Exam_JP1",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_12",
+          "transform_level": "L4_curated_item",
+          "mechanism": "J_vs_P",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_P"
+          ]
+        }
       }
     ]
   },
@@ -199,7 +409,22 @@
             "MBTI_S",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Exam_SN1",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_22",
+          "transform_level": "L4_curated_item",
+          "mechanism": "S_vs_N",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_S"
+          ]
+        }
       },
       {
         "val": "B",
@@ -209,7 +434,22 @@
             "MBTI_N",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Exam_SN1",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_22",
+          "transform_level": "L4_curated_item",
+          "mechanism": "S_vs_N",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_N"
+          ]
+        }
       }
     ]
   },
@@ -228,7 +468,22 @@
             "MBTI_E",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Exam_EI1",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "E_vs_I",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_E"
+          ]
+        }
       },
       {
         "val": "B",
@@ -238,7 +493,22 @@
             "MBTI_I",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Exam_EI1",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "E_vs_I",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_I"
+          ]
+        }
       }
     ]
   },
@@ -257,7 +527,22 @@
             "MBTI_T",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Exam_TF1",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_43",
+          "transform_level": "L4_curated_item",
+          "mechanism": "T_vs_F",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_T"
+          ]
+        }
       },
       {
         "val": "B",
@@ -267,7 +552,22 @@
             "MBTI_F",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Exam_TF1",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_43",
+          "transform_level": "L4_curated_item",
+          "mechanism": "T_vs_F",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_F"
+          ]
+        }
       }
     ]
   },
@@ -286,7 +586,22 @@
             "MBTI_E",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Soc_EI1",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_37",
+          "transform_level": "L4_curated_item",
+          "mechanism": "E_vs_I",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_E"
+          ]
+        }
       },
       {
         "val": "B",
@@ -296,7 +611,22 @@
             "MBTI_I",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Soc_EI1",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_37",
+          "transform_level": "L4_curated_item",
+          "mechanism": "E_vs_I",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_I"
+          ]
+        }
       }
     ]
   },
@@ -315,7 +645,22 @@
             "MBTI_J",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Soc_JP1",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_2",
+          "transform_level": "L4_curated_item",
+          "mechanism": "J_vs_P",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_J"
+          ]
+        }
       },
       {
         "val": "B",
@@ -325,7 +670,22 @@
             "MBTI_P",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Soc_JP1",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_2",
+          "transform_level": "L4_curated_item",
+          "mechanism": "J_vs_P",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_P"
+          ]
+        }
       }
     ]
   },
@@ -344,7 +704,22 @@
             "MBTI_S",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Soc_SN1",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_46",
+          "transform_level": "L4_curated_item",
+          "mechanism": "S_vs_N",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_S"
+          ]
+        }
       },
       {
         "val": "B",
@@ -354,7 +729,22 @@
             "MBTI_N",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Soc_SN1",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_46",
+          "transform_level": "L4_curated_item",
+          "mechanism": "S_vs_N",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_N"
+          ]
+        }
       }
     ]
   },
@@ -373,7 +763,22 @@
             "MBTI_T",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Conf_TF1",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_3",
+          "transform_level": "L4_curated_item",
+          "mechanism": "T_vs_F",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_T"
+          ]
+        }
       },
       {
         "val": "B",
@@ -383,7 +788,22 @@
             "MBTI_F",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Conf_TF1",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_3",
+          "transform_level": "L4_curated_item",
+          "mechanism": "T_vs_F",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_F"
+          ]
+        }
       }
     ]
   },
@@ -402,7 +822,22 @@
             "MBTI_T",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Conf_TF2",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_35",
+          "transform_level": "L4_curated_item",
+          "mechanism": "T_vs_F",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_T"
+          ]
+        }
       },
       {
         "val": "B",
@@ -412,7 +847,22 @@
             "MBTI_F",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Conf_TF2",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_35",
+          "transform_level": "L4_curated_item",
+          "mechanism": "T_vs_F",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_F"
+          ]
+        }
       }
     ]
   },
@@ -431,7 +881,22 @@
             "MBTI_J",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Conf_JP1",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_68",
+          "transform_level": "L4_curated_item",
+          "mechanism": "J_vs_P",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_J"
+          ]
+        }
       },
       {
         "val": "B",
@@ -441,7 +906,22 @@
             "MBTI_P",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Conf_JP1",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_68",
+          "transform_level": "L4_curated_item",
+          "mechanism": "J_vs_P",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_P"
+          ]
+        }
       }
     ]
   },
@@ -460,7 +940,22 @@
             "MBTI_S",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Plan_SN1",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_38",
+          "transform_level": "L4_curated_item",
+          "mechanism": "S_vs_N",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_S"
+          ]
+        }
       },
       {
         "val": "B",
@@ -470,7 +965,22 @@
             "MBTI_N",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Plan_SN1",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_38",
+          "transform_level": "L4_curated_item",
+          "mechanism": "S_vs_N",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_N"
+          ]
+        }
       }
     ]
   },
@@ -489,7 +999,22 @@
             "MBTI_T",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Plan_TF1",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_23",
+          "transform_level": "L4_curated_item",
+          "mechanism": "T_vs_F",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_T"
+          ]
+        }
       },
       {
         "val": "B",
@@ -499,7 +1024,22 @@
             "MBTI_F",
             1.5
           ]
-        ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "M_Plan_TF1",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_23",
+          "transform_level": "L4_curated_item",
+          "mechanism": "T_vs_F",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_F"
+          ]
+        }
       }
     ]
   },
@@ -513,17 +1053,56 @@
       {
         "val": "X",
         "text": "非常焦虑和烦躁，感觉整个计划都被毁了，试图熬夜补回来",
-        "weights": []
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_J1",
+          "option_val": "X",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_J1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
       },
       {
         "val": "Y",
         "text": "觉得无所谓，反正计划也是随便写写的，正好理直气壮地休息一天",
-        "weights": []
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_J1",
+          "option_val": "Y",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_J1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
       },
       {
         "val": "Z",
         "text": "立刻在病床上重新调整后续的排期表，把今天的任务平摊到后面几天",
-        "weights": []
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_J1",
+          "option_val": "Z",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_J1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
       }
     ]
   },
@@ -537,17 +1116,56 @@
       {
         "val": "X",
         "text": "先到角落整理资料和观察现场节奏，等找到合适话题再加入",
-        "weights": []
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_E1",
+          "option_val": "X",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_E1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
       },
       {
         "val": "Y",
         "text": "有点尴尬，但还是会默默吃东西观察大家，等别人先开口",
-        "weights": []
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_E1",
+          "option_val": "Y",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_E1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
       },
       {
         "val": "Z",
         "text": "毫不畏惧，端着饮料随便走向一个人大方地用蹩脚英语开始聊天",
-        "weights": []
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-13",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_E1",
+          "option_val": "Z",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_E1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
       }
     ]
   }

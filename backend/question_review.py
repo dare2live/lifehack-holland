@@ -120,6 +120,32 @@ def _parse_option_lineage(raw: str, *, field: str, candidate_id: str) -> dict[st
     return value
 
 
+def _default_option_lineage(
+    *,
+    row: dict[str, str],
+    candidate: dict[str, Any],
+    option_val: str,
+    weights: list[list[Any]],
+) -> dict[str, Any]:
+    return {
+        "lineage_quality": "candidate_option_review",
+        "candidate_id": row["candidate_id"],
+        "source": candidate["source"],
+        "source_version": candidate["source_version"],
+        "mother_source": candidate["mother_source"],
+        "mother_id": candidate["mother_id"],
+        "transform_level": candidate.get("transform_level", ""),
+        "review_status": row.get("review_status", ""),
+        "question_id": row.get("approved_q_id", "").strip(),
+        "option_val": option_val,
+        "scoring_role": "direct_score",
+        "raw_text": _candidate_raw_text(candidate),
+        "weights": weights,
+        "candidate_lineage": candidate.get("lineage", {}),
+        "review_notes": row.get("review_notes", ""),
+    }
+
+
 def _promote_row(row: dict[str, str], candidate: dict[str, Any]) -> dict[str, Any]:
     candidate_id = row["candidate_id"]
     q_id = row.get("approved_q_id", "").strip()
@@ -138,12 +164,20 @@ def _promote_row(row: dict[str, str], candidate: dict[str, Any]) -> dict[str, An
         option_text = row.get(text_field, "").strip()
         if not option_text:
             continue
+        weights = _parse_weights(row.get(weight_field, ""), field=weight_field, candidate_id=candidate_id)
+        lineage = _parse_option_lineage(row.get(lineage_field, ""), field=lineage_field, candidate_id=candidate_id)
+        default_lineage = _default_option_lineage(
+            row=row,
+            candidate=candidate,
+            option_val=option_val,
+            weights=weights,
+        )
         options.append(
             {
                 "val": option_val,
                 "text": option_text,
-                "weights": _parse_weights(row.get(weight_field, ""), field=weight_field, candidate_id=candidate_id),
-                "lineage": _parse_option_lineage(row.get(lineage_field, ""), field=lineage_field, candidate_id=candidate_id),
+                "weights": weights,
+                "lineage": {**default_lineage, **lineage},
             }
         )
     if len(options) < 2:

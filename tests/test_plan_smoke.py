@@ -228,6 +228,9 @@ class HollandPlanSmokeTests(unittest.TestCase):
             self.assertEqual(items[0]["lineage"]["candidate_id"], approved["candidate_id"])
             self.assertIn("candidate_lineage", items[0]["lineage"])
             self.assertEqual(items[0]["options"][0]["lineage"]["mother_id"], "11-1011.00:8823")
+            self.assertEqual(items[0]["options"][1]["lineage"]["candidate_id"], approved["candidate_id"])
+            self.assertEqual(items[0]["options"][1]["lineage"]["scoring_role"], "direct_score")
+            self.assertIn("candidate_lineage", items[0]["options"][1]["lineage"])
 
     def test_approved_promotion_rejects_missing_weights(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -248,11 +251,12 @@ class HollandPlanSmokeTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 promote_review_batch(batch_path, tmp_path / "items.json")
 
-    def test_question_lineage_audit_passes_with_warnings(self):
+    def test_question_lineage_audit_passes_without_seed_warnings(self):
         report = audit_all()
         self.assertEqual(report["status"], "pass")
         self.assertEqual(report["candidate_pool"]["counts"]["total"], 328)
         self.assertEqual(report["production_seed"]["counts"]["items"], 18)
+        self.assertEqual(report["production_seed"]["warnings"], [])
 
     def test_career_riasec_rules_are_config_driven(self):
         rules = _load_rules()

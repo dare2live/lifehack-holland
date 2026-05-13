@@ -93,14 +93,16 @@ def audit_seed_files(config_path: Path = QUESTION_GENERATION_CONFIG_PATH) -> dic
                 continue
             for option in options:
                 option_id = f"{q_id}:{option.get('val', '')}"
+                option_lineage = option.get("lineage") if isinstance(option.get("lineage"), dict) else {}
                 if not option.get("text"):
                     errors.append(f"{option_id}:option_text_missing")
                 if not option.get("weights"):
                     if q_id in verification_only_ids:
-                        warnings.append(f"{option_id}:verification_option_has_no_direct_score")
+                        if option_lineage.get("scoring_role") != "consistency_check_only":
+                            warnings.append(f"{option_id}:verification_option_has_no_direct_score")
                     else:
                         errors.append(f"{option_id}:weights_missing")
-                if not option.get("lineage"):
+                if not option_lineage:
                     warnings.append(f"{option_id}:option_lineage_falls_back_to_item")
 
     for rule in rule_records:
