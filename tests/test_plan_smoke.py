@@ -1,5 +1,6 @@
 import csv
 import json
+import os
 import re
 import tempfile
 import unittest
@@ -9,13 +10,21 @@ from unittest.mock import patch
 import duckdb
 from fastapi.testclient import TestClient
 
+_TEST_DB_DIR = tempfile.TemporaryDirectory()
+os.environ["HOLLAND_DB_PATH"] = str(Path(_TEST_DB_DIR.name) / "holland.duckdb")
+
 from backend.config import DB_PATH
 from backend.init_db import init_database
 from backend.main import app
 from backend.populate_golden_bank import _load_seed_file_list, populate
 from backend.question_candidates import build_candidate_pool
 from backend.question_review import promote_review_batch, write_review_batch
+from backend.scoring_engine import _generate_cross_insight
 from backend.scripts.generate_cn_occupation_mapping import _load_rules, tag_occupation
+
+
+def tearDownModule():
+    _TEST_DB_DIR.cleanup()
 
 
 class HollandPlanSmokeTests(unittest.TestCase):
@@ -104,9 +113,21 @@ class HollandPlanSmokeTests(unittest.TestCase):
         questions = response.json()["questions"]
         self.assertEqual(len(questions), 18)
         self.assertTrue(all(q["choices"] for q in questions))
+        self.assertNotIn("lineage", questions[0])
+        self.assertNotIn("weights", questions[0]["choices"][0])
         verify_questions = [q for q in questions if q.get("visibleIf")]
         self.assertTrue(verify_questions)
         self.assertTrue(all(q["choices"] for q in verify_questions))
+
+        audit_response = client.get("/api/questions?include_lineage=true")
+        self.assertEqual(audit_response.status_code, 200)
+        audit_payload = audit_response.json()
+        self.assertTrue(audit_payload["include_lineage"])
+        audit_questions = audit_payload["questions"]
+        self.assertIn("lineage", audit_questions[0])
+        self.assertIn("review_status", audit_questions[0])
+        self.assertIn("weights", audit_questions[0]["choices"][0])
+        self.assertIn("lineage", audit_questions[0]["choices"][0]["weights"][0])
 
     def test_submit_and_report_scoring_loop(self):
         client = TestClient(app)
@@ -144,6 +165,11 @@ class HollandPlanSmokeTests(unittest.TestCase):
         issue = payload["consistency_issues"][0]
         self.assertEqual(issue["review_status"], "approved_seed")
         self.assertEqual(issue["lineage"]["rule_type"], "consistency_penalty")
+
+    def test_cross_insight_uses_reviewed_config_text(self):
+        text = _generate_cross_insight("ENTJ", ["I", "R", "C"])
+        self.assertIn("技术问题讲清楚", text)
+        self.assertNotIn("典型", text)
 
     def test_candidate_pool_preserves_lineage_and_review_gate(self):
         pool = build_candidate_pool()

@@ -31,7 +31,7 @@ BANK = [
         "mother_source": "SYSTEM_RULE",
         "mother_id": "VERIFY_01",
         "mechanism": "L3_verify_E",
-        "text": "【追问】刚才你选择了“安抚观众/寻求互动”，但如果此时那个本来负责临场互动的主持人紧张得躲在后台死活不肯上台，你会：",
+        "text": "此时原本负责临场互动的主持人紧张得躲在后台，不肯上台。你会：",
         "options": [
             {"val": "X", "text": "算了不求他了，自己直接冲上台，脱稿给大家讲个段子暖场", "weights": []},
             {"val": "Y", "text": "觉得非常头疼且尴尬，只能让灯光师放点背景音乐，大家安静等着吧", "weights": []},
@@ -56,7 +56,7 @@ BANK = [
         "mother_source": "SYSTEM_RULE",
         "mother_id": "VERIFY_02",
         "mechanism": "L3_verify_S",
-        "text": "【追问】如果你选择了“折中方案”，但最终大家还是投票选了那个“居委会风格”，你内心的真实想法是：",
+        "text": "最终大家还是投票选了那个“居委会风格”的方案。你接下来更可能怎么处理？",
         "options": [
             {"val": "X", "text": "尊重大家的意见，说明这个方案确实更有受众市场", "weights": []},
             {"val": "Y", "text": "有点不服气，觉得他们不懂审美，但嘴上不说", "weights": []},
@@ -70,7 +70,7 @@ BANK = [
         "mechanism": "L2_research_vs_enterprise",
         "text": "你是科技社团的骨干。这学期社团得到了一笔5000元的赞助费，你最希望用这笔钱来：",
         "options": [
-            {"val": "A", "text": "全部用来购买最顶级的实验传感器和服务器算力，闷头搞一个硬核技术项目", "weights": [("Holland_R", 1.0), ("Holland_I", 1.5)]},
+            {"val": "A", "text": "全部用来购买实验传感器和服务器算力，集中做一个硬核技术项目", "weights": [("Holland_R", 1.0), ("Holland_I", 1.5)]},
             {"val": "B", "text": "拿出一大半钱办一场全校规模的“科技创新大赛”，拉拢更多赞助并扩大社团影响力", "weights": [("Holland_E", 1.5)]},
             {"val": "C", "text": "请校外的专业导师来给全社团开几场系统的技术培训讲座，提升大家的平均水平", "weights": [("Holland_S", 1.0), ("Holland_C", 1.0)]}
         ]
@@ -172,7 +172,7 @@ BANK = [
         "mother_source": "SYSTEM_RULE",
         "mother_id": "VERIFY_MBTI_12",
         "mechanism": "L3_verify_J",
-        "text": "【追问】如果你选了“列出具体计划并执行”，但今天突然下暴雨导致你原定出门的计划全泡汤了，你的感受是：",
+        "text": "今天突然下暴雨，原定出门计划全部中断。你接下来更可能怎么处理？",
         "options": [
             {"val": "X", "text": "非常烦躁，计划被打乱让我很不舒服，甚至不想干别的事了。", "weights": []},
             {"val": "Y", "text": "无所谓，那就躺在床上看一整天剧吧，随便了。", "weights": []},

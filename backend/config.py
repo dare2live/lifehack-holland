@@ -18,7 +18,7 @@ SEED_DIR.mkdir(parents=True, exist_ok=True)
 GENERATED_DIR.mkdir(parents=True, exist_ok=True)
 
 # ── DuckDB ─────────────────────────────────────────────────────────
-DB_PATH = str(DATA_DIR / "holland.duckdb")
+DB_PATH = os.getenv("HOLLAND_DB_PATH", str(DATA_DIR / "holland.duckdb"))
 
 # ── Main Project Integration ───────────────────────────────────────
 # Path to the main project's database (read-only access for crosswalk mapping)
@@ -27,6 +27,7 @@ MAIN_PROJECT_DB_PATH = os.getenv("MAIN_PROJECT_DB_PATH", str(PROJECT_ROOT.parent
 # ── Config Files ──────────────────────────────────────────────────
 CAREER_RIASEC_RULES_PATH = CONFIG_DIR / "career_riasec_rules.json"
 QUESTION_GENERATION_CONFIG_PATH = CONFIG_DIR / "question_generation.json"
+REPORT_STRATEGY_CONFIG_PATH = CONFIG_DIR / "report_strategy.json"
 
 # ── FastAPI ────────────────────────────────────────────────────────
 API_HOST = os.getenv("SJT_HOST", "0.0.0.0")

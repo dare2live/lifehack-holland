@@ -120,7 +120,7 @@ async def get_report(submission_id: str):
 
 
 @app.get("/api/questions")
-async def get_questions():
+async def get_questions(include_lineage: bool = False):
     """
     Return the question bank formatted for SurveyJS consumption.
     Includes scenario_text, options, and visibleIf rules for verification questions.
@@ -129,13 +129,19 @@ async def get_questions():
     try:
         # Fetch all items
         items = con.execute(
-            "SELECT sjt_q_id, scenario_text, core_mechanism FROM sjt_item_bank ORDER BY sjt_q_id"
+            """
+            SELECT sjt_q_id, scenario_text, core_mechanism, mother_source, mother_id,
+                   source_version, transform_level, review_status, lineage_json
+            FROM sjt_item_bank
+            ORDER BY sjt_q_id
+            """
         ).fetchall()
 
         # Fetch options per question
         weights = con.execute(
             """
-            SELECT sjt_q_id, option_val, dimension_code, inherited_weight
+            SELECT sjt_q_id, option_val, dimension_code, inherited_weight,
+                   source_version, review_status, lineage_json
             FROM sjt_weights
             ORDER BY sjt_q_id, option_val
             """
@@ -149,12 +155,19 @@ async def get_questions():
         # Build option map: {q_id: [{"val": "A", "dimensions": [...]}, ...]}
         option_map: dict = {}
         for w in weights:
-            q_id, opt, dim, wt = w
+            q_id, opt, dim, wt, source_version, review_status, lineage_json = w
             if q_id not in option_map:
                 option_map[q_id] = {}
             if opt not in option_map[q_id]:
                 option_map[q_id][opt] = []
-            option_map[q_id][opt].append({"dimension": dim, "weight": wt})
+            weight_payload = {"dimension": dim, "weight": wt}
+            if include_lineage:
+                weight_payload.update({
+                    "source_version": source_version or "",
+                    "review_status": review_status or "",
+                    "lineage": _json_loads(lineage_json, {}),
+                })
+            option_map[q_id][opt].append(weight_payload)
 
         # Build visibleIf map: {verify_q_id: "trigger_q_id = trigger_option"}
         visible_map: dict = {}
@@ -166,7 +179,17 @@ async def get_questions():
         option_texts = _load_option_texts()
         questions = []
         for item in items:
-            q_id, scenario, mechanism = item
+            (
+                q_id,
+                scenario,
+                mechanism,
+                mother_source,
+                mother_id,
+                source_version,
+                transform_level,
+                review_status,
+                lineage_json,
+            ) = item
             opts = option_map.get(q_id, {})
             option_values = sorted(set(opts.keys()) | set(option_texts.get(q_id, {}).keys()))
 
@@ -182,16 +205,30 @@ async def get_questions():
             if q_id in visible_map:
                 q["visibleIf"] = visible_map[q_id]
 
+            if include_lineage:
+                q["source_version"] = source_version or ""
+                q["transform_level"] = transform_level or ""
+                q["review_status"] = review_status or ""
+                q["lineage"] = {
+                    "mother_source": mother_source,
+                    "mother_id": mother_id,
+                    "core_mechanism": mechanism,
+                    **_json_loads(lineage_json, {}),
+                }
+
             # Build choice list (hide dimension info from frontend)
             for opt_val in option_values:
-                q["choices"].append({
+                choice = {
                     "value": opt_val,
                     "text": option_texts.get(q_id, {}).get(opt_val, f"Option {opt_val}"),
-                })
+                }
+                if include_lineage:
+                    choice["weights"] = opts.get(opt_val, [])
+                q["choices"].append(choice)
 
             questions.append(q)
 
-        return {"questions": questions, "total": len(questions)}
+        return {"questions": questions, "total": len(questions), "include_lineage": include_lineage}
 
     finally:
         con.close()
@@ -206,6 +243,17 @@ def _load_option_texts() -> dict:
             return json.load(f)
     except Exception:
         return {}
+
+
+def _json_loads(value, fallback):
+    if not value:
+        return fallback
+    if isinstance(value, (dict, list)):
+        return value
+    try:
+        return json.loads(str(value))
+    except Exception:
+        return fallback
 
 
 def _get_option_text(q_id: str, opt_val: str) -> str:

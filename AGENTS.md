@@ -17,6 +17,7 @@
 - Keep online scoring deterministic. No online LLM API in `/api/submit`, `/api/report`, or the scoring engine.
 - Treat LLMs only as offline draft-generation helpers. Drafts must keep lineage and require review before release.
 - Do not hardcode questionnaire text, scoring thresholds, source URLs, RIASEC mapping rules, or generation policy in service code when a config file can own them.
+- Do not hardcode user-facing report interpretation text in scoring code. Keep reviewed copy and case rules in config files so the main project can explain and revise outputs without changing engine logic.
 - Preserve lineage for every production question:
   - raw source file and source version
   - mother source and mother record id
@@ -37,6 +38,7 @@
 ## Data Rules
 
 - `holland.duckdb` is local runtime state and must not be committed.
+- Automated tests must use a temporary DuckDB path such as `HOLLAND_DB_PATH`; they must not overwrite or shrink the developer's local `backend/data/holland.duckdb`.
 - Generated candidate pools should go under ignored `backend/data/generated/`.
 - Reviewed seed files under `backend/data/seed/` may be committed when they are intentionally curated and small.
 - Any bridge from Chinese occupations to RIASEC must store enough lineage to explain which source row and which rule produced the label.

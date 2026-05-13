@@ -1,0 +1,35 @@
+{
+  "version": "2026-05-14",
+  "notes": "Config-driven report text for deterministic Holland/IPIP scoring output. Online scoring still uses only stored answers, weights, rules, and this reviewed text config.",
+  "insight": {
+    "fallback_text": "作答数据不足，暂时无法形成稳定的交叉解读。",
+    "intro_template": "{mbti_type} 显示的认知偏好与 {top_holland} 型任务兴趣可以合并观察，用来判断更适合长期投入的学习、专业和职业场景。",
+    "default_text": "两类结果方向较一致，后续可优先比较这些兴趣任务对应专业的课程结构、就业去向和城市产业机会。",
+    "cases": [
+      {
+        "case_id": "outgoing_with_research_or_hands_on_interest",
+        "mbti_contains": ["E"],
+        "top_holland_in": ["I", "R"],
+        "text": "外向互动偏好与研究或实操任务兴趣同时出现时，可以关注需要把技术问题讲清楚、把项目推进落地的专业方向。"
+      },
+      {
+        "case_id": "introverted_with_people_or_influence_interest",
+        "mbti_contains": ["I"],
+        "top_holland_in": ["E", "S"],
+        "text": "内向思考偏好与人际协作任务兴趣同时出现时，可以关注一对一沟通、组织支持、教育服务或项目协调类场景。"
+      },
+      {
+        "case_id": "feeling_with_analytical_interest",
+        "mbti_contains": ["F"],
+        "top_holland_in": ["I", "C", "R"],
+        "text": "情感判断偏好与理性、规范或实操任务兴趣同时出现时，可以关注医疗健康、公共服务、质量管理和数据支持等兼具责任感与专业性的方向。"
+      },
+      {
+        "case_id": "thinking_with_social_or_artistic_interest",
+        "mbti_contains": ["T"],
+        "top_holland_in": ["S", "A"],
+        "text": "逻辑判断偏好与社会或创意任务兴趣同时出现时，可以关注产品设计、内容策划、用户研究、教育技术等需要把抽象判断转成具体体验的方向。"
+      }
+    ]
+  }
+}

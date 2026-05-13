@@ -65,7 +65,7 @@ GROUP_1_WEIGHTS = [
     # 选项 X: 自己直接冲上台暖场 (真正的 E 型)
     {"sjt_q_id": "Q_Gala_verify", "option_val": "X", "dimension_code": "Holland_E", "inherited_weight": 1.5},
     {"sjt_q_id": "Q_Gala_verify", "option_val": "X", "dimension_code": "MBTI_E",   "inherited_weight": 1.0},
-    # 选项 Y: 算了，让灯光师放点背景音乐，大家等着就好 (退缩暴露)
+    # 选项 Y: 算了，让灯光师放点背景音乐，大家等着就好
     {"sjt_q_id": "Q_Gala_verify", "option_val": "Y", "dimension_code": "Holland_C", "inherited_weight": 0.5},
     {"sjt_q_id": "Q_Gala_verify", "option_val": "Y", "dimension_code": "MBTI_I",   "inherited_weight": 0.5},
     # 选项 Z: 去找音控组的人一起排查问题
@@ -77,9 +77,9 @@ GROUP_1_RULES = [
     {
         "rule_id": "RULE_Gala_E_fake",
         "trigger_q_id": "Q_Gala",
-        "trigger_option": "A",           # 主场景中选了"安抚观众"(装外向)
+        "trigger_option": "A",           # 主场景中选了"安抚观众"
         "verify_q_id": "Q_Gala_verify",
-        "expected_option": "Y",          # 验证中选了"算了放音乐等着"(退缩暴露)
+        "expected_option": "Y",          # 验证中选了"算了放音乐等着"
         "penalty_dimension": "Holland_E",
         "penalty_weight": -2.0,
     },
@@ -110,7 +110,7 @@ GROUP_2_ITEMS = [
         "core_mechanism": "L2_verify_A_creative_persistence",
         "scenario_text": (
             "你花了两小时做完了自己的方案，拿给几个同学看，"
-            "大家一致觉得另一位同学的拼贴风更好看。你此刻心里的真实想法是？"
+            "大家一致觉得另一位同学的拼贴风更好看。你接下来更可能怎么处理？"
         ),
     },
 ]
@@ -134,7 +134,7 @@ GROUP_2_WEIGHTS = [
     # 选项 X: 尊重大家意见，就用TA的方案吧 (坦然接受)
     {"sjt_q_id": "Q_Poster_verify", "option_val": "X", "dimension_code": "Holland_S", "inherited_weight": 1.0},
     {"sjt_q_id": "Q_Poster_verify", "option_val": "X", "dimension_code": "MBTI_F",   "inherited_weight": 1.0},
-    # 选项 Y: 有点不服，觉得他们不懂审美，但嘴上不说 (退缩暴露)
+    # 选项 Y: 有点不服，觉得他们不懂审美，但嘴上不说
     {"sjt_q_id": "Q_Poster_verify", "option_val": "Y", "dimension_code": "MBTI_I",   "inherited_weight": 0.5},
     {"sjt_q_id": "Q_Poster_verify", "option_val": "Y", "dimension_code": "Holland_A", "inherited_weight": -0.5},
     # 选项 Z: 坚持提出修改意见，用对比图展示两种方案的优劣
@@ -146,9 +146,9 @@ GROUP_2_RULES = [
     {
         "rule_id": "RULE_Poster_A_fake",
         "trigger_q_id": "Q_Poster",
-        "trigger_option": "A",             # 主场景中选了"各做方案全班投票"(装自信)
+        "trigger_option": "A",             # 主场景中选了"各做方案全班投票"
         "verify_q_id": "Q_Poster_verify",
-        "expected_option": "Y",            # 验证中选了"不服但嘴上不说"(退缩暴露)
+        "expected_option": "Y",            # 验证中选了"不服但嘴上不说"
         "penalty_dimension": "Holland_A",
         "penalty_weight": -1.5,
     },

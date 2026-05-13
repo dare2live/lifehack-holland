@@ -52,7 +52,7 @@ add_group(
         "mother_source": "ONET_IP",
         "mother_id": "ONET_1.A.1_v",
         "core_mechanism": "L2_verify_E_resilience",
-        "scenario_text": "招新刚开始，有几个路过的同学对你大声说：'这社团好无聊啊，别去了。' 你当时真实的心理反应是？",
+        "scenario_text": "招新刚开始，有几个路过的同学对你大声说：'这社团好无聊啊，别去了。' 你接下来更可能怎么处理？",
     },
     verify_weights=[
         {"sjt_q_id": "Q_TechClub_v", "option_val": "X", "dimension_code": "Holland_E", "inherited_weight": 1.5},

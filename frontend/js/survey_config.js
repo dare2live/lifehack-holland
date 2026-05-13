@@ -96,14 +96,6 @@ class SjtSurvey {
             // Question text
             html += `<div class="survey-card__question">${q.title}</div>`;
 
-            // Verification notice
-            if (isVerify) {
-                html += `<div class="verify-notice">
-                    <span class="verify-notice__icon">🔍</span>
-                    <span>追问：基于你上面的选择，我们想进一步了解你的真实反应</span>
-                </div>`;
-            }
-
             // Radio options
             html += '<div class="option-group">';
             q.choices.forEach(c => {

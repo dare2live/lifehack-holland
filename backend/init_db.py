@@ -56,9 +56,9 @@ DDL_STATEMENTS = [
     CREATE TABLE IF NOT EXISTS sjt_consistency_rules (
         rule_id           VARCHAR PRIMARY KEY,
         trigger_q_id      VARCHAR,             -- 主场景题
-        trigger_option    VARCHAR,             -- 试图伪装的高光选项
+        trigger_option    VARCHAR,             -- 主场景选项
         verify_q_id       VARCHAR,             -- 隐藏验证题
-        expected_option   VARCHAR,             -- 暴露原形的退缩选项
+        expected_option   VARCHAR,             -- 验证场景选项
         penalty_dimension VARCHAR,             -- 要剥夺的特质分 (如 Holland_E)
         penalty_weight    FLOAT,               -- 惩罚扣分值 (如 -2.0)
         source_version    VARCHAR,             -- 规则来源版本
