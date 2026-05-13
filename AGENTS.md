@@ -23,6 +23,7 @@
 - Treat LLMs only as offline draft-generation helpers. Drafts must keep lineage and require review before release.
 - Do not hardcode questionnaire text, scoring thresholds, source URLs, RIASEC mapping rules, or generation policy in service code when a config file can own them.
 - Do not hardcode user-facing report interpretation text in scoring code. Keep reviewed copy and case rules in config files so the main project can explain and revise outputs without changing engine logic.
+- Reviewed question and option text belongs in seed JSON and runtime tables, not in generated frontend JSON or Python populate scripts. The current runtime source is `sjt_item_bank` + `sjt_options` + `sjt_weights`.
 - Preserve lineage for every production question:
   - raw source file and source version
   - mother source and mother record id
@@ -33,6 +34,9 @@
   mother-template mechanisms, so item-level `mother_id` is not enough; each
   row in `sjt_weights` must carry source version, review status, and
   lineage JSON.
+- Preserve lineage for every reviewed option text. Each row in `sjt_options`
+  must carry source version, review status, and lineage JSON so the exact
+  wording shown to a student can be audited.
 - Reviewed seed options must carry explicit option-level lineage before they
   become production questions. For verification-only options, set
   `scoring_role=consistency_check_only` so audits can distinguish intentional
@@ -54,6 +58,8 @@
 - `holland.duckdb` is local runtime state and must not be committed.
 - Automated tests must use a temporary DuckDB path such as `HOLLAND_DB_PATH`; they must not overwrite or shrink the developer's local `backend/data/holland.duckdb`.
 - Generated candidate pools should go under ignored `backend/data/generated/`.
+- Do not reintroduce `backend/data/questions.json`; question choices are read
+  from `sjt_options`.
 - Reviewed seed files under `backend/data/seed/` may be committed when they are intentionally curated and small.
 - Any bridge from Chinese occupations to RIASEC must store enough lineage to explain which source row and which rule produced the label.
 

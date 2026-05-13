@@ -8,6 +8,7 @@ import json
 import duckdb
 from pathlib import Path
 from backend.config import DB_PATH, PROJECT_ROOT, QUESTION_GENERATION_CONFIG_PATH
+from backend.init_db import init_database
 
 
 def _project_path(path: str) -> Path:
@@ -130,10 +131,12 @@ def _rule_lineage(rule: dict, generation_config: dict) -> dict:
 
 def populate():
     print("Populating generated question bank (decoupled Dual-Track mode) into DuckDB...")
+    init_database(DB_PATH)
     con = duckdb.connect(DB_PATH)
 
     con.execute("DELETE FROM sjt_responses")
     con.execute("DELETE FROM sjt_weights")
+    con.execute("DELETE FROM sjt_options")
     con.execute("DELETE FROM sjt_consistency_rules")
     con.execute("DELETE FROM sjt_item_bank")
 
@@ -142,8 +145,6 @@ def populate():
     generation_config = _load_generation_config()
     bank_data = _load_seed_records(item_files)
     rules_data = _load_seed_records(rule_files)
-
-    questions_for_frontend = {}
 
     for item in bank_data:
         lineage = _item_lineage(item, generation_config)
@@ -165,12 +166,25 @@ def populate():
             json.dumps(lineage, ensure_ascii=False, sort_keys=True),
         ))
 
-        opt_dict = {}
         for opt in item["options"]:
             opt_val = opt["val"]
             opt_text = opt["text"]
-            opt_dict[opt_val] = opt_text
             option_lineage = _option_lineage(item, opt, lineage)
+
+            con.execute("""
+                INSERT INTO sjt_options (
+                    sjt_q_id, option_val, option_text,
+                    source_version, review_status, lineage_json
+                )
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                item["q_id"],
+                opt_val,
+                opt_text,
+                option_lineage["source_version"],
+                option_lineage["review_status"],
+                json.dumps(option_lineage, ensure_ascii=False, sort_keys=True),
+            ))
 
             for dim_code, weight in opt["weights"]:
                 con.execute("""
@@ -189,8 +203,6 @@ def populate():
                     json.dumps(option_lineage, ensure_ascii=False, sort_keys=True),
                 ))
 
-        questions_for_frontend[item["q_id"]] = opt_dict
-
     for rule in rules_data:
         rule_id = _rule_id(rule)
         lineage = _rule_lineage(rule, generation_config)
@@ -208,11 +220,7 @@ def populate():
 
     con.close()
 
-    # Write JSON for frontend (dynamic text rendering)
-    with open(PROJECT_ROOT / "backend" / "data" / "questions.json", "w", encoding="utf-8") as f:
-        json.dump(questions_for_frontend, f, ensure_ascii=False, indent=2)
-
-    print(f"✅ Successfully inserted {len(bank_data)} questions (decoupled), mapping weights, and {len(rules_data)} rules.")
+    print(f"Successfully inserted {len(bank_data)} questions, reviewed options, mapping weights, and {len(rules_data)} rules.")
 
 if __name__ == "__main__":
     populate()

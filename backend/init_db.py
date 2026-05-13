@@ -1,11 +1,12 @@
 """
-init_db.py — Create the 4 core DuckDB tables for the SJT Assessment Engine.
+init_db.py — Create the core DuckDB tables for the SJT Assessment Engine.
 
 Tables:
   1. sjt_item_bank          — Question metadata with data lineage (L4 → L0)
-  2. sjt_weights             — Option → dimension → weight mapping (Model Layer)
-  3. sjt_consistency_rules   — Contradiction detection & penalty rules (Rule Layer)
-  4. sjt_responses           — Student submission fact table
+  2. sjt_options            — Reviewed option text with option-level lineage
+  3. sjt_weights            — Option → dimension → weight mapping (Model Layer)
+  4. sjt_consistency_rules  — Contradiction detection & adjustment rules (Rule Layer)
+  5. sjt_responses          — Student submission fact table
 
 Usage:
     python -m backend.init_db          # from project root
@@ -30,6 +31,22 @@ DDL_STATEMENTS = [
         transform_level VARCHAR,              -- L0/L1/L2/L3/L4 转化层级
         review_status  VARCHAR,               -- 审核状态
         lineage_json   VARCHAR                -- 完整血缘 JSON
+    );
+    """,
+
+    # ──────────────────────────────────────────────────────────────
+    # 【题目选项】选项文案与选项级血缘
+    # ──────────────────────────────────────────────────────────────
+    """
+    CREATE TABLE IF NOT EXISTS sjt_options (
+        sjt_q_id       VARCHAR,
+        option_val     VARCHAR,
+        option_text    VARCHAR,
+        source_version VARCHAR,
+        review_status  VARCHAR,
+        lineage_json   VARCHAR,
+        PRIMARY KEY (sjt_q_id, option_val),
+        FOREIGN KEY (sjt_q_id) REFERENCES sjt_item_bank(sjt_q_id)
     );
     """,
 
@@ -109,6 +126,15 @@ def init_database(db_path: str = DB_PATH) -> None:
         )
         _ensure_columns(
             con,
+            "sjt_options",
+            {
+                "source_version": "VARCHAR",
+                "review_status": "VARCHAR",
+                "lineage_json": "VARCHAR",
+            },
+        )
+        _ensure_columns(
+            con,
             "sjt_weights",
             {
                 "source_version": "VARCHAR",
@@ -125,7 +151,7 @@ def init_database(db_path: str = DB_PATH) -> None:
                 "lineage_json": "VARCHAR",
             },
         )
-        print(f"[init_db] ✅ All 4 tables created/verified in: {db_path}")
+        print(f"[init_db] All Holland tables created/verified in: {db_path}")
 
         # Quick sanity check
         tables = con.execute(

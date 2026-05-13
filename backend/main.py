@@ -7,12 +7,14 @@ Endpoints:
     GET  /api/questions           — Return question bank for SurveyJS dynamic loading
     GET  /api/health              — Health check
 """
-import json
 import uuid
+import json
+from pathlib import Path
 
 import duckdb
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from backend.config import DB_PATH, CORS_ORIGINS, API_HOST, API_PORT
@@ -137,7 +139,16 @@ async def get_questions(include_lineage: bool = False):
             """
         ).fetchall()
 
-        # Fetch options per question
+        # Fetch reviewed option text per question.
+        option_rows = con.execute(
+            """
+            SELECT sjt_q_id, option_val, option_text, source_version, review_status, lineage_json
+            FROM sjt_options
+            ORDER BY sjt_q_id, option_val
+            """
+        ).fetchall()
+
+        # Fetch option scoring rows per question.
         weights = con.execute(
             """
             SELECT sjt_q_id, option_val, dimension_code, inherited_weight,
@@ -152,14 +163,23 @@ async def get_questions(include_lineage: bool = False):
             "SELECT trigger_q_id, trigger_option, verify_q_id FROM sjt_consistency_rules"
         ).fetchall()
 
-        # Build option map: {q_id: [{"val": "A", "dimensions": [...]}, ...]}
         option_map: dict = {}
+        for row in option_rows:
+            q_id, opt, text, source_version, review_status, lineage_json = row
+            option_map.setdefault(q_id, {})[opt] = {
+                "text": text,
+                "source_version": source_version or "",
+                "review_status": review_status or "",
+                "lineage": _json_loads(lineage_json, {}),
+            }
+
+        weight_map: dict = {}
         for w in weights:
             q_id, opt, dim, wt, source_version, review_status, lineage_json = w
-            if q_id not in option_map:
-                option_map[q_id] = {}
-            if opt not in option_map[q_id]:
-                option_map[q_id][opt] = []
+            if q_id not in weight_map:
+                weight_map[q_id] = {}
+            if opt not in weight_map[q_id]:
+                weight_map[q_id][opt] = []
             weight_payload = {"dimension": dim, "weight": wt}
             if include_lineage:
                 weight_payload.update({
@@ -167,7 +187,7 @@ async def get_questions(include_lineage: bool = False):
                     "review_status": review_status or "",
                     "lineage": _json_loads(lineage_json, {}),
                 })
-            option_map[q_id][opt].append(weight_payload)
+            weight_map[q_id][opt].append(weight_payload)
 
         # Build visibleIf map: {verify_q_id: "trigger_q_id = trigger_option"}
         visible_map: dict = {}
@@ -176,7 +196,6 @@ async def get_questions(include_lineage: bool = False):
             visible_map[verify_q] = f"{{{trigger_q}}} = '{trigger_opt}'"
 
         # Assemble SurveyJS-compatible questions
-        option_texts = _load_option_texts()
         questions = []
         for item in items:
             (
@@ -191,7 +210,8 @@ async def get_questions(include_lineage: bool = False):
                 lineage_json,
             ) = item
             opts = option_map.get(q_id, {})
-            option_values = sorted(set(opts.keys()) | set(option_texts.get(q_id, {}).keys()))
+            option_weights = weight_map.get(q_id, {})
+            option_values = sorted(set(opts.keys()) | set(option_weights.keys()))
 
             q = {
                 "name": q_id,
@@ -218,12 +238,16 @@ async def get_questions(include_lineage: bool = False):
 
             # Build choice list (hide dimension info from frontend)
             for opt_val in option_values:
+                option_meta = opts.get(opt_val, {})
                 choice = {
                     "value": opt_val,
-                    "text": option_texts.get(q_id, {}).get(opt_val, f"Option {opt_val}"),
+                    "text": option_meta.get("text") or f"选项 {opt_val}",
                 }
                 if include_lineage:
-                    choice["weights"] = opts.get(opt_val, [])
+                    choice["source_version"] = option_meta.get("source_version", "")
+                    choice["review_status"] = option_meta.get("review_status", "")
+                    choice["lineage"] = option_meta.get("lineage", {})
+                    choice["weights"] = option_weights.get(opt_val, [])
                 q["choices"].append(choice)
 
             questions.append(q)
@@ -232,18 +256,6 @@ async def get_questions(include_lineage: bool = False):
 
     finally:
         con.close()
-
-
-import os
-
-def _load_option_texts() -> dict:
-    json_path = os.path.join(os.path.dirname(__file__), "data", "questions.json")
-    try:
-        with open(json_path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception:
-        return {}
-
 
 def _json_loads(value, fallback):
     if not value:
@@ -255,15 +267,7 @@ def _json_loads(value, fallback):
     except Exception:
         return fallback
 
-
-def _get_option_text(q_id: str, opt_val: str) -> str:
-    """Get human-readable option text for seed data from questions.json."""
-    option_texts = _load_option_texts()
-    return option_texts.get(q_id, {}).get(opt_val, f"Option {opt_val}")
-
 # ── Static files — serve frontend ──────────────────────────────────
-from pathlib import Path
-from fastapi.responses import RedirectResponse
 
 FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 

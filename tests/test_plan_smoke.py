@@ -68,8 +68,19 @@ class HollandPlanSmokeTests(unittest.TestCase):
         con = duckdb.connect(DB_PATH, read_only=True)
         try:
             self.assertEqual(con.execute("SELECT COUNT(*) FROM sjt_item_bank").fetchone()[0], 18)
+            self.assertEqual(con.execute("SELECT COUNT(*) FROM sjt_options").fetchone()[0], 42)
             self.assertEqual(con.execute("SELECT COUNT(*) FROM sjt_consistency_rules").fetchone()[0], 2)
             self.assertGreater(con.execute("SELECT COUNT(*) FROM sjt_weights").fetchone()[0], 0)
+            option_columns = {
+                row[1]
+                for row in con.execute("PRAGMA table_info('sjt_options')").fetchall()
+            }
+            self.assertIn("option_text", option_columns)
+            self.assertIn("lineage_json", option_columns)
+            option_lineage = con.execute(
+                "SELECT lineage_json FROM sjt_options WHERE sjt_q_id = 'H_Gala' AND option_val = 'A'"
+            ).fetchone()[0]
+            self.assertEqual(json.loads(option_lineage)["option_val"], "A")
             weight_columns = {
                 row[1]
                 for row in con.execute("PRAGMA table_info('sjt_weights')").fetchall()
@@ -128,6 +139,7 @@ class HollandPlanSmokeTests(unittest.TestCase):
         audit_questions = audit_payload["questions"]
         self.assertIn("lineage", audit_questions[0])
         self.assertIn("review_status", audit_questions[0])
+        self.assertIn("lineage", audit_questions[0]["choices"][0])
         self.assertIn("weights", audit_questions[0]["choices"][0])
         self.assertIn("lineage", audit_questions[0]["choices"][0]["weights"][0])
 

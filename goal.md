@@ -16,7 +16,7 @@
 ## 当前核验结论
 
 - 已存在 `lifehack-hollad plan.md`，内容覆盖用户原始需求、SJT 设计原则、规则-模型-策略、DuckDB 表结构和阶段路线。
-- 已落地四张核心表：`sjt_item_bank`、`sjt_weights`、`sjt_consistency_rules`、`sjt_responses`。
+- 已落地五张核心表：`sjt_item_bank`、`sjt_options`、`sjt_weights`、`sjt_consistency_rules`、`sjt_responses`。选项文案不再依赖生成的 `backend/data/questions.json`，而是和选项级血缘一起进入 `sjt_options`。
 - 已落地 FastAPI：`/api/questions`、`/api/submit`、`/api/report/{submission_id}`、`/api/config`、`/api/health`。
 - 已落地候选池：从 O*NET/IPIP 生成 328 条 `needs_review` 候选，其中 O*NET 240 条、IPIP 88 条。
 - 已落地审核晋级：`question_review` 只允许显式 `approved` 的复核行晋级为生产 seed。
@@ -32,11 +32,12 @@
 - 外部来源 URL 迁入 `config/source_registry.json`，抓取脚本只读取配置，不在脚本里维护来源地址。
 - `/api/report/{submission_id}` 增加 `decision_inputs`，供主项目保存稳定摘要，同时保留完整 `source_lineage`。
 - 生产题库种子从题目级血缘回退升级为选项级血缘；复核晋级流程会为每个 approved option 自动补齐候选来源、母版 ID、原始文本、权重和复核备注，避免从 O*NET/IPIP 候选转正式题时断链。
+- 接手验证后已把选项文案纳入 `sjt_options`，`/api/questions` 直接从表读取题目、选项和审核血缘；删除旧的硬编码题库入库脚本和生成式 `questions.json`，只保留 `populate_golden_bank.py` 作为受控 seed 入库入口。
 
 ## 下一步顺序
 
-1. 先用 `audit_question_lineage.py` 和单元测试守住血缘、晋级和报告契约。
+1. 先用 `audit_question_lineage.py` 和单元测试守住候选、选项文案、权重、规则和报告契约。
 2. 再从候选池按 `review_priority` 拆小批复核，人工把 O*NET/IPIP 母版材料改写为中文高中/大学情境题。
-3. 每批只晋级少量高质量题，保持题库短、准、可解释。
+3. 每批只晋级少量高质量题，保持题库短、准、可解释，并通过 `populate_golden_bank.py` 入库到 `sjt_options/sjt_weights`。
 4. 主项目只同步 `submission_id` 对应报告，并把 `decision_inputs`、`recommended_cn_occupations`、`source_lineage` 写入案例快照。
 5. 后续如引入离线大模型，只能生成候选草稿；进入生产前仍必须通过同一复核和血缘审计。
