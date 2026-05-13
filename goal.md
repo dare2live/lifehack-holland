@@ -22,6 +22,7 @@
 - 已落地审核晋级：`question_review` 只允许显式 `approved` 的复核行晋级为生产 seed。
 - 已落地主项目职业桥：只读 `lifehack` 的职业目录，写入本项目本地 `cn_occupation_riasec_map`。
 - 复核后补充核验：现有测试全 PASS，`audit_question_lineage.py` 全 PASS；生产题库 18 题、42 个选项均已补显式选项级血缘，验证题选项以 `scoring_role=consistency_check_only` 说明其只参与一致性规则、不直接计分。
+- 接手复核后补齐主项目适配：独立测评前端已改为主项目一致的浅色纸面、薄荷绿和 IBM Plex/Noto Serif 风格；结果页不再展示“惩罚前”等内部计算词。后端 `/api/questions` 对动态出现的验证题也标记为必答，前端会要求每个可见情境题完成后才能继续。
 
 ## 已补的接手修正
 

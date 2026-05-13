@@ -27,7 +27,7 @@ class SjtSurvey {
         } catch (err) {
             this.container.innerHTML = `
                 <div class="survey-card" style="text-align:center;">
-                    <p style="color: var(--text-secondary);">⚠️ 无法加载问卷，请确认后端服务已启动</p>
+                    <p style="color: var(--ink-2);">无法加载问卷，请确认测评服务已启动。</p>
                     <p style="color: var(--text-muted); font-size:0.85rem; margin-top:0.5rem;">${err.message}</p>
                 </div>`;
         }
@@ -189,14 +189,11 @@ class SjtSurvey {
         const btn = document.getElementById('btn-next') || document.getElementById('btn-submit');
         if (!btn) return;
 
-        // Check: all visible required questions must be answered
+        // Check: every visible question on the page must be answered.
         const allAnswered = page.every(q => {
             const card = document.getElementById(`card-${q.name}`);
             const isHidden = card && card.classList.contains('hidden');
-            if (isHidden) return true;           // hidden questions don't count
-            if (!q.isRequired && q.visibleIf) {  // visible verify questions still need answer
-                return !card.classList.contains('hidden') ? !!this.answers[q.name] : true;
-            }
+            if (isHidden) return true;
             return !!this.answers[q.name];
         });
 

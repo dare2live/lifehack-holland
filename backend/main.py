@@ -197,7 +197,7 @@ async def get_questions(include_lineage: bool = False):
                 "name": q_id,
                 "title": scenario,
                 "type": "radiogroup",
-                "isRequired": True if q_id not in visible_map else False,
+                "isRequired": True,
                 "choices": [],
             }
 

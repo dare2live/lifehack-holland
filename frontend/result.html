@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="你的双核生涯测评结果 — MBTI + 霍兰德综合报告">
-    <title>测评结果 — 双核生涯测评</title>
+    <meta name="description" content="志途 LifeHack 生涯测评结果">
+    <title>志途 LifeHack · 测评结果</title>
     <link rel="stylesheet" href="css/style.css">
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
@@ -15,7 +15,7 @@
         <!-- Loading state -->
         <div id="loading" style="padding: 4rem 0; text-align: center;">
             <div class="spinner"></div>
-            <p class="loading-text">正在生成你的专属报告...</p>
+            <p class="loading-text">正在生成测评摘要...</p>
         </div>
     </div>
 
@@ -30,10 +30,10 @@
             if (!submissionId) {
                 document.getElementById('result-container').innerHTML = `
                     <div class="result-header">
-                        <div class="result-header__icon">❌</div>
+                        <div class="result-header__mark" aria-hidden="true"></div>
                         <h1 class="result-header__title">未找到测评记录</h1>
                         <p class="result-header__sub">请先完成问卷后再查看结果</p>
-                        <a href="index.html" class="btn btn--primary" style="margin-top:1.5rem;">去做测评 →</a>
+                        <a href="index.html" class="btn btn--primary" style="margin-top:1.5rem;">去做测评</a>
                     </div>`;
                 return;
             }
@@ -49,10 +49,10 @@
             } catch (err) {
                 document.getElementById('result-container').innerHTML = `
                     <div class="result-header">
-                        <div class="result-header__icon">⚠️</div>
+                        <div class="result-header__mark" aria-hidden="true"></div>
                         <h1 class="result-header__title">报告加载失败</h1>
                         <p class="result-header__sub">${err.message}</p>
-                        <a href="index.html" class="btn btn--ghost" style="margin-top:1.5rem;">← 返回首页</a>
+                        <a href="index.html" class="btn btn--ghost" style="margin-top:1.5rem;">返回首页</a>
                     </div>`;
             }
         })();

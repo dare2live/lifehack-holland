@@ -27,9 +27,9 @@ function renderReport(report, config, container) {
     // ── Header ──
     html += `
     <div class="result-header">
-        <div class="result-header__icon">🎯</div>
+        <div class="result-header__mark" aria-hidden="true"></div>
         <h1 class="result-header__title">你的测评报告</h1>
-        <p class="result-header__sub">基于情境判断测试 (SJT) 的双核生涯测评结果</p>
+        <p class="result-header__sub">基于连续情境选择形成的兴趣与行动偏好摘要</p>
     </div>`;
 
     // ── Type Badges ──
@@ -87,7 +87,7 @@ function renderReport(report, config, container) {
                      style="width: 0%; background: ${meta.color};" 
                      data-target-width="${pct}%"></div>
             </div>
-            <span class="score-bar__value">${score.toFixed(1)}${hasPenalty ? ' ⚠️' : ''}</span>
+            <span class="score-bar__value">${score.toFixed(1)}${hasPenalty ? ' · 已校准' : ''}</span>
         </div>`;
     });
     html += '</div>';
@@ -147,7 +147,7 @@ function renderReport(report, config, container) {
             </div>
             <p class="dim-desc__text">${meta.desc}</p>
             ${hasPenalty ? `<p class="dim-desc__text" style="color: var(--accent-3); margin-top: 0.5rem;">
-                ⚠️ 该维度检测到作答不一致，得分已被校准 (${d.penalty_score > 0 ? '+' : ''}${d.penalty_score.toFixed(1)})
+                前后选择存在差异，系统已降低该方向的信号权重 (${d.penalty_score > 0 ? '+' : ''}${d.penalty_score.toFixed(1)})
             </p>` : ''}
         </div>`;
     });
@@ -210,7 +210,7 @@ function _renderRadarChart(dimMap, HOLLAND_META) {
                     pointRadius: 5,
                 },
                 {
-                    label: '基础得分 (惩罚前)',
+                    label: '原始倾向',
                     data: baseData,
                     backgroundColor: 'rgba(139, 92, 246, 0.05)',
                     borderColor: 'rgba(139, 92, 246, 0.3)',

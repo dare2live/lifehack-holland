@@ -119,6 +119,7 @@ class HollandPlanSmokeTests(unittest.TestCase):
         verify_questions = [q for q in questions if q.get("visibleIf")]
         self.assertTrue(verify_questions)
         self.assertTrue(all(q["choices"] for q in verify_questions))
+        self.assertTrue(all(q["isRequired"] for q in verify_questions))
 
         audit_response = client.get("/api/questions?include_lineage=true")
         self.assertEqual(audit_response.status_code, 200)

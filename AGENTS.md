@@ -43,6 +43,11 @@
   keep returning `submission_id`, `source_version`, `dimensions`,
   `holland_top3`, `mbti_type`, `cross_insight`,
   `recommended_cn_occupations`, `consistency_issues`, and `source_lineage`.
+- User-facing screens must visually align with the main `lifehack` workbench:
+  light paper surfaces, restrained mint accent, IBM Plex/Noto Serif typography,
+  and concise family-readable labels. Avoid exposing internal scoring words such
+  as penalty, lie detection, fake answer, or draft-generation mechanics in the
+  visible UI.
 
 ## Data Rules
 
