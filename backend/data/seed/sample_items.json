@@ -1,0 +1,30 @@
+[
+  {
+    "sjt_q_id": "Q_Gala",
+    "mother_source": "ONET_IP",
+    "mother_id": "ONET_4.A.4.a.1",
+    "core_mechanism": "L2_crisis_response_E_vs_R",
+    "scenario_text": "迎新晚会彩排时，音响突然烧坏了，距离开场还有10分钟。作为负责人的你，第一反应是什么？"
+  },
+  {
+    "sjt_q_id": "Q_Gala_verify",
+    "mother_source": "ONET_IP",
+    "mother_id": "ONET_4.A.4.a.1_v",
+    "core_mechanism": "L2_verify_E_authenticity",
+    "scenario_text": "你走向主持人请求帮忙临场互动拖延时间，但主持人翻了个白眼说\"这不在台本上，我不干\"。你的下一步是？"
+  },
+  {
+    "sjt_q_id": "Q_Poster",
+    "mother_source": "IPIP_Jung",
+    "mother_id": "IPIP_E_vs_I_03",
+    "core_mechanism": "L2_creative_conflict_A_vs_I",
+    "scenario_text": "班级要参加校庆海报比赛，你和另一位同学对设计方向完全相反——你想做极简风格，TA 想做花哨拼贴。班主任说你俩自己商量，但比赛明天就要交。你会怎么做？"
+  },
+  {
+    "sjt_q_id": "Q_Poster_verify",
+    "mother_source": "IPIP_Jung",
+    "mother_id": "IPIP_E_vs_I_03_v",
+    "core_mechanism": "L2_verify_A_creative_persistence",
+    "scenario_text": "你花了两小时做完了自己的方案，拿给几个同学看，大家一致觉得另一位同学的拼贴风更好看。你此刻心里的真实想法是？"
+  }
+]

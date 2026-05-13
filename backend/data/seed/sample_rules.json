@@ -1,0 +1,20 @@
+[
+  {
+    "rule_id": "RULE_Gala_E_fake",
+    "trigger_q_id": "Q_Gala",
+    "trigger_option": "A",
+    "verify_q_id": "Q_Gala_verify",
+    "expected_option": "Y",
+    "penalty_dimension": "Holland_E",
+    "penalty_weight": -2.0
+  },
+  {
+    "rule_id": "RULE_Poster_A_fake",
+    "trigger_q_id": "Q_Poster",
+    "trigger_option": "A",
+    "verify_q_id": "Q_Poster_verify",
+    "expected_option": "Y",
+    "penalty_dimension": "Holland_A",
+    "penalty_weight": -1.5
+  }
+]

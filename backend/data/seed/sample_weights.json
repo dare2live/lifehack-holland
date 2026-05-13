@@ -1,0 +1,158 @@
+[
+  {
+    "sjt_q_id": "Q_Gala",
+    "option_val": "A",
+    "dimension_code": "Holland_E",
+    "inherited_weight": 2.0
+  },
+  {
+    "sjt_q_id": "Q_Gala",
+    "option_val": "A",
+    "dimension_code": "MBTI_E",
+    "inherited_weight": 1.5
+  },
+  {
+    "sjt_q_id": "Q_Gala",
+    "option_val": "B",
+    "dimension_code": "Holland_R",
+    "inherited_weight": 2.0
+  },
+  {
+    "sjt_q_id": "Q_Gala",
+    "option_val": "B",
+    "dimension_code": "MBTI_T",
+    "inherited_weight": 1.5
+  },
+  {
+    "sjt_q_id": "Q_Gala",
+    "option_val": "C",
+    "dimension_code": "Holland_S",
+    "inherited_weight": 1.0
+  },
+  {
+    "sjt_q_id": "Q_Gala",
+    "option_val": "C",
+    "dimension_code": "MBTI_F",
+    "inherited_weight": 1.0
+  },
+  {
+    "sjt_q_id": "Q_Gala_verify",
+    "option_val": "X",
+    "dimension_code": "Holland_E",
+    "inherited_weight": 1.5
+  },
+  {
+    "sjt_q_id": "Q_Gala_verify",
+    "option_val": "X",
+    "dimension_code": "MBTI_E",
+    "inherited_weight": 1.0
+  },
+  {
+    "sjt_q_id": "Q_Gala_verify",
+    "option_val": "Y",
+    "dimension_code": "Holland_C",
+    "inherited_weight": 0.5
+  },
+  {
+    "sjt_q_id": "Q_Gala_verify",
+    "option_val": "Y",
+    "dimension_code": "MBTI_I",
+    "inherited_weight": 0.5
+  },
+  {
+    "sjt_q_id": "Q_Gala_verify",
+    "option_val": "Z",
+    "dimension_code": "Holland_R",
+    "inherited_weight": 1.0
+  },
+  {
+    "sjt_q_id": "Q_Gala_verify",
+    "option_val": "Z",
+    "dimension_code": "MBTI_T",
+    "inherited_weight": 0.5
+  },
+  {
+    "sjt_q_id": "Q_Poster",
+    "option_val": "A",
+    "dimension_code": "Holland_A",
+    "inherited_weight": 2.0
+  },
+  {
+    "sjt_q_id": "Q_Poster",
+    "option_val": "A",
+    "dimension_code": "MBTI_T",
+    "inherited_weight": 1.5
+  },
+  {
+    "sjt_q_id": "Q_Poster",
+    "option_val": "B",
+    "dimension_code": "Holland_S",
+    "inherited_weight": 2.0
+  },
+  {
+    "sjt_q_id": "Q_Poster",
+    "option_val": "B",
+    "dimension_code": "MBTI_F",
+    "inherited_weight": 1.5
+  },
+  {
+    "sjt_q_id": "Q_Poster",
+    "option_val": "C",
+    "dimension_code": "Holland_I",
+    "inherited_weight": 2.0
+  },
+  {
+    "sjt_q_id": "Q_Poster",
+    "option_val": "C",
+    "dimension_code": "MBTI_N",
+    "inherited_weight": 1.0
+  },
+  {
+    "sjt_q_id": "Q_Poster",
+    "option_val": "D",
+    "dimension_code": "MBTI_I",
+    "inherited_weight": 1.0
+  },
+  {
+    "sjt_q_id": "Q_Poster",
+    "option_val": "D",
+    "dimension_code": "Holland_C",
+    "inherited_weight": 0.5
+  },
+  {
+    "sjt_q_id": "Q_Poster_verify",
+    "option_val": "X",
+    "dimension_code": "Holland_S",
+    "inherited_weight": 1.0
+  },
+  {
+    "sjt_q_id": "Q_Poster_verify",
+    "option_val": "X",
+    "dimension_code": "MBTI_F",
+    "inherited_weight": 1.0
+  },
+  {
+    "sjt_q_id": "Q_Poster_verify",
+    "option_val": "Y",
+    "dimension_code": "MBTI_I",
+    "inherited_weight": 0.5
+  },
+  {
+    "sjt_q_id": "Q_Poster_verify",
+    "option_val": "Y",
+    "dimension_code": "Holland_A",
+    "inherited_weight": -0.5
+  },
+  {
+    "sjt_q_id": "Q_Poster_verify",
+    "option_val": "Z",
+    "dimension_code": "Holland_A",
+    "inherited_weight": 1.5
+  },
+  {
+    "sjt_q_id": "Q_Poster_verify",
+    "option_val": "Z",
+    "dimension_code": "MBTI_T",
+    "inherited_weight": 1.0
+  }
+]
