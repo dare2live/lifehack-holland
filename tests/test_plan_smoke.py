@@ -22,7 +22,7 @@ from backend.question_audit import audit_all
 from backend.question_candidates import build_candidate_pool
 from backend.question_review import promote_review_batch, write_review_batch
 from backend.scoring_engine import _generate_cross_insight
-from backend.scripts.generate_cn_occupation_mapping import _load_rules, tag_occupation
+from backend.scripts.generate_cn_occupation_mapping import _load_rules, build_mapping, tag_occupation
 
 
 def tearDownModule():
@@ -382,6 +382,71 @@ class HollandPlanSmokeTests(unittest.TestCase):
         )
         self.assertEqual(tagged["primary_riasec"], "I")
         self.assertEqual(tagged["matched_rule_id"], "investigative_data_science")
+
+    def test_career_mapping_builds_local_lineage_without_writing_main_db(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            main_db = tmp_path / "main.duckdb"
+            local_db = tmp_path / "holland.duckdb"
+            con = duckdb.connect(str(main_db))
+            try:
+                con.execute(
+                    """
+                    CREATE TABLE fa_dim_career_occupation (
+                        occupation_code VARCHAR,
+                        occupation_name VARCHAR,
+                        skill_keywords_json VARCHAR,
+                        major_keywords_json VARCHAR
+                    )
+                    """
+                )
+                con.execute(
+                    """
+                    INSERT INTO fa_dim_career_occupation VALUES
+                        ('2-02-01-02', '地球物理地球化学与遥感勘查工程技术人员', '["遥感","数据处理"]', '[]'),
+                        ('2-06-01-02', '会计专业人员', '["财务","审计"]', '["会计学"]')
+                    """
+                )
+            finally:
+                con.close()
+
+            summary = build_mapping(main_db_path=str(main_db), local_db_path=str(local_db))
+            self.assertEqual(summary["rows"], 2)
+            self.assertEqual(summary["local_table"], "cn_occupation_riasec_map")
+
+            main_con = duckdb.connect(str(main_db), read_only=True)
+            try:
+                self.assertEqual(
+                    main_con.execute("SELECT COUNT(*) FROM fa_dim_career_occupation").fetchone()[0],
+                    2,
+                )
+                self.assertEqual(
+                    main_con.execute("SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'cn_occupation_riasec_map'").fetchone()[0],
+                    0,
+                )
+            finally:
+                main_con.close()
+
+            local_con = duckdb.connect(str(local_db), read_only=True)
+            try:
+                rows = local_con.execute(
+                    """
+                    SELECT occupation_code, primary_riasec, confidence, review_status, lineage_json
+                    FROM cn_occupation_riasec_map
+                    ORDER BY occupation_code
+                    """
+                ).fetchall()
+                self.assertEqual(rows[0][1], "I")
+                self.assertEqual(rows[1][1], "C")
+                self.assertGreater(rows[0][2], 0)
+                self.assertEqual(rows[0][3], "needs_review")
+                lineage = json.loads(rows[0][4])
+                self.assertEqual(lineage["source_project"], "lifehack")
+                self.assertEqual(lineage["source_table"], "fa_dim_career_occupation")
+                self.assertEqual(lineage["read_mode"], "duckdb_read_only")
+                self.assertEqual(lineage["source_pk"], "2-02-01-02")
+            finally:
+                local_con.close()
 
     def test_production_seed_files_are_config_driven(self):
         with tempfile.TemporaryDirectory() as tmp:

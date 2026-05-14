@@ -37,6 +37,7 @@
 - 生产题库种子从题目级血缘回退升级为选项级血缘；复核晋级流程会为每个 approved option 自动补齐候选来源、母版 ID、原始文本、权重和复核备注，避免从 O*NET/IPIP 候选转正式题时断链。
 - 接手验证后已把选项文案纳入 `sjt_options`，`/api/questions` 直接从表读取题目、选项和审核血缘；删除旧的硬编码题库入库脚本和生成式 `questions.json`，只保留 `populate_golden_bank.py` 作为受控 seed 入库入口。
 - 接手复核继续收紧前端可见文案：结果页不再展示“降低信号权重”或具体调整数值，改为“谨慎参考”的家庭可读表达，并新增单测防止“惩罚/扣分”等内部调整词回流到结果页。
+- 职业桥接边界已补回归测试：`build_mapping` 使用临时 main DuckDB 和本地 Holland DuckDB 验证只读读取 `fa_dim_career_occupation`、只在本项目生成 `cn_occupation_riasec_map`，并检查 `confidence/review_status/lineage_json` 中的 `read_mode=duckdb_read_only`、source table 和 source primary key；当前 `python3 -m unittest discover -s tests -v` 为 13 项全 PASS。
 
 ## 下一步顺序
 
