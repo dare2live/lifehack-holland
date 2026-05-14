@@ -165,6 +165,11 @@ class HollandPlanSmokeTests(unittest.TestCase):
         report = client.get(f"/api/report/{submit.json()['submission_id']}")
         self.assertEqual(report.status_code, 200)
         payload = report.json()
+        repeated_top3 = [
+            client.get(f"/api/report/{submit.json()['submission_id']}").json()["holland_top3"]
+            for _ in range(5)
+        ]
+        self.assertTrue(all(item == payload["holland_top3"] for item in repeated_top3))
         self.assertTrue(payload["dimensions"])
         self.assertTrue(payload["holland_top3"])
         self.assertTrue(payload["mbti_type"])

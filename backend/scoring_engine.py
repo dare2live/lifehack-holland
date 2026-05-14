@@ -144,8 +144,28 @@ def _load_report_strategy_config() -> dict[str, Any]:
 
 DIMENSIONS_CONFIG = _load_dimensions_config()
 REPORT_STRATEGY_CONFIG = _load_report_strategy_config()
-HOLLAND_CODES = set(d["code"] for d in DIMENSIONS_CONFIG["holland"]["dimensions"])
+HOLLAND_DIMENSION_ORDER = [d["code"] for d in DIMENSIONS_CONFIG["holland"]["dimensions"]]
+HOLLAND_CODES = set(HOLLAND_DIMENSION_ORDER)
 MBTI_PAIRS = {p["name"]: tuple(p["codes"]) for p in DIMENSIONS_CONFIG["mbti"]["pairs"]}
+DIMENSION_ORDER = {
+    code: idx
+    for idx, code in enumerate(
+        HOLLAND_DIMENSION_ORDER
+        + [
+            code
+            for pair in DIMENSIONS_CONFIG["mbti"]["pairs"]
+            for code in pair["codes"]
+        ]
+    )
+}
+
+
+def _dimension_sort_key(item: DimensionScore) -> tuple[float, int, str]:
+    return (
+        -item.final_score,
+        DIMENSION_ORDER.get(item.dimension_code, len(DIMENSION_ORDER)),
+        item.dimension_code,
+    )
 
 
 
@@ -177,12 +197,12 @@ def compute_report(submission_id: str, db_path: str = DB_PATH) -> ReportResponse
                 penalty_score=float(row[2]),
                 final_score=float(row[3]),
             ))
+        dimensions = sorted(dimensions, key=_dimension_sort_key)
 
         # Derive Holland top-3
         holland_scores = sorted(
             [d for d in dimensions if d.dimension_code in HOLLAND_CODES],
-            key=lambda d: d.final_score,
-            reverse=True,
+            key=_dimension_sort_key,
         )
         holland_top3 = [d.dimension_code.replace("Holland_", "") for d in holland_scores[:3]]
 
@@ -405,7 +425,7 @@ def _build_decision_inputs(
     consistency_issues: list[dict[str, Any]],
     source_lineage: dict[str, Any],
 ) -> dict[str, Any]:
-    top_dimensions = sorted(dimensions, key=lambda item: item.final_score, reverse=True)[:5]
+    top_dimensions = sorted(dimensions, key=_dimension_sort_key)[:5]
     return {
         "service": "lifehack-holland",
         "submission_id": submission_id,

@@ -23,6 +23,7 @@
 - 已落地主项目职业桥：只读 `lifehack` 的职业目录，写入本项目本地 `cn_occupation_riasec_map`。
 - 复核后补充核验：现有测试全 PASS，`audit_question_lineage.py` 全 PASS；生产题库 18 题、42 个选项均已补显式选项级血缘，验证题选项以 `scoring_role=consistency_check_only` 说明其只参与一致性规则、不直接计分。
 - 接手复核后补齐主项目适配：独立测评前端已改为主项目一致的浅色纸面、薄荷绿和 IBM Plex/Noto Serif 风格；结果页不再展示“惩罚前”等内部计算词。后端 `/api/questions` 对动态出现的验证题也标记为必答，前端会要求每个可见情境题完成后才能继续。
+- 主项目联调复核已通过：真实提交、`/api/report/{submission_id}`、core 快照同步链路可用；并列分维度现在按 `backend/dimensions_config.json` 的配置顺序稳定排序，避免同一 `submission_id` 多次请求得到不同 RIASEC top3。
 
 ## 已补的接手修正
 
