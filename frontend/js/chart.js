@@ -87,7 +87,7 @@ function renderReport(report, config, container) {
                      style="width: 0%; background: ${meta.color};" 
                      data-target-width="${pct}%"></div>
             </div>
-            <span class="score-bar__value">${score.toFixed(1)}${hasPenalty ? ' · 已校准' : ''}</span>
+            <span class="score-bar__value">${score.toFixed(1)}${hasPenalty ? ' · 谨慎参考' : ''}</span>
         </div>`;
     });
     html += '</div>';
@@ -147,7 +147,7 @@ function renderReport(report, config, container) {
             </div>
             <p class="dim-desc__text">${meta.desc}</p>
             ${hasPenalty ? `<p class="dim-desc__text" style="color: var(--accent-3); margin-top: 0.5rem;">
-                前后选择存在差异，系统已降低该方向的信号权重 (${d.penalty_score > 0 ? '+' : ''}${d.penalty_score.toFixed(1)})
+                部分相关回答呈现差异，这一方向建议结合更多情境谨慎参考。
             </p>` : ''}
         </div>`;
     });

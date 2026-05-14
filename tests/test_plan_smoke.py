@@ -415,6 +415,13 @@ class HollandPlanSmokeTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     _load_seed_file_list("item_files", ["fallback.json"])
 
+    def test_result_page_copy_hides_internal_adjustment_terms(self):
+        chart_js = Path("frontend/js/chart.js").read_text(encoding="utf-8")
+        self.assertNotIn("系统已降低该方向的信号权重", chart_js)
+        self.assertNotIn("惩罚", chart_js)
+        self.assertNotIn("扣分", chart_js)
+        self.assertIn("谨慎参考", chart_js)
+
 
 if __name__ == "__main__":
     unittest.main()
