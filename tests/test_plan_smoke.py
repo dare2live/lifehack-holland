@@ -15,6 +15,7 @@ os.environ["HOLLAND_DB_PATH"] = str(Path(_TEST_DB_DIR.name) / "holland.duckdb")
 
 from backend.config import DB_PATH
 from backend.init_db import init_database
+from backend.import_raw_materials import import_raw_materials
 from backend.main import app
 from backend.populate_golden_bank import _load_seed_file_list, populate
 from backend.question_audit import audit_all
@@ -275,6 +276,99 @@ class HollandPlanSmokeTests(unittest.TestCase):
         self.assertEqual(report["candidate_pool"]["counts"]["total"], 328)
         self.assertEqual(report["production_seed"]["counts"]["items"], 18)
         self.assertEqual(report["production_seed"]["warnings"], [])
+
+    def test_raw_material_import_is_config_driven_and_lineage_preserving(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp_path = Path(tmp)
+            onet_dir = tmp_path / "onet"
+            ipip_dir = tmp_path / "ipip"
+            onet_dir.mkdir()
+            ipip_dir.mkdir()
+            interests_path = onet_dir / "Interests.txt"
+            tasks_path = onet_dir / "Task_Statements.txt"
+            ipip_path = ipip_dir / "mbti_88_items.json"
+            interests_path.write_text(
+                "\t".join(["O*NET-SOC Code", "Element ID", "Element Name", "Scale ID", "Data Value", "Date", "Domain Source"])
+                + "\n"
+                + "\t".join(["11-1011.00", "1.B.1.b", "Investigative", "OI", "3.05", "02/2026", "Expert"])
+                + "\n",
+                encoding="utf-8",
+            )
+            tasks_path.write_text(
+                "\t".join(["O*NET-SOC Code", "Task ID", "Task", "Task Type", "Incumbents Responding", "Date", "Domain Source"])
+                + "\n"
+                + "\t".join(["11-1011.00", "8823", "Analyze project information.", "Core", "95", "08/2023", "Incumbent"])
+                + "\n",
+                encoding="utf-8",
+            )
+            ipip_path.write_text(
+                json.dumps({"questions": [{"title": "Enjoy complex problems", "selections": ["yes", "no"]}]}),
+                encoding="utf-8",
+            )
+            registry_path = tmp_path / "source_registry.json"
+            registry_path.write_text(
+                json.dumps(
+                    {
+                        "version": "test-registry",
+                        "sources": {
+                            "onet_database_text": {
+                                "source_name": "O*NET Test",
+                                "source_version": "test-onet",
+                                "files": [
+                                    {"role": "interests", "output_path": str(interests_path), "url": "file://interests"},
+                                    {"role": "task_statements", "output_path": str(tasks_path), "url": "file://tasks"},
+                                ],
+                            },
+                            "ipip_jungian_seed": {
+                                "source_name": "IPIP Test",
+                                "source_version": "test-ipip",
+                                "files": [
+                                    {
+                                        "role": "jungian_item_seed",
+                                        "acquisition_mode": "curated_local_seed",
+                                        "output_path": str(ipip_path),
+                                        "url": "",
+                                    }
+                                ],
+                            },
+                        },
+                    }
+                ),
+                encoding="utf-8",
+            )
+            question_config_path = tmp_path / "question_generation.json"
+            question_config_path.write_text(json.dumps({"version": "test-question-config"}), encoding="utf-8")
+            db_path = str(tmp_path / "raw.duckdb")
+
+            summary = import_raw_materials(
+                db_path=db_path,
+                source_registry_path=registry_path,
+                question_config_path=question_config_path,
+            )
+            self.assertEqual(summary["row_counts"]["raw_onet_interests"], 1)
+            self.assertEqual(summary["row_counts"]["raw_onet_task_statements"], 1)
+            self.assertEqual(summary["row_counts"]["raw_ipip_items"], 1)
+
+            con = duckdb.connect(db_path, read_only=True)
+            try:
+                row = con.execute(
+                    """
+                    SELECT data_value, lineage_json
+                    FROM raw_onet_interests
+                    WHERE onet_soc_code = '11-1011.00'
+                    """
+                ).fetchone()
+                self.assertEqual(row[0], 3.05)
+                lineage = json.loads(row[1])
+                self.assertEqual(lineage["source_registry_version"], "test-registry")
+                self.assertEqual(lineage["lineage_quality"], "raw_master_snapshot")
+                self.assertEqual(lineage["source_row_pk"], "11-1011.00:1.B.1.b:OI")
+                ipip_lineage = json.loads(
+                    con.execute("SELECT lineage_json FROM raw_ipip_items WHERE item_id = 'MBTI_88_1'").fetchone()[0]
+                )
+                self.assertEqual(ipip_lineage["acquisition_mode"], "curated_local_seed")
+            finally:
+                con.close()
 
     def test_career_riasec_rules_are_config_driven(self):
         rules = _load_rules()

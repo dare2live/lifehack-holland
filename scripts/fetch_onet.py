@@ -32,6 +32,9 @@ def download_file(url: str, dest_path: Path) -> None:
 def fetch_onet_data() -> None:
     source = _load_source()
     for item in source.get("files", []):
+        if item.get("acquisition_mode", "download") != "download" or not item.get("url"):
+            print(f"Skipping local source seed: {item.get('role')} -> {item.get('output_path')}")
+            continue
         download_file(item["url"], _project_path(item["output_path"]))
     print(f"O*NET master data fetched: {source['source_name']} {source['source_version']}")
 

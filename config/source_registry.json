@@ -26,8 +26,15 @@
       "files": [
         {
           "role": "jungian_keys_html",
+          "acquisition_mode": "download",
           "url": "https://ipip.ori.org/newJungKeys.htm",
           "output_path": "backend/data/ipip/IPIP_Jungian_Scale.html"
+        },
+        {
+          "role": "jungian_item_seed",
+          "acquisition_mode": "curated_local_seed",
+          "url": "",
+          "output_path": "backend/data/ipip/mbti_88_items.json"
         }
       ]
     }
