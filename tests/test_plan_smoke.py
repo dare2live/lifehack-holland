@@ -45,6 +45,8 @@ class HollandPlanSmokeTests(unittest.TestCase):
                     primary_riasec VARCHAR,
                     matched_rule_id VARCHAR,
                     matched_keyword VARCHAR,
+                    confidence DOUBLE,
+                    review_status VARCHAR,
                     source_version VARCHAR,
                     source_text VARCHAR,
                     mapped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -55,11 +57,11 @@ class HollandPlanSmokeTests(unittest.TestCase):
                 """
                 INSERT INTO cn_occupation_riasec_map (
                     occupation_code, occupation_name, primary_riasec,
-                    matched_rule_id, matched_keyword, source_version, source_text
+                    matched_rule_id, matched_keyword, confidence, review_status, source_version, source_text
                 )
                 VALUES
-                    ('2-02-02-02', '工程测量工程技术人员', 'R', 'test', '工程', 'test', '工程 测量'),
-                    ('2-02-01-02', '地球物理地球化学与遥感勘查工程技术人员', 'I', 'test', '遥感', 'test', '遥感 数据')
+                    ('2-02-02-02', '工程测量工程技术人员', 'R', 'test', '工程', 0.9, 'approved_seed', 'test', '工程 测量'),
+                    ('2-02-01-02', '地球物理地球化学与遥感勘查工程技术人员', 'I', 'test', '遥感', 0.3, 'needs_review', 'test', '遥感 数据')
                 """
             )
         finally:
@@ -218,7 +220,8 @@ class HollandPlanSmokeTests(unittest.TestCase):
         self.assertTrue(payload["cross_insight"])
         self.assertEqual(payload["decision_inputs"]["service"], "lifehack-holland")
         self.assertEqual(payload["decision_inputs"]["holland_top3"], payload["holland_top3"])
-        self.assertTrue(payload["recommended_cn_occupations"])
+        for occupation in payload["recommended_cn_occupations"]:
+            self.assertTrue(occupation["review_status"].startswith("approved"))
         self.assertTrue(payload["source_lineage"]["answered_items"])
         first_weight = payload["source_lineage"]["answered_items"][0]["weights"][0]
         self.assertIn("lineage", first_weight)

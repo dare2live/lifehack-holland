@@ -5,7 +5,8 @@
     "production_questions": 18,
     "options": 42,
     "consistency_rules": 2,
-    "occupation_bridge_rows": 1
+    "occupation_bridge_rows": 1,
+    "occupation_bridge_approved_rows": 1
   },
   "report_required_fields": [
     "submission_id",

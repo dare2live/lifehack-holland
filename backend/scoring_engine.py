@@ -223,9 +223,10 @@ def compute_report(submission_id: str, db_path: str = DB_PATH) -> ReportResponse
                 placeholders = ", ".join(["?"] * len(holland_top3))
                 occ_rows = con.execute(
                     f"""
-                    SELECT occupation_code, occupation_name, primary_riasec
+                    SELECT occupation_code, occupation_name, primary_riasec, confidence, review_status
                     FROM cn_occupation_riasec_map
                     WHERE primary_riasec IN ({placeholders})
+                      AND lower(coalesce(review_status, '')) LIKE 'approved%'
                     """,
                     holland_top3,
                 ).fetchall()
@@ -236,6 +237,8 @@ def compute_report(submission_id: str, db_path: str = DB_PATH) -> ReportResponse
                         "occupation_code": row[0],
                         "occupation_name": row[1],
                         "matched_riasec": row[2],
+                        "confidence": float(row[3]) if row[3] is not None else None,
+                        "review_status": row[4] or "",
                     })
             except Exception:
                 # Table might not exist yet if mapping script hasn't run

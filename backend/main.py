@@ -61,6 +61,7 @@ DEFAULT_CORE_READINESS = {
         "options": 1,
         "consistency_rules": 1,
         "occupation_bridge_rows": 1,
+        "occupation_bridge_approved_rows": 1,
     },
     "report_required_fields": [
         "submission_id",
@@ -142,7 +143,11 @@ def _source_versions(con: duckdb.DuckDBPyConnection, table_name: str) -> list[st
     return [str(row[0]) for row in rows]
 
 
-def _occupation_bridge_status(con: duckdb.DuckDBPyConnection, minimum_rows: int) -> dict[str, Any]:
+def _occupation_bridge_status(
+    con: duckdb.DuckDBPyConnection,
+    minimum_rows: int,
+    minimum_approved_rows: int,
+) -> dict[str, Any]:
     table_name = "cn_occupation_riasec_map"
     status: dict[str, Any] = {
         "table": table_name,
@@ -150,17 +155,23 @@ def _occupation_bridge_status(con: duckdb.DuckDBPyConnection, minimum_rows: int)
         "ready": False,
         "status": "missing",
         "mapped_count": 0,
+        "approved_count": 0,
         "minimum_required": minimum_rows,
+        "minimum_approved_required": minimum_approved_rows,
         "source_versions": [],
         "riasec_codes": [],
+        "approved_riasec_codes": [],
+        "review_status_counts": {},
     }
     if not _table_exists(con, table_name):
         return status
 
     columns = _table_columns(con, table_name)
     mapped_count = int(con.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0])
+    approved_count = _approved_count(con, table_name)
     source_versions = _source_versions(con, table_name) if "source_version" in columns else []
     riasec_codes = []
+    approved_riasec_codes = []
     if "primary_riasec" in columns:
         riasec_codes = [
             str(row[0])
@@ -174,15 +185,46 @@ def _occupation_bridge_status(con: duckdb.DuckDBPyConnection, minimum_rows: int)
                 """
             ).fetchall()
         ]
+        if "review_status" in columns:
+            approved_riasec_codes = [
+                str(row[0])
+                for row in con.execute(
+                    f"""
+                    SELECT DISTINCT primary_riasec
+                    FROM {table_name}
+                    WHERE primary_riasec IS NOT NULL
+                      AND trim(CAST(primary_riasec AS VARCHAR)) <> ''
+                      AND lower(coalesce(review_status, '')) LIKE 'approved%'
+                    ORDER BY primary_riasec
+                    """
+                ).fetchall()
+            ]
 
-    ready = mapped_count >= minimum_rows
+    review_status_counts = {}
+    if "review_status" in columns:
+        review_status_counts = {
+            str(row[0] or ""): int(row[1])
+            for row in con.execute(
+                f"""
+                SELECT coalesce(review_status, '') AS review_status, COUNT(*) AS row_count
+                FROM {table_name}
+                GROUP BY 1
+                ORDER BY 1
+                """
+            ).fetchall()
+        }
+
+    ready = mapped_count >= minimum_rows and approved_count >= minimum_approved_rows
     status.update({
         "table_exists": True,
         "ready": ready,
-        "status": "ready" if ready else "insufficient_rows",
+        "status": "ready" if ready else "insufficient_approved_rows",
         "mapped_count": mapped_count,
+        "approved_count": approved_count,
         "source_versions": source_versions,
         "riasec_codes": riasec_codes,
+        "approved_riasec_codes": approved_riasec_codes,
+        "review_status_counts": review_status_counts,
     })
     return status
 
@@ -213,9 +255,13 @@ def _build_core_health_payload() -> dict[str, Any]:
         "ready": False,
         "status": "not_checked",
         "mapped_count": 0,
+        "approved_count": 0,
         "minimum_required": minimums.get("occupation_bridge_rows", 0),
+        "minimum_approved_required": minimums.get("occupation_bridge_approved_rows", 0),
         "source_versions": [],
         "riasec_codes": [],
+        "approved_riasec_codes": [],
+        "review_status_counts": {},
     }
 
     try:
@@ -230,6 +276,7 @@ def _build_core_health_payload() -> dict[str, Any]:
             occupation_bridge = _occupation_bridge_status(
                 con,
                 int(minimums.get("occupation_bridge_rows", 0)),
+                int(minimums.get("occupation_bridge_approved_rows", 0)),
             )
         finally:
             con.close()
