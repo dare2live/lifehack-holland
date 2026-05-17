@@ -1,12 +1,16 @@
 {
   "version": "core-readiness-2026-05-17",
-  "notes": "Readiness thresholds for the formal lifehack core handoff contract.",
+  "notes": "Readiness thresholds for the formal lifehack core handoff contract. consulting_ready is intentionally stricter than core_contract_ready.",
   "minimums": {
     "production_questions": 18,
     "options": 42,
     "consistency_rules": 2,
     "occupation_bridge_rows": 1,
-    "occupation_bridge_approved_rows": 1
+    "occupation_bridge_approved_rows": 1,
+    "consulting_production_questions": 30,
+    "consulting_options": 72,
+    "consulting_consistency_rules": 6,
+    "consulting_occupation_bridge_approved_rows": 18
   },
   "report_required_fields": [
     "submission_id",
@@ -19,5 +23,13 @@
     "consistency_issues",
     "source_lineage",
     "decision_inputs"
+  ],
+  "consulting_required_riasec_codes": [
+    "R",
+    "I",
+    "A",
+    "S",
+    "E",
+    "C"
   ]
 }

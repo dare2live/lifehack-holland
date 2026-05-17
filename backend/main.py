@@ -62,7 +62,12 @@ DEFAULT_CORE_READINESS = {
         "consistency_rules": 1,
         "occupation_bridge_rows": 1,
         "occupation_bridge_approved_rows": 1,
+        "consulting_production_questions": 30,
+        "consulting_options": 72,
+        "consulting_consistency_rules": 6,
+        "consulting_occupation_bridge_approved_rows": 18,
     },
+    "consulting_required_riasec_codes": ["R", "I", "A", "S", "E", "C"],
     "report_required_fields": [
         "submission_id",
         "source_version",
@@ -304,19 +309,45 @@ def _build_core_health_payload() -> dict[str, Any]:
         "question_bank_source_version": bool(question_bank["source_versions"]),
         "occupation_bridge": bool(occupation_bridge.get("ready")),
     }
-    ready_for_core = all(checks.values())
+    consulting_required_riasec = [
+        str(code).strip()
+        for code in readiness_config.get("consulting_required_riasec_codes", [])
+        if str(code).strip()
+    ]
+    approved_riasec_codes = set(occupation_bridge.get("approved_riasec_codes") or [])
+    consulting_checks = {
+        "production_questions": question_bank["production_question_count"] >= int(minimums.get("consulting_production_questions", 0)),
+        "options": question_bank["option_count"] >= int(minimums.get("consulting_options", 0)),
+        "consistency_rules": question_bank["consistency_rule_count"] >= int(minimums.get("consulting_consistency_rules", 0)),
+        "occupation_bridge_approved_rows": int(occupation_bridge.get("approved_count") or 0) >= int(minimums.get("consulting_occupation_bridge_approved_rows", 0)),
+        "occupation_bridge_riasec_coverage": all(code in approved_riasec_codes for code in consulting_required_riasec),
+    }
+    technical_ready = bool(checks["db_readable"] and checks["db_writable"])
+    core_contract_ready = all(checks.values())
+    consulting_ready = core_contract_ready and all(consulting_checks.values())
     payload = {
         "status": "ok",
         "service": "lifehack-holland",
-        "ready_for_core": ready_for_core,
+        "ready_for_core": core_contract_ready,
+        "technical_ready": technical_ready,
+        "core_contract_ready": core_contract_ready,
+        "consulting_ready": consulting_ready,
         "source_version": question_bank["source_version"],
         "checks": checks,
+        "consulting_checks": consulting_checks,
+        "readiness_levels": {
+            "technical_ready": technical_ready,
+            "core_contract_ready": core_contract_ready,
+            "consulting_ready": consulting_ready,
+            "notes": "consulting_ready is stricter than core_contract_ready and requires broader question-bank and approved occupation-bridge coverage.",
+        },
         "question_bank": question_bank,
         "db": db_status,
         "occupation_bridge": occupation_bridge,
         "readiness_config": {
             "version": readiness_config.get("version", ""),
             "path": str(CORE_READINESS_CONFIG_PATH),
+            "consulting_required_riasec_codes": consulting_required_riasec,
         },
         "report_contract": {
             "endpoint": "/api/report/{submission_id}",
