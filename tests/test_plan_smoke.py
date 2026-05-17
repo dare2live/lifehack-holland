@@ -24,6 +24,8 @@ from backend.question_review import promote_review_batch, write_review_batch
 from backend.scoring_engine import _generate_cross_insight
 from backend.scripts.generate_cn_occupation_mapping import _load_rules, build_mapping, tag_occupation
 from backend.scripts.review_cn_occupation_mapping import promote_review_batch as promote_occupation_review_batch
+from backend.scripts.review_cn_occupation_mapping import apply_review_seeds as apply_occupation_review_seeds
+from backend.scripts.review_cn_occupation_mapping import audit_review_seeds as audit_occupation_review_seeds
 from backend.scripts.review_cn_occupation_mapping import write_review_batch as write_occupation_review_batch
 
 
@@ -200,6 +202,68 @@ class HollandPlanSmokeTests(unittest.TestCase):
             finally:
                 con.close()
             self.assertEqual(status, ("I", "approved_manual"))
+
+    def test_occupation_review_seeds_are_audited_and_applied(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            seeds_path = Path(tmp) / "occupation_riasec_review_seeds.json"
+            seeds_path.write_text(json.dumps({
+                "version": "fixture",
+                "seeds": [
+                    {
+                        "seed_id": "occ-2-02-01-02",
+                        "occupation_code": "2-02-01-02",
+                        "occupation_name": "地球物理地球化学与遥感勘查工程技术人员",
+                        "review_decision": "approved",
+                        "reviewed_riasec": "I",
+                        "reviewer": "unit-test",
+                        "reviewed_at": "2026-05-18",
+                        "review_notes": "technical research role",
+                    }
+                ],
+            }, ensure_ascii=False), encoding="utf-8")
+
+            audit = audit_occupation_review_seeds(seeds_path)
+            self.assertEqual(audit["status"], "ok")
+            self.assertEqual(audit["decision_counts"], {"approved": 1})
+
+            summary = apply_occupation_review_seeds(seeds_path=seeds_path, db_path=DB_PATH, overwrite=True)
+            self.assertEqual(summary["status"], "ok")
+            self.assertEqual(summary["promoted_rows"], 1)
+            con = duckdb.connect(DB_PATH, read_only=True)
+            try:
+                status = con.execute(
+                    """
+                    SELECT primary_riasec, review_status
+                    FROM cn_occupation_riasec_map
+                    WHERE occupation_code = '2-02-01-02'
+                    """
+                ).fetchone()
+            finally:
+                con.close()
+            self.assertEqual(status, ("I", "approved_manual"))
+
+    def test_occupation_review_seeds_reject_invalid_approved_riasec(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            seeds_path = Path(tmp) / "bad_occupation_riasec_review_seeds.json"
+            seeds_path.write_text(json.dumps({
+                "version": "fixture",
+                "seeds": [
+                    {
+                        "seed_id": "occ-2-02-01-02",
+                        "occupation_code": "2-02-01-02",
+                        "occupation_name": "地球物理地球化学与遥感勘查工程技术人员",
+                        "review_decision": "approved",
+                        "reviewed_riasec": "X",
+                        "reviewer": "unit-test",
+                        "reviewed_at": "2026-05-18",
+                        "review_notes": "invalid code",
+                    }
+                ],
+            }, ensure_ascii=False), encoding="utf-8")
+
+            audit = audit_occupation_review_seeds(seeds_path)
+            self.assertEqual(audit["status"], "has_errors")
+            self.assertTrue(any(error["error"] == "invalid reviewed_riasec" for error in audit["errors"]))
 
     def test_submit_and_report_scoring_loop(self):
         client = TestClient(app)

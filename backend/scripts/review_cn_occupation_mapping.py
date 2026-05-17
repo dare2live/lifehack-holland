@@ -15,7 +15,7 @@ from typing import Any
 
 import duckdb
 
-from backend.config import DB_PATH
+from backend.config import DB_PATH, OCCUPATION_RIASEC_REVIEW_SEEDS_PATH
 
 
 RIASEC_CODES = {"R", "I", "A", "S", "E", "C"}
@@ -33,6 +33,16 @@ REVIEW_FIELDS = [
     "reviewed_riasec",
     "review_notes",
     "reviewer",
+]
+REQUIRED_SEED_FIELDS = [
+    "seed_id",
+    "occupation_code",
+    "occupation_name",
+    "review_decision",
+    "reviewed_riasec",
+    "reviewer",
+    "reviewed_at",
+    "review_notes",
 ]
 
 
@@ -209,6 +219,175 @@ def promote_review_batch(
     }
 
 
+def audit_review_seeds(
+    seeds_path: Path = OCCUPATION_RIASEC_REVIEW_SEEDS_PATH,
+) -> dict[str, Any]:
+    seeds = _load_seed_rows(seeds_path)
+    errors: list[dict[str, str]] = []
+    warnings: list[str] = []
+    seen_codes: set[str] = set()
+    duplicate_codes = 0
+    decision_counts: dict[str, int] = {}
+    for idx, seed in enumerate(seeds, start=1):
+        missing = [field for field in REQUIRED_SEED_FIELDS if not str(seed.get(field, "")).strip()]
+        if missing:
+            errors.append({"seed": str(idx), "error": f"missing fields: {', '.join(missing)}"})
+        occupation_code = str(seed.get("occupation_code", "")).strip()
+        decision = str(seed.get("review_decision", "")).strip().lower()
+        reviewed_riasec = str(seed.get("reviewed_riasec", "")).strip().upper()
+        reviewed_at = str(seed.get("reviewed_at", "")).strip()
+        if occupation_code in seen_codes:
+            duplicate_codes += 1
+        if occupation_code:
+            seen_codes.add(occupation_code)
+        if decision not in {"approved", "approve", "rejected", "reject"}:
+            errors.append({"seed": str(idx), "occupation_code": occupation_code, "error": "invalid review_decision"})
+        if decision in {"approved", "approve"} and reviewed_riasec not in RIASEC_CODES:
+            errors.append({"seed": str(idx), "occupation_code": occupation_code, "error": "invalid reviewed_riasec"})
+        if _date_error(reviewed_at):
+            errors.append({"seed": str(idx), "occupation_code": occupation_code, "error": "reviewed_at must be YYYY-MM-DD"})
+        decision_counts[decision] = decision_counts.get(decision, 0) + 1
+    if duplicate_codes:
+        errors.append({"error": f"duplicate occupation_code: {duplicate_codes}"})
+    if not seeds:
+        warnings.append("no occupation review seeds configured")
+    return {
+        "status": "ok" if not errors else "has_errors",
+        "seed_count": len(seeds),
+        "decision_counts": dict(sorted(decision_counts.items())),
+        "duplicate_occupation_codes": duplicate_codes,
+        "error_count": len(errors),
+        "errors": errors,
+        "warnings": warnings,
+    }
+
+
+def apply_review_seeds(
+    *,
+    seeds_path: Path = OCCUPATION_RIASEC_REVIEW_SEEDS_PATH,
+    db_path: str = DB_PATH,
+    approved_status: str = "approved_manual",
+    overwrite: bool = False,
+) -> dict[str, Any]:
+    audit = audit_review_seeds(seeds_path)
+    if audit["errors"]:
+        return {
+            "status": "has_errors",
+            "promoted_rows": 0,
+            "skipped_rows": 0,
+            "error_count": audit["error_count"],
+            "errors": audit["errors"],
+            "audit": audit,
+        }
+    seeds = _load_seed_rows(seeds_path)
+    promoted = 0
+    skipped = 0
+    errors: list[dict[str, str]] = []
+    con = duckdb.connect(db_path)
+    try:
+        columns = _table_columns(con, "cn_occupation_riasec_map")
+        has_lineage = "lineage_json" in columns
+        for seed in seeds:
+            decision = str(seed.get("review_decision", "")).strip().lower()
+            if decision not in {"approved", "approve"}:
+                skipped += 1
+                continue
+            occupation_code = str(seed.get("occupation_code", "")).strip()
+            reviewed_riasec = str(seed.get("reviewed_riasec", "")).strip().upper()
+            current_status = con.execute(
+                """
+                SELECT review_status
+                FROM cn_occupation_riasec_map
+                WHERE occupation_code = ?
+                """,
+                [occupation_code],
+            ).fetchone()
+            if not current_status:
+                errors.append({"occupation_code": occupation_code, "error": "occupation_code not found"})
+                continue
+            if str(current_status[0] or "").lower().startswith("approved") and not overwrite:
+                skipped += 1
+                continue
+            lineage_patch = {
+                "occupation_review": {
+                    "reviewed_at": str(seed.get("reviewed_at", "")).strip(),
+                    "reviewer": str(seed.get("reviewer", "")).strip(),
+                    "review_decision": decision,
+                    "reviewed_riasec": reviewed_riasec,
+                    "review_notes": str(seed.get("review_notes", "")).strip(),
+                    "review_seed_id": str(seed.get("seed_id", "")).strip(),
+                    "review_seed_file": str(seeds_path),
+                }
+            }
+            if has_lineage:
+                current = con.execute(
+                    """
+                    SELECT lineage_json
+                    FROM cn_occupation_riasec_map
+                    WHERE occupation_code = ?
+                    """,
+                    [occupation_code],
+                ).fetchone()
+                existing_lineage = {}
+                if current and current[0]:
+                    try:
+                        existing_lineage = json.loads(current[0])
+                    except json.JSONDecodeError:
+                        existing_lineage = {"previous_lineage_raw": current[0]}
+                existing_lineage.update(lineage_patch)
+                con.execute(
+                    """
+                    UPDATE cn_occupation_riasec_map
+                    SET primary_riasec = ?,
+                        review_status = ?,
+                        confidence = greatest(coalesce(confidence, 0), 0.85),
+                        lineage_json = ?
+                    WHERE occupation_code = ?
+                    """,
+                    [reviewed_riasec, approved_status, json.dumps(existing_lineage, ensure_ascii=False, sort_keys=True), occupation_code],
+                )
+            else:
+                con.execute(
+                    """
+                    UPDATE cn_occupation_riasec_map
+                    SET primary_riasec = ?,
+                        review_status = ?,
+                        confidence = greatest(coalesce(confidence, 0), 0.85)
+                    WHERE occupation_code = ?
+                    """,
+                    [reviewed_riasec, approved_status, occupation_code],
+                )
+            promoted += 1
+    finally:
+        con.close()
+    return {
+        "status": "ok" if not errors else "has_errors",
+        "promoted_rows": promoted,
+        "skipped_rows": skipped,
+        "error_count": len(errors),
+        "errors": errors,
+        "audit": audit,
+    }
+
+
+def _load_seed_rows(seeds_path: Path) -> list[dict[str, Any]]:
+    payload = json.loads(Path(seeds_path).read_text(encoding="utf-8"))
+    seeds = payload.get("seeds")
+    if not isinstance(seeds, list):
+        return []
+    return [seed for seed in seeds if isinstance(seed, dict)]
+
+
+def _date_error(value: str) -> bool:
+    if len(value) != 10:
+        return True
+    try:
+        datetime.strptime(value, "%Y-%m-%d")
+        return False
+    except ValueError:
+        return True
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Review Chinese occupation RIASEC bridge mappings")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -222,11 +401,23 @@ def main() -> None:
     promote_parser.add_argument("--input", required=True)
     promote_parser.add_argument("--db-path", default=DB_PATH)
 
+    audit_seeds_parser = sub.add_parser("audit-seeds")
+    audit_seeds_parser.add_argument("--seeds", default=str(OCCUPATION_RIASEC_REVIEW_SEEDS_PATH))
+
+    apply_seeds_parser = sub.add_parser("apply-seeds")
+    apply_seeds_parser.add_argument("--seeds", default=str(OCCUPATION_RIASEC_REVIEW_SEEDS_PATH))
+    apply_seeds_parser.add_argument("--db-path", default=DB_PATH)
+    apply_seeds_parser.add_argument("--overwrite", action="store_true")
+
     args = parser.parse_args()
     if args.command == "write-batch":
         summary = write_review_batch(Path(args.output), db_path=args.db_path, limit=args.limit)
-    else:
+    elif args.command == "promote-batch":
         summary = promote_review_batch(Path(args.input), db_path=args.db_path)
+    elif args.command == "audit-seeds":
+        summary = audit_review_seeds(Path(args.seeds))
+    else:
+        summary = apply_review_seeds(seeds_path=Path(args.seeds), db_path=args.db_path, overwrite=args.overwrite)
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
 

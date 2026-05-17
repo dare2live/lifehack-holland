@@ -26,6 +26,7 @@ MAIN_PROJECT_DB_PATH = os.getenv("MAIN_PROJECT_DB_PATH", str(PROJECT_ROOT.parent
 
 # ── Config Files ──────────────────────────────────────────────────
 CAREER_RIASEC_RULES_PATH = CONFIG_DIR / "career_riasec_rules.json"
+OCCUPATION_RIASEC_REVIEW_SEEDS_PATH = CONFIG_DIR / "occupation_riasec_review_seeds.json"
 QUESTION_GENERATION_CONFIG_PATH = CONFIG_DIR / "question_generation.json"
 REPORT_STRATEGY_CONFIG_PATH = CONFIG_DIR / "report_strategy.json"
 SOURCE_REGISTRY_CONFIG_PATH = CONFIG_DIR / "source_registry.json"
