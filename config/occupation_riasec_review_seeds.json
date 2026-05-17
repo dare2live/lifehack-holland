@@ -1,4 +1,155 @@
 {
   "version": "1",
-  "seeds": []
+  "seeds": [
+    {
+      "seed_id": "occ-2-02-01-02",
+      "occupation_code": "2-02-01-02",
+      "occupation_name": "地球物理地球化学与遥感勘查工程技术人员",
+      "review_decision": "approved",
+      "reviewed_riasec": "I",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence first batch: occupation name includes remote sensing/exploration and matches investigative analysis rules; secondary realistic component may be field engineering."
+    },
+    {
+      "seed_id": "occ-2-02-02-03",
+      "occupation_code": "2-02-02-03",
+      "occupation_name": "摄影测量与遥感工程技术人员",
+      "review_decision": "approved",
+      "reviewed_riasec": "I",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence first batch: smoke tests and rules both treat remote sensing / photogrammetry analysis as investigative; measurement work may add realistic secondary traits."
+    },
+    {
+      "seed_id": "occ-2-02-10-05",
+      "occupation_code": "2-02-10-05",
+      "occupation_name": "信息系统分析工程技术人员",
+      "review_decision": "approved",
+      "reviewed_riasec": "I",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence first batch: system analysis and problem modeling match investigative rules; implementation-heavy roles may include realistic/conventional secondary traits."
+    },
+    {
+      "seed_id": "occ-2-02-30-09",
+      "occupation_code": "2-02-30-09",
+      "occupation_name": "数据分析处理工程技术人员",
+      "review_decision": "approved",
+      "reviewed_riasec": "I",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence first batch: occupation name and configured rule both indicate data analysis / investigative work; risk is possible conventional process component."
+    },
+    {
+      "seed_id": "occ-4-04-05-08",
+      "occupation_code": "4-04-05-08",
+      "occupation_name": "电子数据取证分析师",
+      "review_decision": "approved",
+      "reviewed_riasec": "I",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence first batch: digital forensic analysis depends on technical investigation and evidence judgment; compliance workflow may add conventional secondary traits."
+    },
+    {
+      "seed_id": "occ-2-09-06-07",
+      "occupation_code": "2-09-06-07",
+      "occupation_name": "数字媒体艺术专业人员",
+      "review_decision": "approved",
+      "reviewed_riasec": "A",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence first batch: occupation name directly includes art and digital media creation; technical execution may be a secondary trait."
+    },
+    {
+      "seed_id": "occ-4-13-01-05",
+      "occupation_code": "4-13-01-05",
+      "occupation_name": "全媒体运营师",
+      "review_decision": "approved",
+      "reviewed_riasec": "A",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence first batch: media content and creative communication align with artistic rules; operation and growth work may add enterprising secondary traits."
+    },
+    {
+      "seed_id": "occ-4-08-08-26",
+      "occupation_code": "4-08-08-26",
+      "occupation_name": "工业设计工艺师",
+      "review_decision": "approved",
+      "reviewed_riasec": "A",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence first batch: design work maps strongly to artistic rules; process implementation may add realistic secondary traits."
+    },
+    {
+      "seed_id": "occ-4-01-06-01",
+      "occupation_code": "4-01-06-01",
+      "occupation_name": "电子商务师",
+      "review_decision": "approved",
+      "reviewed_riasec": "E",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence first batch: commerce and transaction-oriented work aligns with enterprising rules; platform operations may add conventional secondary traits."
+    },
+    {
+      "seed_id": "occ-4-02-06-05",
+      "occupation_code": "4-02-06-05",
+      "occupation_name": "供应链管理师",
+      "review_decision": "approved",
+      "reviewed_riasec": "E",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence first batch: management and coordination work aligns with enterprising rules; supply-chain process/data work may add conventional secondary traits."
+    },
+    {
+      "seed_id": "occ-4-01-06-02",
+      "occupation_code": "4-01-06-02",
+      "occupation_name": "互联网营销师",
+      "review_decision": "approved",
+      "reviewed_riasec": "E",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence first batch: marketing work is persuasion, market growth and business influence; current rules should later add marketing keyword coverage."
+    },
+    {
+      "seed_id": "occ-2-02-02-02",
+      "occupation_code": "2-02-02-02",
+      "occupation_name": "工程测量工程技术人员",
+      "review_decision": "approved",
+      "reviewed_riasec": "R",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence first batch: engineering measurement is hands-on technical field work matching realistic rules; data interpretation may add investigative secondary traits."
+    },
+    {
+      "seed_id": "occ-4-08-03-04",
+      "occupation_code": "4-08-03-04",
+      "occupation_name": "工程测量员",
+      "review_decision": "approved",
+      "reviewed_riasec": "R",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence first batch: frontline engineering measurement is practical tool-based work matching realistic rules; recording/drafting may add conventional traits."
+    },
+    {
+      "seed_id": "occ-6-18-01-13",
+      "occupation_code": "6-18-01-13",
+      "occupation_name": "增材制造设备操作员",
+      "review_decision": "approved",
+      "reviewed_riasec": "R",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence first batch: equipment operation and manufacturing site work strongly match realistic rules; advanced process design may add investigative/artistic traits."
+    },
+    {
+      "seed_id": "occ-6-31-07-03",
+      "occupation_code": "6-31-07-03",
+      "occupation_name": "工业机器人系统操作员",
+      "review_decision": "approved",
+      "reviewed_riasec": "R",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence first batch: robot system operation and equipment control are realistic work; debugging/programming may add investigative secondary traits."
+    }
+  ]
 }
