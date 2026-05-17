@@ -23,6 +23,8 @@ from backend.question_candidates import build_candidate_pool
 from backend.question_review import promote_review_batch, write_review_batch
 from backend.scoring_engine import _generate_cross_insight
 from backend.scripts.generate_cn_occupation_mapping import _load_rules, build_mapping, tag_occupation
+from backend.scripts.review_cn_occupation_mapping import promote_review_batch as promote_occupation_review_batch
+from backend.scripts.review_cn_occupation_mapping import write_review_batch as write_occupation_review_batch
 
 
 def tearDownModule():
@@ -165,6 +167,39 @@ class HollandPlanSmokeTests(unittest.TestCase):
         self.assertGreaterEqual(payload["occupation_bridge"]["mapped_count"], 1)
         self.assertIn("submission_id", payload["report_contract"]["required_fields"])
         self.assertIn("decision_inputs", payload["report_contract"]["required_fields"])
+
+    def test_occupation_review_batch_requires_explicit_approval(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            batch_path = Path(tmp) / "occupation_review.csv"
+            summary = write_occupation_review_batch(batch_path, db_path=DB_PATH)
+            self.assertEqual(summary["rows"], 1)
+
+            with batch_path.open("r", encoding="utf-8", newline="") as f:
+                rows = list(csv.DictReader(f))
+            self.assertEqual(rows[0]["occupation_code"], "2-02-01-02")
+            rows[0]["review_decision"] = "approved"
+            rows[0]["reviewed_riasec"] = "I"
+            rows[0]["reviewer"] = "unit-test"
+            with batch_path.open("w", encoding="utf-8", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=rows[0].keys())
+                writer.writeheader()
+                writer.writerows(rows)
+
+            promote_summary = promote_occupation_review_batch(batch_path, db_path=DB_PATH)
+            self.assertEqual(promote_summary["status"], "ok")
+            self.assertEqual(promote_summary["promoted_rows"], 1)
+            con = duckdb.connect(DB_PATH, read_only=True)
+            try:
+                status = con.execute(
+                    """
+                    SELECT primary_riasec, review_status
+                    FROM cn_occupation_riasec_map
+                    WHERE occupation_code = '2-02-01-02'
+                    """
+                ).fetchone()
+            finally:
+                con.close()
+            self.assertEqual(status, ("I", "approved_manual"))
 
     def test_submit_and_report_scoring_loop(self):
         client = TestClient(app)
