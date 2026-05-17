@@ -10,6 +10,7 @@ Endpoints:
 import uuid
 import json
 from pathlib import Path
+from typing import Any, Optional
 
 import duckdb
 from fastapi import FastAPI, HTTPException
@@ -17,7 +18,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
-from backend.config import DB_PATH, CORS_ORIGINS, API_HOST, API_PORT
+from backend.config import DB_PATH, CORS_ORIGINS, API_HOST, API_PORT, CORE_READINESS_CONFIG_PATH
 from backend.models import SubmitRequest, SubmitResponse, ReportResponse
 from backend.scoring_engine import compute_report
 from backend.init_db import init_database
@@ -53,14 +54,241 @@ def _get_db(read_only: bool = False):
     return duckdb.connect(DB_PATH, read_only=read_only)
 
 
+DEFAULT_CORE_READINESS = {
+    "version": "fallback",
+    "minimums": {
+        "production_questions": 1,
+        "options": 1,
+        "consistency_rules": 1,
+        "occupation_bridge_rows": 1,
+    },
+    "report_required_fields": [
+        "submission_id",
+        "source_version",
+        "dimensions",
+        "holland_top3",
+        "mbti_type",
+        "cross_insight",
+        "recommended_cn_occupations",
+        "consistency_issues",
+        "source_lineage",
+        "decision_inputs",
+    ],
+}
+
+
+def _load_core_readiness_config() -> tuple[dict[str, Any], Optional[str]]:
+    config = {
+        **DEFAULT_CORE_READINESS,
+        "minimums": dict(DEFAULT_CORE_READINESS["minimums"]),
+        "report_required_fields": list(DEFAULT_CORE_READINESS["report_required_fields"]),
+    }
+    try:
+        with open(CORE_READINESS_CONFIG_PATH, "r", encoding="utf-8") as f:
+            loaded = json.load(f)
+        config.update({key: value for key, value in loaded.items() if key != "minimums"})
+        config["minimums"].update(loaded.get("minimums", {}))
+        return config, None
+    except Exception as exc:
+        return config, str(exc)
+
+
+def _table_exists(con: duckdb.DuckDBPyConnection, table_name: str) -> bool:
+    return bool(
+        con.execute(
+            "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = ?",
+            [table_name],
+        ).fetchone()[0]
+    )
+
+
+def _table_columns(con: duckdb.DuckDBPyConnection, table_name: str) -> set[str]:
+    if not _table_exists(con, table_name):
+        return set()
+    return {
+        row[1]
+        for row in con.execute(f"PRAGMA table_info('{table_name}')").fetchall()
+    }
+
+
+def _approved_count(con: duckdb.DuckDBPyConnection, table_name: str) -> int:
+    if not _table_exists(con, table_name):
+        return 0
+    if "review_status" in _table_columns(con, table_name):
+        return int(
+            con.execute(
+                f"""
+                SELECT COUNT(*)
+                FROM {table_name}
+                WHERE lower(coalesce(review_status, '')) LIKE 'approved%'
+                """
+            ).fetchone()[0]
+        )
+    return int(con.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0])
+
+
+def _source_versions(con: duckdb.DuckDBPyConnection, table_name: str) -> list[str]:
+    if "source_version" not in _table_columns(con, table_name):
+        return []
+    rows = con.execute(
+        f"""
+        SELECT DISTINCT source_version
+        FROM {table_name}
+        WHERE source_version IS NOT NULL
+          AND trim(CAST(source_version AS VARCHAR)) <> ''
+        ORDER BY source_version
+        """
+    ).fetchall()
+    return [str(row[0]) for row in rows]
+
+
+def _occupation_bridge_status(con: duckdb.DuckDBPyConnection, minimum_rows: int) -> dict[str, Any]:
+    table_name = "cn_occupation_riasec_map"
+    status: dict[str, Any] = {
+        "table": table_name,
+        "table_exists": False,
+        "ready": False,
+        "status": "missing",
+        "mapped_count": 0,
+        "minimum_required": minimum_rows,
+        "source_versions": [],
+        "riasec_codes": [],
+    }
+    if not _table_exists(con, table_name):
+        return status
+
+    columns = _table_columns(con, table_name)
+    mapped_count = int(con.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0])
+    source_versions = _source_versions(con, table_name) if "source_version" in columns else []
+    riasec_codes = []
+    if "primary_riasec" in columns:
+        riasec_codes = [
+            str(row[0])
+            for row in con.execute(
+                f"""
+                SELECT DISTINCT primary_riasec
+                FROM {table_name}
+                WHERE primary_riasec IS NOT NULL
+                  AND trim(CAST(primary_riasec AS VARCHAR)) <> ''
+                ORDER BY primary_riasec
+                """
+            ).fetchall()
+        ]
+
+    ready = mapped_count >= minimum_rows
+    status.update({
+        "table_exists": True,
+        "ready": ready,
+        "status": "ready" if ready else "insufficient_rows",
+        "mapped_count": mapped_count,
+        "source_versions": source_versions,
+        "riasec_codes": riasec_codes,
+    })
+    return status
+
+
+def _build_core_health_payload() -> dict[str, Any]:
+    readiness_config, config_error = _load_core_readiness_config()
+    minimums = readiness_config.get("minimums", {})
+    db_status: dict[str, Any] = {
+        "path": DB_PATH,
+        "read": {"ok": False},
+        "write": {"ok": False},
+    }
+    question_bank: dict[str, Any] = {
+        "production_question_count": 0,
+        "option_count": 0,
+        "consistency_rule_count": 0,
+        "source_version": "",
+        "source_versions": [],
+        "minimums": {
+            "production_questions": minimums.get("production_questions", 0),
+            "options": minimums.get("options", 0),
+            "consistency_rules": minimums.get("consistency_rules", 0),
+        },
+    }
+    occupation_bridge: dict[str, Any] = {
+        "table": "cn_occupation_riasec_map",
+        "table_exists": False,
+        "ready": False,
+        "status": "not_checked",
+        "mapped_count": 0,
+        "minimum_required": minimums.get("occupation_bridge_rows", 0),
+        "source_versions": [],
+        "riasec_codes": [],
+    }
+
+    try:
+        con = _get_db(read_only=True)
+        try:
+            db_status["read"] = {"ok": True}
+            question_bank["production_question_count"] = _approved_count(con, "sjt_item_bank")
+            question_bank["option_count"] = _approved_count(con, "sjt_options")
+            question_bank["consistency_rule_count"] = _approved_count(con, "sjt_consistency_rules")
+            question_bank["source_versions"] = _source_versions(con, "sjt_item_bank")
+            question_bank["source_version"] = ",".join(question_bank["source_versions"])
+            occupation_bridge = _occupation_bridge_status(
+                con,
+                int(minimums.get("occupation_bridge_rows", 0)),
+            )
+        finally:
+            con.close()
+    except Exception as exc:
+        db_status["read"] = {"ok": False, "error": str(exc)}
+
+    try:
+        con = _get_db(read_only=False)
+        try:
+            con.execute("CREATE TEMP TABLE __holland_health_write_probe (ok INTEGER)")
+            con.execute("INSERT INTO __holland_health_write_probe VALUES (1)")
+            con.execute("SELECT COUNT(*) FROM __holland_health_write_probe").fetchone()
+            db_status["write"] = {"ok": True}
+        finally:
+            con.close()
+    except Exception as exc:
+        db_status["write"] = {"ok": False, "error": str(exc)}
+
+    checks = {
+        "db_readable": bool(db_status["read"].get("ok")),
+        "db_writable": bool(db_status["write"].get("ok")),
+        "production_questions": question_bank["production_question_count"] >= int(minimums.get("production_questions", 0)),
+        "options": question_bank["option_count"] >= int(minimums.get("options", 0)),
+        "consistency_rules": question_bank["consistency_rule_count"] >= int(minimums.get("consistency_rules", 0)),
+        "question_bank_source_version": bool(question_bank["source_versions"]),
+        "occupation_bridge": bool(occupation_bridge.get("ready")),
+    }
+    ready_for_core = all(checks.values())
+    payload = {
+        "status": "ok",
+        "service": "lifehack-holland",
+        "ready_for_core": ready_for_core,
+        "source_version": question_bank["source_version"],
+        "checks": checks,
+        "question_bank": question_bank,
+        "db": db_status,
+        "occupation_bridge": occupation_bridge,
+        "readiness_config": {
+            "version": readiness_config.get("version", ""),
+            "path": str(CORE_READINESS_CONFIG_PATH),
+        },
+        "report_contract": {
+            "endpoint": "/api/report/{submission_id}",
+            "required_fields": readiness_config.get("report_required_fields", []),
+        },
+    }
+    if config_error:
+        payload["readiness_config"]["error"] = config_error
+    return payload
+
+
 # ═══════════════════════════════════════════════════════════════════
 # API Endpoints
 # ═══════════════════════════════════════════════════════════════════
 
 @app.get("/api/health")
 async def health():
-    """Health check."""
-    return {"status": "ok", "db_path": DB_PATH}
+    """Health check with the core handoff readiness contract."""
+    return _build_core_health_payload()
 
 
 @app.get("/api/config")

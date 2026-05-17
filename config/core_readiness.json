@@ -1,0 +1,22 @@
+{
+  "version": "core-readiness-2026-05-17",
+  "notes": "Readiness thresholds for the formal lifehack core handoff contract.",
+  "minimums": {
+    "production_questions": 18,
+    "options": 42,
+    "consistency_rules": 2,
+    "occupation_bridge_rows": 1
+  },
+  "report_required_fields": [
+    "submission_id",
+    "source_version",
+    "dimensions",
+    "holland_top3",
+    "mbti_type",
+    "cross_insight",
+    "recommended_cn_occupations",
+    "consistency_issues",
+    "source_lineage",
+    "decision_inputs"
+  ]
+}

@@ -144,6 +144,26 @@ class HollandPlanSmokeTests(unittest.TestCase):
         self.assertIn("weights", audit_questions[0]["choices"][0])
         self.assertIn("lineage", audit_questions[0]["choices"][0]["weights"][0])
 
+    def test_health_reports_ready_for_core_contract(self):
+        client = TestClient(app)
+        response = client.get("/api/health")
+        self.assertEqual(response.status_code, 200)
+        payload = response.json()
+        self.assertEqual(payload["status"], "ok")
+        self.assertTrue(payload["ready_for_core"], payload)
+        self.assertEqual(payload["service"], "lifehack-holland")
+        self.assertTrue(payload["db"]["read"]["ok"])
+        self.assertTrue(payload["db"]["write"]["ok"])
+        self.assertEqual(payload["question_bank"]["production_question_count"], 18)
+        self.assertEqual(payload["question_bank"]["option_count"], 42)
+        self.assertEqual(payload["question_bank"]["consistency_rule_count"], 2)
+        self.assertTrue(payload["question_bank"]["source_version"])
+        self.assertEqual(payload["source_version"], payload["question_bank"]["source_version"])
+        self.assertTrue(payload["occupation_bridge"]["ready"])
+        self.assertGreaterEqual(payload["occupation_bridge"]["mapped_count"], 1)
+        self.assertIn("submission_id", payload["report_contract"]["required_fields"])
+        self.assertIn("decision_inputs", payload["report_contract"]["required_fields"])
+
     def test_submit_and_report_scoring_loop(self):
         client = TestClient(app)
         questions = client.get("/api/questions").json()["questions"]
@@ -166,6 +186,27 @@ class HollandPlanSmokeTests(unittest.TestCase):
         report = client.get(f"/api/report/{submit.json()['submission_id']}")
         self.assertEqual(report.status_code, 200)
         payload = report.json()
+        required_fields = {
+            "submission_id",
+            "source_version",
+            "dimensions",
+            "holland_top3",
+            "mbti_type",
+            "cross_insight",
+            "recommended_cn_occupations",
+            "consistency_issues",
+            "source_lineage",
+            "decision_inputs",
+        }
+        self.assertTrue(required_fields.issubset(payload.keys()))
+        self.assertEqual(payload["submission_id"], submit.json()["submission_id"])
+        self.assertIsInstance(payload["source_version"], str)
+        self.assertIsInstance(payload["dimensions"], list)
+        self.assertIsInstance(payload["holland_top3"], list)
+        self.assertIsInstance(payload["recommended_cn_occupations"], list)
+        self.assertIsInstance(payload["consistency_issues"], list)
+        self.assertIsInstance(payload["source_lineage"], dict)
+        self.assertIsInstance(payload["decision_inputs"], dict)
         repeated_top3 = [
             client.get(f"/api/report/{submit.json()['submission_id']}").json()["holland_top3"]
             for _ in range(5)
