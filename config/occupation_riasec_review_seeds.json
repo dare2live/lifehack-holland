@@ -150,6 +150,36 @@
       "reviewer": "holland_seed_review",
       "reviewed_at": "2026-05-18",
       "review_notes": "High-confidence first batch: robot system operation and equipment control are realistic work; debugging/programming may add investigative secondary traits."
+    },
+    {
+      "seed_id": "occ-4-04-05-04",
+      "occupation_code": "4-04-05-04",
+      "occupation_name": "数据库 运行 管理员",
+      "review_decision": "approved",
+      "reviewed_riasec": "C",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence second batch: database operation administration is structured records/process work and fits conventional; technical troubleshooting may add investigative/realistic secondary traits."
+    },
+    {
+      "seed_id": "occ-4-04-04-01",
+      "occupation_code": "4-04-04-01",
+      "occupation_name": "信息通信网络运行管理员",
+      "review_decision": "approved",
+      "reviewed_riasec": "C",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence second batch: network operation administration emphasizes standardized monitoring, records, procedures and compliance; field maintenance may add realistic secondary traits."
+    },
+    {
+      "seed_id": "occ-4-04-04-03",
+      "occupation_code": "4-04-04-03",
+      "occupation_name": "信息通信信息化系统管理员",
+      "review_decision": "approved",
+      "reviewed_riasec": "C",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence second batch: information system administration is rule-based, structured and process-heavy work fitting conventional; technical incident response may add investigative/realistic traits."
     }
   ]
 }
