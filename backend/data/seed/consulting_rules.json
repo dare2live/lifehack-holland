@@ -1,0 +1,70 @@
+[
+  {
+    "rule_id": "RULE_M_Plan_TF1",
+    "trigger_q_id": "M_Plan_TF1",
+    "trigger_option": "A",
+    "verify_q_id": "TRAP_TF1",
+    "expected_option": "X",
+    "penalty_dimension": "MBTI_T",
+    "penalty_weight": -2.0,
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "rule_type": "consistency_penalty",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed"
+    }
+  },
+  {
+    "rule_id": "RULE_M_Soc_SN1",
+    "trigger_q_id": "M_Soc_SN1",
+    "trigger_option": "B",
+    "verify_q_id": "TRAP_SN1",
+    "expected_option": "X",
+    "penalty_dimension": "MBTI_N",
+    "penalty_weight": -2.0,
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "rule_type": "consistency_penalty",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed"
+    }
+  },
+  {
+    "rule_id": "RULE_M_Soc_JP1",
+    "trigger_q_id": "M_Soc_JP1",
+    "trigger_option": "B",
+    "verify_q_id": "TRAP_P1",
+    "expected_option": "Z",
+    "penalty_dimension": "MBTI_P",
+    "penalty_weight": -2.0,
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "rule_type": "consistency_penalty",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed"
+    }
+  },
+  {
+    "rule_id": "RULE_H_Field_R",
+    "trigger_q_id": "H_Field",
+    "trigger_option": "A",
+    "verify_q_id": "TRAP_R1",
+    "expected_option": "X",
+    "penalty_dimension": "Holland_R",
+    "penalty_weight": -2.0,
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "rule_type": "consistency_penalty",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed"
+    }
+  }
+]

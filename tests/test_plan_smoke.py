@@ -74,9 +74,9 @@ class HollandPlanSmokeTests(unittest.TestCase):
     def test_core_tables_and_seed_bank(self):
         con = duckdb.connect(DB_PATH, read_only=True)
         try:
-            self.assertEqual(con.execute("SELECT COUNT(*) FROM sjt_item_bank").fetchone()[0], 18)
-            self.assertEqual(con.execute("SELECT COUNT(*) FROM sjt_options").fetchone()[0], 42)
-            self.assertEqual(con.execute("SELECT COUNT(*) FROM sjt_consistency_rules").fetchone()[0], 2)
+            self.assertEqual(con.execute("SELECT COUNT(*) FROM sjt_item_bank").fetchone()[0], 30)
+            self.assertEqual(con.execute("SELECT COUNT(*) FROM sjt_options").fetchone()[0], 72)
+            self.assertEqual(con.execute("SELECT COUNT(*) FROM sjt_consistency_rules").fetchone()[0], 6)
             self.assertGreater(con.execute("SELECT COUNT(*) FROM sjt_weights").fetchone()[0], 0)
             option_columns = {
                 row[1]
@@ -130,7 +130,7 @@ class HollandPlanSmokeTests(unittest.TestCase):
         response = client.get("/api/questions")
         self.assertEqual(response.status_code, 200)
         questions = response.json()["questions"]
-        self.assertEqual(len(questions), 18)
+        self.assertEqual(len(questions), 30)
         self.assertTrue(all(q["choices"] for q in questions))
         self.assertNotIn("lineage", questions[0])
         self.assertNotIn("weights", questions[0]["choices"][0])
@@ -163,9 +163,9 @@ class HollandPlanSmokeTests(unittest.TestCase):
         self.assertEqual(payload["service"], "lifehack-holland")
         self.assertTrue(payload["db"]["read"]["ok"])
         self.assertTrue(payload["db"]["write"]["ok"])
-        self.assertEqual(payload["question_bank"]["production_question_count"], 18)
-        self.assertEqual(payload["question_bank"]["option_count"], 42)
-        self.assertEqual(payload["question_bank"]["consistency_rule_count"], 2)
+        self.assertEqual(payload["question_bank"]["production_question_count"], 30)
+        self.assertEqual(payload["question_bank"]["option_count"], 72)
+        self.assertEqual(payload["question_bank"]["consistency_rule_count"], 6)
         self.assertTrue(payload["question_bank"]["source_version"])
         self.assertEqual(payload["source_version"], payload["question_bank"]["source_version"])
         self.assertTrue(payload["occupation_bridge"]["ready"])
@@ -423,7 +423,7 @@ class HollandPlanSmokeTests(unittest.TestCase):
         report = audit_all()
         self.assertEqual(report["status"], "pass")
         self.assertEqual(report["candidate_pool"]["counts"]["total"], 328)
-        self.assertEqual(report["production_seed"]["counts"]["items"], 18)
+        self.assertEqual(report["production_seed"]["counts"]["items"], 30)
         self.assertEqual(report["production_seed"]["warnings"], [])
 
     def test_raw_material_import_is_config_driven_and_lineage_preserving(self):

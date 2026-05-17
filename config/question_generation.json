@@ -27,8 +27,14 @@
     }
   },
   "production_seed": {
-    "item_files": ["backend/data/seed/golden_items.json"],
-    "rule_files": ["backend/data/seed/golden_rules.json"]
+    "item_files": [
+      "backend/data/seed/golden_items.json",
+      "backend/data/seed/consulting_items.json"
+    ],
+    "rule_files": [
+      "backend/data/seed/golden_rules.json",
+      "backend/data/seed/consulting_rules.json"
+    ]
   },
   "review": {
     "allowed_statuses": ["needs_review", "needs_rewrite", "approved", "rejected"],

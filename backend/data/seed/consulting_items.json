@@ -1,0 +1,884 @@
+[
+  {
+    "q_id": "H_Field",
+    "mother_source": "ONET_IP",
+    "mother_id": "ONET_CONSULT_R1",
+    "mechanism": "L2_realistic_vs_social_research",
+    "text": "【真实任务】学校要完成一次校园设施安全排查，你更愿意承担哪类工作？",
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed",
+      "transform_level": "L4_curated_item",
+      "scenario_purpose": "consulting_readiness_expansion"
+    },
+    "options": [
+      {
+        "val": "A",
+        "text": "带着工具和记录表到现场逐项检查设备、线路和使用痕迹",
+        "weights": [
+          [
+            "Holland_R",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "H_Field",
+          "option_val": "A",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_CONSULT_R1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_realistic_vs_social_research",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_R"
+          ]
+        }
+      },
+      {
+        "val": "B",
+        "text": "把历年维修记录和事故数据整理成风险分布分析",
+        "weights": [
+          [
+            "Holland_I",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "H_Field",
+          "option_val": "B",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_CONSULT_R1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_realistic_vs_social_research",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_I"
+          ]
+        }
+      },
+      {
+        "val": "C",
+        "text": "和各班同学访谈，了解哪些设施最影响日常学习生活",
+        "weights": [
+          [
+            "Holland_S",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "H_Field",
+          "option_val": "C",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_CONSULT_R1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_realistic_vs_social_research",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_S"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "q_id": "H_Studio",
+    "mother_source": "ONET_IP",
+    "mother_id": "ONET_CONSULT_A1",
+    "mechanism": "L2_artistic_conventional_enterprising",
+    "text": "【项目选择】班级要做毕业纪念册，你最想负责哪一块？",
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed",
+      "transform_level": "L4_curated_item",
+      "scenario_purpose": "consulting_readiness_expansion"
+    },
+    "options": [
+      {
+        "val": "A",
+        "text": "设计整体视觉风格、版式和封面，让作品有鲜明表达",
+        "weights": [
+          [
+            "Holland_A",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "H_Studio",
+          "option_val": "A",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_CONSULT_A1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_artistic_conventional_enterprising",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_A"
+          ]
+        }
+      },
+      {
+        "val": "B",
+        "text": "核对每位同学的姓名、照片、文字和印刷清单，保证零差错",
+        "weights": [
+          [
+            "Holland_C",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "H_Studio",
+          "option_val": "B",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_CONSULT_A1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_artistic_conventional_enterprising",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_C"
+          ]
+        }
+      },
+      {
+        "val": "C",
+        "text": "联系商家谈价格、争取赞助，并推动同学按时提交素材",
+        "weights": [
+          [
+            "Holland_E",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "H_Studio",
+          "option_val": "C",
+          "mother_source": "ONET_IP",
+          "mother_id": "ONET_CONSULT_A1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L2_artistic_conventional_enterprising",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "Holland_E"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "q_id": "M_Info_EI2",
+    "mother_source": "IPIP",
+    "mother_id": "M_CONSULT_EI2",
+    "mechanism": "E_vs_I",
+    "text": "【信息检索】你要快速了解一个陌生专业，第一步通常会怎么做？",
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed",
+      "transform_level": "L4_curated_item",
+      "scenario_purpose": "consulting_readiness_expansion"
+    },
+    "options": [
+      {
+        "val": "A",
+        "text": "约学长学姐或老师直接聊，边问边形成判断",
+        "weights": [
+          [
+            "MBTI_E",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "M_Info_EI2",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_CONSULT_EI2",
+          "transform_level": "L4_curated_item",
+          "mechanism": "E_vs_I",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_E"
+          ]
+        }
+      },
+      {
+        "val": "B",
+        "text": "先独自看培养方案、课程表和就业报告，整理问题后再交流",
+        "weights": [
+          [
+            "MBTI_I",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "M_Info_EI2",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_CONSULT_EI2",
+          "transform_level": "L4_curated_item",
+          "mechanism": "E_vs_I",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_I"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "q_id": "M_Info_SN2",
+    "mother_source": "IPIP",
+    "mother_id": "M_CONSULT_SN2",
+    "mechanism": "S_vs_N",
+    "text": "【专业理解】看到一个专业介绍时，你更先关注什么？",
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed",
+      "transform_level": "L4_curated_item",
+      "scenario_purpose": "consulting_readiness_expansion"
+    },
+    "options": [
+      {
+        "val": "A",
+        "text": "具体课程、实习要求、毕业去向和每年招生人数",
+        "weights": [
+          [
+            "MBTI_S",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "M_Info_SN2",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_CONSULT_SN2",
+          "transform_level": "L4_curated_item",
+          "mechanism": "S_vs_N",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_S"
+          ]
+        }
+      },
+      {
+        "val": "B",
+        "text": "它背后的学科趋势、未来想象空间和跨界可能性",
+        "weights": [
+          [
+            "MBTI_N",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "M_Info_SN2",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_CONSULT_SN2",
+          "transform_level": "L4_curated_item",
+          "mechanism": "S_vs_N",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_N"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "q_id": "M_Group_TF2",
+    "mother_source": "IPIP",
+    "mother_id": "M_CONSULT_TF2",
+    "mechanism": "T_vs_F",
+    "text": "【小组合作】队友提出一个你认为风险很高的方案，你会怎么反馈？",
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed",
+      "transform_level": "L4_curated_item",
+      "scenario_purpose": "consulting_readiness_expansion"
+    },
+    "options": [
+      {
+        "val": "A",
+        "text": "直接列出风险、证据和替代方案，先保证结果正确",
+        "weights": [
+          [
+            "MBTI_T",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "M_Group_TF2",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_CONSULT_TF2",
+          "transform_level": "L4_curated_item",
+          "mechanism": "T_vs_F",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_T"
+          ]
+        }
+      },
+      {
+        "val": "B",
+        "text": "先肯定他的投入，再用更温和的方式讨论哪里需要调整",
+        "weights": [
+          [
+            "MBTI_F",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "M_Group_TF2",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_CONSULT_TF2",
+          "transform_level": "L4_curated_item",
+          "mechanism": "T_vs_F",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_F"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "q_id": "M_Plan_JP2",
+    "mother_source": "IPIP",
+    "mother_id": "M_CONSULT_JP2",
+    "mechanism": "J_vs_P",
+    "text": "【志愿准备】距离正式填报还有一个月，你更自然的准备方式是：",
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed",
+      "transform_level": "L4_curated_item",
+      "scenario_purpose": "consulting_readiness_expansion"
+    },
+    "options": [
+      {
+        "val": "A",
+        "text": "列出时间表、资料清单和每周决策节点，逐项推进",
+        "weights": [
+          [
+            "MBTI_J",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "M_Plan_JP2",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_CONSULT_JP2",
+          "transform_level": "L4_curated_item",
+          "mechanism": "J_vs_P",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_J"
+          ]
+        }
+      },
+      {
+        "val": "B",
+        "text": "先大量浏览和比较，等关键感觉逐渐清晰后再收束",
+        "weights": [
+          [
+            "MBTI_P",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "M_Plan_JP2",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_CONSULT_JP2",
+          "transform_level": "L4_curated_item",
+          "mechanism": "J_vs_P",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_P"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "q_id": "M_City_SN2",
+    "mother_source": "IPIP",
+    "mother_id": "M_CONSULT_SN3",
+    "mechanism": "S_vs_N",
+    "text": "【城市选择】比较两个大学城市时，你最容易先想到：",
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed",
+      "transform_level": "L4_curated_item",
+      "scenario_purpose": "consulting_readiness_expansion"
+    },
+    "options": [
+      {
+        "val": "A",
+        "text": "通勤、住宿、生活成本、医院和回家交通这些现实条件",
+        "weights": [
+          [
+            "MBTI_S",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "M_City_SN2",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_CONSULT_SN3",
+          "transform_level": "L4_curated_item",
+          "mechanism": "S_vs_N",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_S"
+          ]
+        }
+      },
+      {
+        "val": "B",
+        "text": "城市气质、成长机会、行业变化和未来几年可能打开的空间",
+        "weights": [
+          [
+            "MBTI_N",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "M_City_SN2",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_CONSULT_SN3",
+          "transform_level": "L4_curated_item",
+          "mechanism": "S_vs_N",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_N"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "q_id": "M_Family_TF2",
+    "mother_source": "IPIP",
+    "mother_id": "M_CONSULT_TF3",
+    "mechanism": "T_vs_F",
+    "text": "【家庭沟通】父母和你对专业方向意见不一致时，你更倾向于：",
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed",
+      "transform_level": "L4_curated_item",
+      "scenario_purpose": "consulting_readiness_expansion"
+    },
+    "options": [
+      {
+        "val": "A",
+        "text": "把分数、就业、成本和风险摆出来，用证据推动共识",
+        "weights": [
+          [
+            "MBTI_T",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "M_Family_TF2",
+          "option_val": "A",
+          "mother_source": "IPIP",
+          "mother_id": "M_CONSULT_TF3",
+          "transform_level": "L4_curated_item",
+          "mechanism": "T_vs_F",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_T"
+          ]
+        }
+      },
+      {
+        "val": "B",
+        "text": "先理解每个人担心什么，再寻找彼此都能接受的折中路径",
+        "weights": [
+          [
+            "MBTI_F",
+            1.5
+          ]
+        ],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "M_Family_TF2",
+          "option_val": "B",
+          "mother_source": "IPIP",
+          "mother_id": "M_CONSULT_TF3",
+          "transform_level": "L4_curated_item",
+          "mechanism": "T_vs_F",
+          "scoring_role": "direct_score",
+          "weight_dimensions": [
+            "MBTI_F"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "q_id": "TRAP_TF1",
+    "mother_source": "SYSTEM_RULE",
+    "mother_id": "V_TF1",
+    "mechanism": "L3_verify",
+    "text": "你刚用数据论证了一个专业更适合自己，但家人听完明显失落。你接下来最可能：",
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed",
+      "transform_level": "L4_curated_item",
+      "scenario_purpose": "consulting_readiness_expansion"
+    },
+    "options": [
+      {
+        "val": "X",
+        "text": "继续强调数据结论，不太考虑对方此刻的感受",
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_TF1",
+          "option_val": "X",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_TF1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
+      },
+      {
+        "val": "Y",
+        "text": "先停下来确认他们真正担心什么，再一起看数据是否遗漏了重要条件",
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_TF1",
+          "option_val": "Y",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_TF1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
+      },
+      {
+        "val": "Z",
+        "text": "立刻放弃自己的判断，避免继续冲突",
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_TF1",
+          "option_val": "Z",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_TF1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
+      }
+    ]
+  },
+  {
+    "q_id": "TRAP_SN1",
+    "mother_source": "SYSTEM_RULE",
+    "mother_id": "V_SN1",
+    "mechanism": "L3_verify",
+    "text": "你刚被一个很有未来感的新专业吸引，但发现培养方案写得很笼统。你会：",
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed",
+      "transform_level": "L4_curated_item",
+      "scenario_purpose": "consulting_readiness_expansion"
+    },
+    "options": [
+      {
+        "val": "X",
+        "text": "仍主要被未来想象打动，不太追问课程和出口细节",
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_SN1",
+          "option_val": "X",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_SN1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
+      },
+      {
+        "val": "Y",
+        "text": "立刻查课程、师资、就业报告和往届去向，再判断是否值得报",
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_SN1",
+          "option_val": "Y",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_SN1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
+      },
+      {
+        "val": "Z",
+        "text": "因为信息不够明确，直接排除所有新兴专业",
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_SN1",
+          "option_val": "Z",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_SN1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
+      }
+    ]
+  },
+  {
+    "q_id": "TRAP_P1",
+    "mother_source": "SYSTEM_RULE",
+    "mother_id": "V_P1",
+    "mechanism": "L3_verify",
+    "text": "你说自己喜欢灵活探索，但志愿填报截止只剩三天。你会：",
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed",
+      "transform_level": "L4_curated_item",
+      "scenario_purpose": "consulting_readiness_expansion"
+    },
+    "options": [
+      {
+        "val": "X",
+        "text": "继续广泛浏览，不急着收敛名单",
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_P1",
+          "option_val": "X",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_P1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
+      },
+      {
+        "val": "Y",
+        "text": "先保留探索空间，但设定今天必须缩到三个方案",
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_P1",
+          "option_val": "Y",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_P1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
+      },
+      {
+        "val": "Z",
+        "text": "完全不做计划，等最后一晚凭感觉决定",
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_P1",
+          "option_val": "Z",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_P1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
+      }
+    ]
+  },
+  {
+    "q_id": "TRAP_R1",
+    "mother_source": "SYSTEM_RULE",
+    "mother_id": "V_R1",
+    "mechanism": "L3_verify",
+    "text": "你说自己很喜欢动手实践，但实训任务现场又热又乱、需要反复调试。你会：",
+    "source_version": "2026-05-18",
+    "review_status": "approved_seed",
+    "lineage": {
+      "lineage_quality": "curated_seed_limited",
+      "source_version": "2026-05-18",
+      "review_status": "approved_seed",
+      "transform_level": "L4_curated_item",
+      "scenario_purpose": "consulting_readiness_expansion"
+    },
+    "options": [
+      {
+        "val": "X",
+        "text": "觉得环境太麻烦，尽量退到资料整理或汇报展示",
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_R1",
+          "option_val": "X",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_R1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
+      },
+      {
+        "val": "Y",
+        "text": "接受现场不舒服，愿意边试边修直到设备跑起来",
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_R1",
+          "option_val": "Y",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_R1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
+      },
+      {
+        "val": "Z",
+        "text": "只想看别人操作，自己不太愿意上手",
+        "weights": [],
+        "lineage": {
+          "lineage_quality": "curated_option_seed",
+          "source_version": "2026-05-18",
+          "review_status": "approved_seed",
+          "question_id": "TRAP_R1",
+          "option_val": "Z",
+          "mother_source": "SYSTEM_RULE",
+          "mother_id": "V_R1",
+          "transform_level": "L4_curated_item",
+          "mechanism": "L3_verify",
+          "scoring_role": "consistency_check_only",
+          "weight_dimensions": []
+        }
+      }
+    ]
+  }
+]
