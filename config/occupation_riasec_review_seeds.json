@@ -180,6 +180,36 @@
       "reviewer": "holland_seed_review",
       "reviewed_at": "2026-05-18",
       "review_notes": "High-confidence second batch: information system administration is rule-based, structured and process-heavy work fitting conventional; technical incident response may add investigative/realistic traits."
+    },
+    {
+      "seed_id": "occ-2-07-10-01",
+      "occupation_code": "2-07-10-01",
+      "occupation_name": "社会工作者",
+      "review_decision": "approved",
+      "reviewed_riasec": "S",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence social batch: social work is direct helping/community service and maps to Social; becomes active after the merged broad occupation catalog is imported into core and the bridge is rebuilt."
+    },
+    {
+      "seed_id": "occ-2-07-10-02",
+      "occupation_code": "2-07-10-02",
+      "occupation_name": "社会组织专业人员",
+      "review_decision": "approved",
+      "reviewed_riasec": "S",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence social batch: social organization work is community/public service oriented and maps to Social; becomes active after the merged broad occupation catalog is imported into core and the bridge is rebuilt."
+    },
+    {
+      "seed_id": "occ-2-07-10-03",
+      "occupation_code": "2-07-10-03",
+      "occupation_name": "心理咨询师",
+      "review_decision": "approved",
+      "reviewed_riasec": "S",
+      "reviewer": "holland_seed_review",
+      "reviewed_at": "2026-05-18",
+      "review_notes": "High-confidence social batch: counseling is a direct helping and assessment service role and maps to Social; becomes active after the merged broad occupation catalog is imported into core and the bridge is rebuilt."
     }
   ]
 }
