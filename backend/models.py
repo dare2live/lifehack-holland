@@ -3,6 +3,8 @@ Pydantic data models for the SJT Assessment Engine API.
 """
 from __future__ import annotations
 
+from typing import Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -15,9 +17,9 @@ class SubmitRequest(BaseModel):
     """
     user_id: str = Field(default="anonymous", description="Optional student identifier")
     answers: dict[str, str] = Field(..., description="Flat key-value map of question_id → selected option")
-    core_case_id: str | None = Field(default=None, description="Optional main lifehack case id")
-    return_url: str | None = Field(default=None, description="Optional main lifehack return URL")
-    source: str | None = Field(default=None, description="Optional launch source")
+    core_case_id: Optional[str] = Field(default=None, description="Optional main lifehack case id")
+    return_url: Optional[str] = Field(default=None, description="Optional main lifehack return URL")
+    source: Optional[str] = Field(default=None, description="Optional launch source")
 
 
 # ── Response Models ────────────────────────────────────────────────
