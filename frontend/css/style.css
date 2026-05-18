@@ -535,7 +535,13 @@ a {
         grid-template-columns: 1fr;
     }
 
-    .btn-group {
+.btn-group {
         flex-direction: column;
     }
+}
+
+.result-actions {
+    margin: 18px 0 32px;
+    display: flex;
+    justify-content: center;
 }

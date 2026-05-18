@@ -391,10 +391,17 @@ async def submit_answers(req: SubmitRequest):
     try:
         con.execute(
             """
-            INSERT INTO sjt_responses (submission_id, user_id, raw_answers)
-            VALUES (?, ?, ?)
+            INSERT INTO sjt_responses (submission_id, user_id, core_case_id, return_url, launch_source, raw_answers)
+            VALUES (?, ?, ?, ?, ?, ?)
             """,
-            [submission_id, req.user_id, json.dumps(req.answers)],
+            [
+                submission_id,
+                req.user_id,
+                req.core_case_id or "",
+                req.return_url or "",
+                req.source or "",
+                json.dumps(req.answers),
+            ],
         )
         return SubmitResponse(submission_id=submission_id)
     except Exception as e:

@@ -15,6 +15,9 @@ class SubmitRequest(BaseModel):
     """
     user_id: str = Field(default="anonymous", description="Optional student identifier")
     answers: dict[str, str] = Field(..., description="Flat key-value map of question_id → selected option")
+    core_case_id: str | None = Field(default=None, description="Optional main lifehack case id")
+    return_url: str | None = Field(default=None, description="Optional main lifehack return URL")
+    source: str | None = Field(default=None, description="Optional launch source")
 
 
 # ── Response Models ────────────────────────────────────────────────

@@ -91,6 +91,9 @@ DDL_STATEMENTS = [
     CREATE TABLE IF NOT EXISTS sjt_responses (
         submission_id  VARCHAR DEFAULT (uuid()::VARCHAR),
         user_id        VARCHAR,
+        core_case_id   VARCHAR,
+        return_url     VARCHAR,
+        launch_source  VARCHAR,
         raw_answers    JSON,                   -- SurveyJS 传来的原始作答
         created_at     TIMESTAMP DEFAULT current_timestamp
     );
@@ -114,6 +117,15 @@ def init_database(db_path: str = DB_PATH) -> None:
     try:
         for ddl in DDL_STATEMENTS:
             con.execute(ddl)
+        _ensure_columns(
+            con,
+            "sjt_responses",
+            {
+                "core_case_id": "VARCHAR",
+                "return_url": "VARCHAR",
+                "launch_source": "VARCHAR",
+            },
+        )
         _ensure_columns(
             con,
             "sjt_item_bank",

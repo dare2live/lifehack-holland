@@ -304,10 +304,12 @@ def _json_loads(value: Any, fallback: Any) -> Any:
 
 def _load_source_lineage(con: duckdb.DuckDBPyConnection, submission_id: str) -> dict[str, Any]:
     answers = _load_answers(con, submission_id)
+    context = _load_core_context(con, submission_id)
     if not answers:
         return {
             "service": "lifehack-holland",
             "scoring_engine": "rule_model_strategy_sql",
+            "core_context": context,
             "question_bank": {"answered_count": 0, "source_version": ""},
             "answered_items": [],
         }
@@ -368,12 +370,34 @@ def _load_source_lineage(con: duckdb.DuckDBPyConnection, submission_id: str) -> 
     return {
         "service": "lifehack-holland",
         "scoring_engine": "rule_model_strategy_sql",
+        "core_context": context,
         "question_bank": {
             "source_version": version,
             "answered_count": len(answered_items),
             "lineage_quality": sorted(lineage_quality),
         },
         "answered_items": answered_items,
+    }
+
+
+def _load_core_context(con: duckdb.DuckDBPyConnection, submission_id: str) -> dict[str, Any]:
+    try:
+        row = con.execute(
+            """
+            SELECT core_case_id, return_url, launch_source
+            FROM sjt_responses
+            WHERE submission_id = ?
+            """,
+            [submission_id],
+        ).fetchone()
+    except Exception:
+        return {}
+    if not row:
+        return {}
+    return {
+        "core_case_id": row[0] or "",
+        "return_url": row[1] or "",
+        "source": row[2] or "",
     }
 
 

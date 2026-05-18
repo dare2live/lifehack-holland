@@ -55,7 +55,12 @@
             document.getElementById('progress-wrapper').style.display = 'block';
 
             // Initialize survey
-            survey = new SjtSurvey('survey-container');
+            const params = new URLSearchParams(window.location.search);
+            survey = new SjtSurvey('survey-container', {
+                core_case_id: params.get('case_id') || '',
+                return_url: params.get('return_url') || '',
+                source: params.get('source') || '',
+            });
             await survey.init();
         }
     </script>

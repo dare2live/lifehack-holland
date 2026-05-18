@@ -22,11 +22,17 @@ const SjtApi = {
      * @param {Object} answers - Flat key-value map {question_id: selected_option}
      * @returns {Promise<{submission_id: string, message: string}>}
      */
-    async submitAnswers(userId, answers) {
+    async submitAnswers(userId, answers, context = {}) {
         const res = await fetch(`${API_BASE}/submit`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user_id: userId, answers }),
+            body: JSON.stringify({
+                user_id: userId,
+                answers,
+                core_case_id: context.core_case_id || '',
+                return_url: context.return_url || '',
+                source: context.source || '',
+            }),
         });
         if (!res.ok) throw new Error(`Submit failed: ${res.status}`);
         return res.json();

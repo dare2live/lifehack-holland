@@ -6,8 +6,9 @@
  */
 
 class SjtSurvey {
-    constructor(containerId) {
+    constructor(containerId, launchContext = {}) {
         this.container = document.getElementById(containerId);
+        this.launchContext = launchContext || {};
         this.questions = [];
         this.answers = {};
         this.currentPage = 0;
@@ -238,10 +239,15 @@ class SjtSurvey {
         try {
             // Get user_id (could be from a form, for now use anonymous)
             const userId = document.getElementById('user-id')?.value || 'anonymous';
-            const result = await SjtApi.submitAnswers(userId, this.answers);
+            const result = await SjtApi.submitAnswers(userId, this.answers, this.launchContext);
 
             // Redirect to result page
-            window.location.href = `result.html?id=${result.submission_id}`;
+            const resultUrl = new URL('result.html', window.location.href);
+            resultUrl.searchParams.set('id', result.submission_id);
+            if (this.launchContext.core_case_id) resultUrl.searchParams.set('case_id', this.launchContext.core_case_id);
+            if (this.launchContext.return_url) resultUrl.searchParams.set('return_url', this.launchContext.return_url);
+            if (this.launchContext.source) resultUrl.searchParams.set('source', this.launchContext.source);
+            window.location.href = resultUrl.toString();
         } catch (err) {
             alert('提交失败: ' + err.message);
             if (btn) {

@@ -26,6 +26,7 @@
         (async function() {
             const params = new URLSearchParams(window.location.search);
             const submissionId = params.get('id');
+            const returnUrl = params.get('return_url');
 
             if (!submissionId) {
                 document.getElementById('result-container').innerHTML = `
@@ -46,6 +47,18 @@
                 ]);
                 const container = document.getElementById('result-container');
                 renderReport(report, config, container);
+                if (returnUrl) {
+                    const safeReturnUrl = new URL(returnUrl, window.location.href);
+                    safeReturnUrl.searchParams.set('holland_submission_id', submissionId);
+                    const action = document.createElement('div');
+                    action.className = 'result-actions';
+                    const link = document.createElement('a');
+                    link.className = 'btn btn--primary';
+                    link.href = safeReturnUrl.toString();
+                    link.textContent = '返回主项目并同步';
+                    action.appendChild(link);
+                    container.appendChild(action);
+                }
             } catch (err) {
                 document.getElementById('result-container').innerHTML = `
                     <div class="result-header">
