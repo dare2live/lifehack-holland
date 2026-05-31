@@ -11,7 +11,7 @@ All scoring is pure SQL executed inside DuckDB — zero application-layer loops.
 """
 import json
 import os
-from typing import Any
+from typing import Any, Optional
 
 import duckdb
 
@@ -182,6 +182,7 @@ def compute_report(submission_id: str, db_path: str = DB_PATH) -> ReportResponse
     """
     con = duckdb.connect(db_path, read_only=True)
     try:
+        answers = _load_answers(con, submission_id)
         # Try primary SQL first, fall back if syntax issues
         try:
             rows = con.execute(SCORING_SQL, [submission_id]).fetchall()
@@ -211,8 +212,8 @@ def compute_report(submission_id: str, db_path: str = DB_PATH) -> ReportResponse
 
         # Generate Cross Insight (Strategy Layer Fusion)
         cross_insight = _generate_cross_insight(mbti_type, holland_top3)
-        source_lineage = _load_source_lineage(con, submission_id)
-        consistency_issues = _load_consistency_issues(con, submission_id)
+        source_lineage = _load_source_lineage(con, submission_id, answers=answers)
+        consistency_issues = _load_consistency_issues(con, answers=answers)
         source_version = source_lineage.get("question_bank", {}).get("source_version", "")
 
         # Fetch recommended Chinese occupations from the local bridge. Try the
@@ -302,8 +303,13 @@ def _json_loads(value: Any, fallback: Any) -> Any:
         return fallback
 
 
-def _load_source_lineage(con: duckdb.DuckDBPyConnection, submission_id: str) -> dict[str, Any]:
-    answers = _load_answers(con, submission_id)
+def _load_source_lineage(
+    con: duckdb.DuckDBPyConnection,
+    submission_id: str,
+    *,
+    answers: Optional[dict[str, str]] = None,
+) -> dict[str, Any]:
+    answers = answers or _load_answers(con, submission_id)
     context = _load_core_context(con, submission_id)
     if not answers:
         return {
@@ -317,27 +323,40 @@ def _load_source_lineage(con: duckdb.DuckDBPyConnection, submission_id: str) -> 
     answered_items = []
     source_versions: set[str] = set()
     lineage_quality: set[str] = set()
-    for q_id, option_val in answers.items():
-        row = con.execute(
-            """
+    question_ids = list(answers.keys())
+    item_rows = {}
+    if question_ids:
+        placeholders = ", ".join(["?"] * len(question_ids))
+        for row in con.execute(
+            f"""
             SELECT sjt_q_id, mother_source, mother_id, core_mechanism, scenario_text,
                    source_version, transform_level, review_status, lineage_json
             FROM sjt_item_bank
-            WHERE sjt_q_id = ?
+            WHERE sjt_q_id IN ({placeholders})
             """,
-            [q_id],
-        ).fetchone()
+            question_ids,
+        ).fetchall():
+            item_rows[str(row[0])] = row
+
+    weight_rows: dict[tuple[str, str], list[tuple[Any, ...]]] = {}
+    if question_ids:
+        placeholders = ", ".join(["?"] * len(question_ids))
+        for row in con.execute(
+            f"""
+            SELECT sjt_q_id, option_val, dimension_code, inherited_weight, source_version, review_status, lineage_json
+            FROM sjt_weights
+            WHERE sjt_q_id IN ({placeholders})
+            ORDER BY sjt_q_id, option_val, dimension_code
+            """,
+            question_ids,
+        ).fetchall():
+            weight_rows.setdefault((str(row[0]), str(row[1])), []).append(row)
+
+    for q_id, option_val in answers.items():
+        row = item_rows.get(q_id)
         if not row:
             continue
-        weights = con.execute(
-            """
-            SELECT dimension_code, inherited_weight, source_version, review_status, lineage_json
-            FROM sjt_weights
-            WHERE sjt_q_id = ? AND option_val = ?
-            ORDER BY dimension_code
-            """,
-            [q_id, option_val],
-        ).fetchall()
+        weights = weight_rows.get((q_id, option_val), [])
         item_lineage = _json_loads(row[8], {})
         source_version = str(row[5] or item_lineage.get("source_version") or "")
         if source_version:
@@ -355,11 +374,11 @@ def _load_source_lineage(con: duckdb.DuckDBPyConnection, submission_id: str) -> 
             "review_status": row[7] or item_lineage.get("review_status"),
             "weights": [
                 {
-                    "dimension_code": weight_row[0],
-                    "inherited_weight": float(weight_row[1]),
-                    "source_version": weight_row[2] or "",
-                    "review_status": weight_row[3] or "",
-                    "lineage": _json_loads(weight_row[4], {}),
+                    "dimension_code": weight_row[2],
+                    "inherited_weight": float(weight_row[3]),
+                    "source_version": weight_row[4] or "",
+                    "review_status": weight_row[5] or "",
+                    "lineage": _json_loads(weight_row[6], {}),
                 }
                 for weight_row in weights
             ],
@@ -401,8 +420,12 @@ def _load_core_context(con: duckdb.DuckDBPyConnection, submission_id: str) -> di
     }
 
 
-def _load_consistency_issues(con: duckdb.DuckDBPyConnection, submission_id: str) -> list[dict[str, Any]]:
-    answers = _load_answers(con, submission_id)
+def _load_consistency_issues(
+    con: duckdb.DuckDBPyConnection,
+    *,
+    answers: Optional[dict[str, str]] = None,
+) -> list[dict[str, Any]]:
+    answers = answers or {}
     if not answers:
         return []
     rows = con.execute(
